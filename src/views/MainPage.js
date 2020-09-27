@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 import MobileStepper from "@material-ui/core/MobileStepper";
 import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
@@ -12,13 +11,14 @@ import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import { autoPlay } from "react-swipeable-views-utils";
 import { Link } from "react-router-dom";
+import Slide from "@material-ui/core/Slide";
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
   myInfoLink: {
     fontSize: "14px",
     color: "#6f6f6f",
     padding: "10px",
-    marginRight: "15px"
+    marginRight: "16px"
   },
   section: { margin: "40px 0" },
   descriptionSpan: {
@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
   },
   titleLink: { fontSize: "25px", fontWeight: "700", marginTop: "20px" },
   root: {
+    "& .MuiMobileStepper-dotActive": {
+      backgroundColor: "black"
+    },
     // maxWidth: 400,
     width: "100%",
     flexGrow: 1
@@ -39,11 +42,14 @@ const useStyles = makeStyles((theme) => ({
     // backgroundColor: theme.palette.background.default
   },
   img: {
-    height: 255,
+    // height: 255,
     display: "block",
     // maxWidth: 400,
     overflow: "hidden",
-    width: "100%"
+    width: "calc(100%-48px)",
+    height: "auto",
+    margin: "0 auto",
+    borderRadius: "18px"
   }
 }));
 
@@ -96,11 +102,32 @@ function MainPage(props) {
   };
   return (
     <>
+      {/* <Slide
+        direction="left"
+        in={true}
+        timeout={{ enter: "1s", exit: "5s" }}
+        mountOnEnter
+        unmountOnExit
+      >
+        <div> */}
       <header>
         <div className={classes.emptySpace}></div>
       </header>
       <main>
-        <div style={{ display: "block", textAlign: "right" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "rows",
+            justifyContent: "space-between",
+            alignItems: "end"
+          }}
+        >
+          <img
+            src={require("../assets/img/splash.png")}
+            style={{ width: "167px", height: "auto", marginLeft: "16px" }}
+            alt="logo"
+          />
+
           <Link to="#">
             <span className={classes.myInfoLink}>내 정보</span>
           </Link>
@@ -112,69 +139,79 @@ function MainPage(props) {
           >
             이벤트
           </p>
-          <div>
-            <div className={classes.root}>
-              <AutoPlaySwipeableViews
-                axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-                index={activeStep}
-                onChangeIndex={handleStepChange}
-                enableMouseEvents
-              >
-                {tutorialSteps.map((step, index) => (
-                  <div key={step.label}>
-                    {Math.abs(activeStep - index) <= 2 ? (
-                      <img
-                        className={classes.img}
-                        src={step.imgPath}
-                        alt={step.label}
-                      />
-                    ) : null}
-                  </div>
-                ))}
-              </AutoPlaySwipeableViews>
-              <MobileStepper
-                style={{
-                  position: "relative",
-                  bottom: "48px",
-                  background: "none",
-                  width: "100%",
-                  padding: "0px"
-                }}
-                variant="dots"
-                steps={6}
-                position="static"
-                activeStep={activeStep}
-                className={classes.root}
-                nextButton={
-                  <Button
-                    size="small"
-                    onClick={handleNext}
-                    disabled={activeStep === 5}
-                  >
-                    {/* Next */}
-                    {theme.direction === "rtl" ? (
-                      <KeyboardArrowLeft />
-                    ) : (
-                      <KeyboardArrowRight />
-                    )}
-                  </Button>
-                }
-                backButton={
-                  <Button
-                    size="small"
-                    onClick={handleBack}
-                    disabled={activeStep === 0}
-                  >
-                    {theme.direction === "rtl" ? (
-                      <KeyboardArrowRight />
-                    ) : (
-                      <KeyboardArrowLeft />
-                    )}
-                    {/* Back */}
-                  </Button>
-                }
-              />
-            </div>
+
+          {/* <div className={classes.root}> */}
+          <AutoPlaySwipeableViews
+            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+            index={activeStep}
+            onChangeIndex={handleStepChange}
+            enableMouseEvents
+          >
+            {tutorialSteps.map((step, index) => (
+              <div key={step.label}>
+                {Math.abs(activeStep - index) <= 2 ? (
+                  <img
+                    className={classes.img}
+                    src={step.imgPath}
+                    alt={step.label}
+                    style={{ width: "90%" }}
+                  />
+                ) : null}
+              </div>
+            ))}
+          </AutoPlaySwipeableViews>
+          <div
+            id="hello"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              alignText: "center"
+            }}
+          >
+            <MobileStepper
+              style={{
+                background: "none",
+                width: "100%",
+                padding: "0px",
+                margin: "0 auto",
+                marginTop: "10px"
+              }}
+              variant="dots"
+              steps={6}
+              position="static"
+              activeStep={activeStep}
+              className={classes.root}
+              nextButton={
+                <Button
+                  size="small"
+                  onClick={handleNext}
+                  disabled={activeStep === 5}
+                >
+                  {/* Next */}
+                  {/* {theme.direction === "rtl" ? (
+                        <KeyboardArrowLeft />
+                      ) : (
+                        <KeyboardArrowRight />
+                      )} */}
+                </Button>
+              }
+              backButton={
+                <Button
+                  size="small"
+                  onClick={handleBack}
+                  disabled={activeStep === 0}
+                >
+                  {/* {theme.direction === "rtl" ? (
+                        <KeyboardArrowRight />
+                      ) : (
+                        <KeyboardArrowLeft />
+                      )} */}
+                  {/* Back */}
+                </Button>
+              }
+            />
+            {/* </div> */}
           </div>
         </section>
         <section className={classes.section}>
@@ -192,6 +229,8 @@ function MainPage(props) {
         </section>
       </main>
       <footer></footer>
+      {/* </div>
+      </Slide> */}
     </>
   );
 }

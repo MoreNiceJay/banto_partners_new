@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles((theme) => ({
-  headerInfo: { padding: "25px 0 0 30px" },
-  headerTitle: { fontSize: "30px", fontWeight: "700" },
-  headerDescription: { paddingTop: "10px", fontSize: "14px", color: "#6f6f6f" }
+  headerInfo: { padding: "25px 0 0 32px" },
+  headerTitle: { fontSize: "36px", fontWeight: "700" },
+  headerDescription: { paddingTop: "16px", fontSize: "16px", color: "#000A12" }
 }));
 export function HeaderInfo(props) {
   const classes = useStyles(props);

@@ -11,6 +11,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import { withStyles } from "@material-ui/core/styles";
 import { FormButton } from "../../components/FormButton.js";
+import { useGlobal } from "../../globalContext";
 
 const useStyles = makeStyles((theme) => ({
   section: { padding: "55px 0 0 30px" },
@@ -48,6 +49,8 @@ const GreenCheckbox = withStyles({
 
 function RegistFinal(props) {
   const classes = useStyles(props);
+  const context = useGlobal();
+
   const [state, setState] = React.useState({
     checkedA: true,
     checkedB: true,
@@ -59,27 +62,43 @@ function RegistFinal(props) {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
   const data = [
-    { title: "매장명", data: "스타벅스 구로점", link: "#" },
-    { title: "매장 연락처", data: "01099993333", link: "#" },
-    { title: "점주님 연락처", data: "01099993333", link: "#" },
+    { title: "매장명", data: context.salesInfo.storeName, link: "#" },
+    {
+      title: "매장 연락처",
+      data: context.salesInfo.storePhoneNumber,
+      link: "/sales/regist/contact"
+    },
+    {
+      title: "점주님 연락처",
+      data: context.salesInfo.storeOwnerPhoneNumber,
+      link: "/sales/regist/contact"
+    },
     {
       title: "매장 주소",
-      data: "경기도 고양시 일산서구 주엽2동 문촌마을",
-      link: "#"
+      data: [
+        context.salesInfo.storeAddress.mainAddress,
+        context.salesInfo.storeAddress.restAddress
+      ].join(" "),
+      link: "/sales/regist/address"
     },
     {
       title: "가맹점 수익",
-      data: "10%",
-      link: "#"
+      data: context.salesInfo.storeAddress.storePortion,
+      link: "/sales/regist/portion"
     },
     {
       title: "영업 수익",
       data: "20%",
-      link: "#"
+      link: "/sales/regist/portion"
     }
   ];
   return (
     <>
+      {console.log(context.salesInfo.investor)}
+      {
+        (context.salesInfo.investor.bInvestor,
+        context.salesInfo.investor.investorPhoneNumber)
+      }
       <header>
         <NavBar title="" backLink="/sales/regist/add-investor" />
         <HeaderInfo

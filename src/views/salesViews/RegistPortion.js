@@ -12,6 +12,8 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import NativeSelect from "@material-ui/core/NativeSelect";
+import { useGlobal } from "../../globalContext";
+
 var _ = require("lodash");
 
 const useStyles = makeStyles((theme) => ({
@@ -81,16 +83,21 @@ const useStyles = makeStyles((theme) => ({
   modalBuyButton: {}
 }));
 function RegistPortion(props) {
+  const context = useGlobal();
+
   const classes = useStyles(props);
-  const [state, setState] = React.useState({
-    age: "",
-    name: "hai"
-  });
+
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
+  const [portion, setPortion] = React.useState(0);
+
   const handleOpen = () => {
     setOpen(true);
   };
+
+  React.useEffect(() => {
+    setPortion(context.salesInfo.storePortion);
+  }, []);
 
   const handleClose = () => {
     setOpen(false);
@@ -109,6 +116,7 @@ function RegistPortion(props) {
           size="large"
           className={classes.modalNextTimeButton}
           onClick={() => {
+            context.setSales_StorePortion(portion);
             props.history.push("/sales/regist/add-investor");
           }}
         >
@@ -120,6 +128,8 @@ function RegistPortion(props) {
           color="primary"
           className={classes.modalBuyButton}
           onClick={() => {
+            context.setSales_StorePortion(portion);
+
             props.history.push("/sales/regist/add-investor");
           }}
         >
@@ -141,11 +151,7 @@ function RegistPortion(props) {
     };
   }
   const handleChange = (event) => {
-    const name = event.target.name;
-    setState({
-      ...state,
-      [name]: event.target.value
-    });
+    setPortion(event.target.value);
   };
   function mySubmitHandler() {
     handleOpen();
@@ -155,8 +161,10 @@ function RegistPortion(props) {
 
   return (
     <>
+      {portion}
+      {context.salesInfo.storePortion}
       <header>
-        <NavBar title="" backLink="/sales/regist/portion" />
+        <NavBar title="" backLink="/sales/regist/address" />
         <HeaderInfo
           title={"등록" + "\u00A0" + "\u00A0" + "\u00A0" + "3/3"}
           description="가맹점을 등록합니다"
@@ -181,19 +189,18 @@ function RegistPortion(props) {
                 </InputLabel>
                 <Select
                   native
-                  value={state.age}
+                  value={portion}
                   className={classes.portionSelect}
                   onChange={handleChange}
                   label="비율"
                   inputProps={{
-                    name: "비율2",
                     id: "outlined-age-native-simple"
                   }}
                 >
                   <option aria-label="None" value="" />
                   {percentage.length &&
                     percentage.map((value) => {
-                      return <option value={value}>{value}</option>;
+                      return <option value={value}>{value} %</option>;
                     })}
                 </Select>
               </FormControl>

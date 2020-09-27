@@ -5,42 +5,65 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Badge from "@material-ui/core/Badge";
 
 const useStyles = makeStyles((theme) => ({
-  headerInfo: { padding: "25px 0 0 30px" },
-  headerTitle: { fontSize: "30px", fontWeight: "700", color: "black" },
-  headerDescription: { paddingTop: "5px", fontSize: "14px", color: "#6f6f6f" },
   roleMenu: {
     display: "flex",
     flexDirection: "column",
-    padding: "45px 0 0 40px",
-    "& p": { padding: "0 0 40px 0" }
+    width: "100%",
+    padding: "161px 0 0 32px",
+    boxSizing: "border-box",
+    "& p": { padding: "0 0 60px 0", display: "flex", alignItems: "center" }
   },
-  menuListText: { fontSize: "25px", fontWeight: "600", color: "black" }
+  menuListText: { fontSize: "26px", fontWeight: "700", color: "#000A12" },
+  menuListTextRegular: {
+    fontSize: "26px",
+    fontWeight: "300",
+    color: "#000A12"
+  },
+  goButtonImg: {
+    width: "32px",
+    height: "32px",
+    marginLeft: "auto",
+    marginRight: "32px"
+  }
 }));
 
 export const MenuList = (props) => {
   const classes = useStyles(props);
   const dataExample = [
-    { title: "등록하기", link: "#", badge: false },
-    { title: "수익확인", link: "#", badge: false },
-    { title: "스테이션 정보", link: "#", badge: false },
-    { title: "알림함", link: "#", badge: true }
+    {
+      titleBold: "투자",
+      titleRegular: "하기",
+      link: "/sales/regist/contact"
+    },
+    {
+      titleBold: "수익",
+      titleRegular: "확인",
+      link: "/sales/regist/contact"
+    },
+
+    {
+      titleBold: "스테이션",
+      titleRegular: " 정보",
+      link: "/sales/regist/contact"
+    }
   ];
   return (
     <>
       <section className={classes.roleMenu}>
         {props.menuList.map((value) => {
-          if (value.badge) {
-            return (
-              <Link to={value.link}>
-                <Badge badgeContent={" "} color="error">
-                  <p className={classes.menuListText}>{value.title}</p>
-                </Badge>
-              </Link>
-            );
-          }
           return (
             <Link to={value.link}>
-              <p className={classes.menuListText}>{value.title}</p>
+              <p className={classes.menuListText}>
+                {value.titleBold}
+                <span className={classes.menuListTextRegular}>
+                  {value.titleRegular}
+                </span>
+                <img
+                  className={classes.goButtonImg}
+                  src={require("../assets/img/go.png")}
+                  alt="logo"
+                />
+              </p>
             </Link>
           );
         })}

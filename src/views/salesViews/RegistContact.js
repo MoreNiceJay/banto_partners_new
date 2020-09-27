@@ -4,6 +4,7 @@ import { HeaderInfo } from "../../components/HeaderInfo.js";
 import { NavBar } from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import { useGlobal } from "../../globalContext";
 
 const useStyles = makeStyles((theme) => ({
   contact: { padding: "55px 0 0 25px" },
@@ -33,13 +34,40 @@ const useStyles = makeStyles((theme) => ({
     margin: "0 auto"
   }
 }));
+
 function RegistContact(props) {
   const classes = useStyles(props);
+  const [storeOwnerContact, setStoreOwnerContact] = React.useState("");
+  const [storeContact, setStoreContact] = React.useState("");
+  const context = useGlobal();
 
-  function mySubmitHandler() {}
-  function onChange() {}
+  function mySubmitHandler() {
+    // if (storeOwnerContact.length < 11) {
+    //   window.alert("가맹점주님의 연락처는 필수 입니다");
+    //   return;
+    // }
+    context.setSales_StoreOwnerPhonenumber(storeOwnerContact);
+    context.setSales_StorePhoneNumber(storeOwnerContact);
+
+    props.history.push("/sales/regist/address");
+  }
+  function onChangeStoreOwnerPhoneNumber(e) {
+    setStoreOwnerContact(e.target.value);
+    console.log(e.target.value);
+  }
+  function onChangeStorePhoneNumber(e) {
+    setStoreContact(e.target.value);
+  }
+
+  React.useEffect(() => {
+    // console.log(context.salesInfo.storeOwnerPhoneNumber);
+    setStoreOwnerContact(context.salesInfo.storeOwnerPhoneNumber);
+    setStoreContact(context.salesInfo.storePhoneNumber);
+  }, []);
   return (
     <>
+      {context.salesInfo.storeOwnerPhoneNumber}
+
       <header>
         <NavBar title="" backLink="/salesmenu" />
         <HeaderInfo
@@ -62,9 +90,12 @@ function RegistContact(props) {
               <TextField
                 className={classes.contactPersonTextField}
                 id="outlined-basic"
-                inputProps={{ inputMode: "numeric" }}
+                inputProps={{ inputMode: "numeric", maxLength: 11 }}
                 label="*필수"
                 variant="outlined"
+                value={storeOwnerContact}
+                // autoFocus
+                onChange={onChangeStoreOwnerPhoneNumber}
               />
             </div>
             <div
@@ -80,8 +111,10 @@ function RegistContact(props) {
               <TextField
                 className={classes.contactPersonTextField}
                 id="outlined-basic"
-                inputProps={{ inputMode: "numeric" }}
+                inputProps={{ inputMode: "numeric", maxLength: 11 }}
                 variant="outlined"
+                value={storeContact}
+                onChange={onChangeStorePhoneNumber}
               />
             </div>
           </div>
@@ -89,9 +122,7 @@ function RegistContact(props) {
             className={classes.nextButton}
             size="large"
             variant="outlined"
-            onClick={() => {
-              props.history.push("/sales/regist/address");
-            }}
+            onClick={mySubmitHandler}
           >
             다음
           </Button>

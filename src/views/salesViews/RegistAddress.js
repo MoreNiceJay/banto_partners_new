@@ -8,6 +8,7 @@ import { NavBar } from "../../components/NavBar.js";
 import { TextField } from "../../components/TextField.js";
 import MTextField from "@material-ui/core/TextField";
 import { FormButton } from "../../components/FormButton.js";
+import { useGlobal } from "../../globalContext";
 
 const useStyles = makeStyles((theme) => ({
   addressContainer: {
@@ -24,10 +25,15 @@ const useStyles = makeStyles((theme) => ({
   addressTextField: { width: "calc(100% - 25px)", marginTop: "10px" }
 }));
 function RegistAddress(props) {
+  const context = useGlobal();
+
   const classes = useStyles(props);
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
-  const [address, setAddress] = React.useState("*필수");
+  const [storeName, setStoreName] = React.useState("");
+  const [mainAddress, setMainAddress] = React.useState("*필수");
+  const [restAddress, setRestAddress] = React.useState("*필수");
+
   const handleComplete = (data) => {
     let fullAddress = data.address;
     let extraAddress = "";
@@ -42,10 +48,17 @@ function RegistAddress(props) {
       }
       fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
     }
-    setAddress(fullAddress);
+    setMainAddress(fullAddress);
     setOpen(false);
     console.log(fullAddress); // e.g. '서울 성동구 왕십리로2길 20 (성수동1가)'
   };
+  React.useEffect(() => {
+    // console.log(context.salesInfo.storeOwnerPhoneNumber);
+    setStoreName(context.salesInfo.storeName);
+    setMainAddress(context.salesInfo.storeAddress.mainAddress);
+    setRestAddress(context.salesInfo.storeAddress.restAddress);
+    // setStoreContact(context.salesInfo.storePhoneNumber);
+  }, []);
   function getModalStyle() {
     return {
       top: `0px`,
@@ -53,6 +66,12 @@ function RegistAddress(props) {
     };
   }
 
+  const onChangeStoreName = (e) => {
+    setStoreName(e.target.value);
+  };
+  const onChangeRestAddress = (e) => {
+    setRestAddress(e.target.value);
+  };
   const handleOpen = () => {
     setOpen(true);
   };
@@ -86,7 +105,12 @@ function RegistAddress(props) {
       </header>
       <main>
         <section>
-          <TextField title="매장명" description="예) 스타벅스 구로점" />
+          <TextField
+            title="매장명"
+            description="예) 스타벅스 구로점"
+            value={storeName}
+            onChange={onChangeStoreName}
+          />
           <div className={classes.addressContainer}>
             <span className={classes.contactPersonTitle}>매장 주소</span>
 
@@ -96,19 +120,23 @@ function RegistAddress(props) {
               id="outlined-basic"
               inputProps={{ inputMode: "numeric" }}
               variant="outlined"
+              value={mainAddress}
               onClick={handleOpen}
-              value={address}
             />
             <MTextField
               className={classes.addressTextField}
               id="outlined-basic2"
-              inputProps={{ inputMode: "numeric" }}
               variant="outlined"
               label="나머지 주소"
+              value={restAddress}
+              onChange={onChangeRestAddress}
             />
           </div>
           <FormButton
             onClick={() => {
+              context.setSales_StoreName(storeName);
+              context.setSales_StoreMainAddress(mainAddress);
+              context.setSales_StoreRestAddress(restAddress);
               props.history.push("/sales/regist/portion");
             }}
             title="다음"

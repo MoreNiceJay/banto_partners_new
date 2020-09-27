@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/styles";
 import MTextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((props) => ({
   contact: { padding: "55px 0 0 25px" },
   contactPerson: { display: "flex", flexDirection: "column" },
   contactTexts: {
@@ -31,7 +31,7 @@ const useStyles = makeStyles(() => ({
     margin: "0 auto"
   }
 }));
-export function TextField({ title, description }) {
+export function TextField(props) {
   const classes = useStyles();
 
   return (
@@ -39,17 +39,19 @@ export function TextField({ title, description }) {
       <div className={classes.contact}>
         <div className={classes.contactPerson}>
           <div className={classes.contactTexts}>
-            <span className={classes.contactPersonTitle}>{title}</span>
+            <span className={classes.contactPersonTitle}>{props.title}</span>
             <span className={classes.contactPersonDescription}>
-              {description}
+              {props.description}
             </span>
           </div>
           <MTextField
             className={classes.contactPersonTextField}
             id="outlined-basic"
-            inputProps={{ inputMode: "numeric" }}
+            inputProps={props.inputProps}
             label="*필수"
             variant="outlined"
+            value={props.value}
+            onChange={props.onChange}
           />
         </div>
       </div>

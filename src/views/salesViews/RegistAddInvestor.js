@@ -10,6 +10,9 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormLabel from "@material-ui/core/FormLabel";
+import { useGlobal } from "../../globalContext";
+import { set } from "lodash";
+
 const useStyles = makeStyles((theme) => ({
   contact: { padding: "0px 0 0 25px" },
   contactPerson: { display: "flex", flexDirection: "column" },
@@ -49,29 +52,37 @@ const useStyles = makeStyles((theme) => ({
 function RegistAddInvestor(props) {
   const classes = useStyles(props);
   function mySubmitHandler() {}
-  const [value, setValue] = React.useState("worst");
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState("Choose wisely");
+  const [investorContact, setInvestorContact] = React.useState("");
+  const [investorPortion, setInvestorPortion] = React.useState(0);
+  const [bInvestor, setBInvestor] = React.useState("false");
+  const context = useGlobal();
+
   const handleRadioChange = (event) => {
-    setValue(event.target.value);
+    setBInvestor(event.target.value);
+
     setHelperText(" ");
     setError(false);
+
+    console.log(bInvestor);
+  };
+
+  const onChangeInvestorContact = (event) => {
+    setInvestorContact(event.target.value);
+  };
+  const onChangeInvestorPortion = (event) => {
+    setInvestorPortion(event.target.value);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    if (value === "best") {
-      setHelperText("Sorry, wrong answer!");
-      setError(true);
-    } else if (value === "worst") {
-      setHelperText("You got it!");
-      setError(false);
-    } else {
-      setHelperText("Please select an option.");
-      setError(true);
-    }
   };
+  React.useEffect(() => {
+    setBInvestor(String(context.salesInfo.investor.bInvestor));
+    setInvestorContact(context.salesInfo.investor.investorPhonenumber);
+    setInvestorPortion(context.salesInfo.investor.portion);
+  }, []);
 
   const body = (
     <>
@@ -90,6 +101,8 @@ function RegistAddInvestor(props) {
             inputProps={{ inputMode: "numeric" }}
             label="*필수"
             variant="outlined"
+            value={investorContact}
+            onChange={onChangeInvestorContact}
           />
         </div>
         <div className={classes.contactPerson} style={{ marginTop: "40px" }}>
@@ -105,6 +118,8 @@ function RegistAddInvestor(props) {
             id="outlined-basic"
             inputProps={{ inputMode: "numeric" }}
             variant="outlined"
+            value={investorPortion}
+            onChange={onChangeInvestorPortion}
           />{" "}
         </div>
       </div>
@@ -120,36 +135,35 @@ function RegistAddInvestor(props) {
         />
       </header>
       <main>
-        <form onSubmit={handleSubmit}>
-          <div className={classes.radioButtonGroup}>
-            <FormControl
-              component="fieldset"
-              error={error}
-              className={classes.formControl}
+        <div className={classes.radioButtonGroup}>
+          <FormControl
+            component="fieldset"
+            error={error}
+            className={classes.formControl}
+          >
+            <FormLabel component="legend" className={classes.consentInvestor}>
+              협의된 투자자가 있으신가요?
+            </FormLabel>
+            <RadioGroup
+              aria-label="quiz"
+              name="quiz"
+              value={bInvestor}
+              onChange={handleRadioChange}
             >
-              <FormLabel component="legend" className={classes.consentInvestor}>
-                협의된 투자자가 있으신가요?
-              </FormLabel>
-              <RadioGroup
-                aria-label="quiz"
-                name="quiz"
-                value={value}
-                onChange={handleRadioChange}
-              >
-                <FormControlLabel
-                  value="worst"
-                  control={<Radio />}
-                  label="아니요. 없습니다"
-                  checked={value === "worst"}
-                />
-                <FormControlLabel
-                  value="best"
-                  control={<Radio color="primary" />}
-                  label="네. 있습니다"
-                />
-              </RadioGroup>
-              <FormHelperText>{helperText}</FormHelperText>
-              {/* <Button
+              <FormControlLabel
+                value="false"
+                control={<Radio />}
+                label="아니요. 없습니다"
+                checked={bInvestor === "false"}
+              />
+              <FormControlLabel
+                value="true"
+                control={<Radio color="primary" />}
+                label="네. 있습니다"
+              />
+            </RadioGroup>
+            <FormHelperText>{helperText}</FormHelperText>
+            {/* <Button
               type="submit"
               variant="outlined"
               color="primary"
@@ -157,23 +171,32 @@ function RegistAddInvestor(props) {
             >
               Check Answer
             </Button> */}
-            </FormControl>
-          </div>
-          {value === "worst" ? "" : body}
+          </FormControl>
+        </div>
+        {bInvestor === "false" ? "" : body}
 
-          <Button
-            className={classes.nextButton}
-            size="large"
-            variant="outlined"
-            type="submit"
-            style={{ marginBottom: "40px" }}
-            onClick={() => {
-              props.history.push("/sales/regist/final");
-            }}
-          >
-            다음
-          </Button>
-        </form>
+        <Button
+          className={classes.nextButton}
+          size="large"
+          variant="outlined"
+          type="submit"
+          style={{ marginBottom: "40px" }}
+          onClick={() => {
+            console.log("왜?", bInvestor);
+            if (bInvestor === "true") {
+              context.setSales_BInvestor(true);
+            } else {
+              context.setSales_BInvestor(false);
+              context.setSales_InvestorPhoneNumber("");
+              context.setSales_InvestorPortion(0);
+            }
+            context.setSales_InvestorPhoneNumber(investorContact);
+            context.setSales_InvestorPortion(investorPortion);
+            props.history.push("/sales/regist/final");
+          }}
+        >
+          다음
+        </Button>
       </main>
       <footer></footer>
     </>

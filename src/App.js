@@ -2,7 +2,6 @@ import React from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import MobileStepper from "@material-ui/core/MobileStepper";
 import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
@@ -50,7 +49,11 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     alignContent: "center",
     alignSelf: "center",
-    textAlign: "center"
+    textAlign: "center",
+    width: "100%",
+    "& .MuiMobileStepper-dotActive": {
+      backgroundColor: "black"
+    }
   },
   header: {
     display: "flex",
@@ -137,24 +140,32 @@ function SwipeableTextMobileStepper() {
           position="static"
           activeStep={activeStep}
           className={classes.root}
-          // nextButton={
-          //   <Button size="small" onClick={handleNext} disabled={activeStep === 5}>
-          //     {theme.direction === "rtl" ? (
-          //       <KeyboardArrowLeft />
-          //     ) : (
-          //       <KeyboardArrowRight />
-          //     )}
-          //   </Button>
-          // }
-          // backButton={
-          //   <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
-          //     {theme.direction === "rtl" ? (
-          //       <KeyboardArrowRight />
-          //     ) : (
-          //       <KeyboardArrowLeft />
-          //     )}
-          //   </Button>
-          // }
+          nextButton={
+            <Button
+              size="small"
+              onClick={handleNext}
+              disabled={activeStep === 5}
+            >
+              {/* {theme.direction === "rtl" ? (
+                <KeyboardArrowLeft />
+              ) : (
+                <KeyboardArrowRight />
+              )} */}
+            </Button>
+          }
+          backButton={
+            <Button
+              size="small"
+              onClick={handleBack}
+              disabled={activeStep === 0}
+            >
+              {/* {theme.direction === "rtl" ? (
+                <KeyboardArrowRight />
+              ) : (
+                <KeyboardArrowLeft />
+              )} */}
+            </Button>
+          }
         />
       </div>
 

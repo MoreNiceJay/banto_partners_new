@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/styles";
+import { Link } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   backButton: {
-    padding: "12px 10px 12px 20px"
+    padding: "12px 10px 12px 20.75px"
   },
-  backButtonImg: { width: "12px", height: "auto" },
+  backButtonImg: { width: "11px", height: "20px" },
   emptySpace: { width: "100%", height: "44px" },
   headerSpace: {
     display: "flex",
@@ -13,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     height: "60px"
   },
-  headerTitle: { marginLeft: "-44px" }
+  headerTitle: { fontSize: "18px", marginLeft: "-44px", fontWeight: "bold" }
 }));
 export const NavBar = (props) => {
   const classes = useStyles(props);
@@ -21,13 +22,13 @@ export const NavBar = (props) => {
     <>
       <div className={classes.emptySpace} />
       <div className={classes.headerSpace}>
-        <a href={props.backLink} className={classes.backButton}>
+        <Link to={props.backLink} className={classes.backButton}>
           <img
             className={classes.backButtonImg}
             src={require("../assets/img/backButton.png")}
             alt="logo"
           />
-        </a>
+        </Link>
         <span className={classes.headerTitle}>{props.title}</span>
         <span />
       </div>
