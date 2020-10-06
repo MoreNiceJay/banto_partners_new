@@ -1,11 +1,264 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core/styles";
+import { HeaderInfo } from "../../components/HeaderInfo.js";
+import { NavBar } from "../../components/NavBar.js";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import { useGlobal } from "../../globalContext";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
+import Slide from "@material-ui/core/Slide";
+import { Link } from "react-router-dom";
+import { withStyles } from "@material-ui/core/styles";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import CircleChecked from "@material-ui/icons/CheckCircleOutline";
+import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
+import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
+const useStyles = makeStyles((theme) => ({
+  emptySpace: { width: "100%", height: "44px" },
+  headerSpace: {
+    display: "flex",
+    alignItems: "center",
+    width: "100%",
+    height: "60px"
+  },
+  headerTitle: { fontSize: "18px", fontWeight: "bold", margin: "auto" },
+  textField: {
+    "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+      border: "none"
+    }
+  }
+}));
 
-const useStyles = makeStyles((theme) => ({}));
-function ApplyFinal(props) {
+function LoginPage(props) {
   const classes = useStyles(props);
+  const [state, setState] = React.useState({
+    checkedA: true,
+    checkedB: true,
+    checkedF: true,
+    checkedG: true
+  });
+  const handleChange = (event) => {
+    setState({ ...state, [event.target.name]: event.target.checked });
+  };
+  const BlackCheckbox = withStyles({
+    root: {
+      color: "black",
+      "&$checked": {
+        color: "black"
+      }
+    },
+    checked: {
+      color: "black"
+    }
+  })((props) => <Checkbox color="default" {...props} />);
+  const data = [
+    {
+      title: "매장명",
+      contentText: "스타벅스 구로점",
+      link: "/store/apply/final",
+      bUsing: true
+    },
+    {
+      title: "가맹점주님 연락처",
+      contentText: "01094552438",
+      link: "/store/apply/final",
+      bUsing: true
+    },
+    {
+      title: "매장 연락처",
+      contentText: "01094552438",
+      link: "/store/apply/final",
+      bUsing: true
+    },
+    {
+      title: "매장주소",
+      contentText: "경기도 고양시 일산서구 주엽로 161로",
+      link: "/store/apply/final",
+      bUsing: true
+    },
+    {
+      title: "구매여부",
+      contentText: "Yes",
+      link: "/store/apply/final",
+      bUsing: true
+    },
+    {
+      title: "투자자",
+      contentText: `수익률:15% 연락처:01094552438`,
+      link: "/store/apply/final",
+      bUsing: true
+    },
+    {
+      title: "영업자",
+      contentText: "수익률:15% 연락처:01094552438",
+      link: "/store/apply/final",
+      bUsing: true
+    },
+    {
+      title: "구매여부",
+      contentText: "Yes",
+      link: "/store/apply/final",
+      bUsing: true
+    },
+    {
+      title: "내 수익률",
+      contentText: "10%",
+      link: "/store/apply/final",
+      bUsing: true
+    }
+  ];
 
-  return <>ApplyFinal</>;
+  return (
+    <>
+      <Slide
+        direction="left"
+        in={true}
+        timeout={{ enter: "0.15s", exit: "5s" }}
+        mountOnEnter
+        unmountOnExit
+      >
+        <div>
+          <header>
+            <NavBar title="추가정보 확인" backLink="/investor/invest" />
+          </header>
+
+          <main>
+            <section className={classes.section}>
+              {data.map((value) => {
+                return (
+                  <div>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirextion: "rows",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        margin: "16px 0 0 24px"
+                      }}
+                    >
+                      <p
+                        style={{
+                          fontStyle: "normal",
+                          fontWeight: "500",
+                          fontSize: "16px",
+                          color: "#000A12",
+                          opacity: "0.4"
+                        }}
+                      >
+                        {value.title}
+                      </p>
+
+                      <Link
+                        style={{
+                          textDecoration: "underline",
+                          fontFamily: "Noto Sans CJK KR",
+                          fontStyle: "normal",
+                          fontWeight: "500",
+                          fontSize: "12px",
+                          marginRight: "24px"
+                        }}
+                      >
+                        수정
+                      </Link>
+                    </div>
+                    <p
+                      style={{
+                        fontFamily: "Montserrat",
+                        fontStyle: "normal",
+                        fontWeight: "bold",
+                        fontSize: "24px",
+                        margin: "16px 0 60px 24px",
+                        color: "#000A12"
+                      }}
+                    >
+                      {value.contentText}
+                    </p>
+                  </div>
+                );
+              })}
+            </section>
+            <section>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column"
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "rows",
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                  }}
+                >
+                  <FormControlLabel
+                    style={{ marginLeft: "14px" }}
+                    control={
+                      <BlackCheckbox
+                        checked={state.checkedA}
+                        onChange={handleChange}
+                        name="checkedA"
+                        icon={<CircleUnchecked />}
+                        checkedIcon={<CircleCheckedFilled />}
+                      />
+                    }
+                    label={
+                      <span
+                        style={{
+                          fontStyle: "normal",
+                          fontWeight: "normal",
+                          fontSize: "14px",
+                          lineHeight: "21px"
+                        }}
+                      >
+                        2020년 하반기 정책사항에 동의 합니다
+                      </span>
+                    }
+                  />
+                  <p style={{ textAlign: "right" }}>
+                    <Link
+                      style={{
+                        marginRight: "24px",
+                        textDecoration: "underline"
+                      }}
+                    >
+                      약관확인
+                    </Link>
+                  </p>
+                </div>
+
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    props.history.push("/store/apply/done");
+                  }}
+                  style={{
+                    width: "calc(100% - 64px)",
+                    height: "64px",
+                    margin: "24px 32px",
+                    borderRadius: "15px",
+                    backgroundColor: "#000A12",
+                    border: "2px solid #000A12",
+                    fontFamily: "Noto Sans CJK KR",
+                    fontStyle: "normal",
+                    fontWeight: "500",
+                    fontSize: "18px",
+                    color: "white"
+                  }}
+                >
+                  가입완료
+                </Button>
+              </div>
+            </section>
+          </main>
+          <footer></footer>
+        </div>
+      </Slide>
+    </>
+  );
 }
 
-export default ApplyFinal;
+export default LoginPage;

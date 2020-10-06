@@ -50,8 +50,10 @@ function BatteryServiceRoll(props) {
               </p>
             </section>
             <section className={classes.section}>
-              <span className={classes.rollSpan}>가맹점</span>
-              <span className={classes.rollRestSpan}>으로 시작하기</span>
+              <Link to="/storemenu" style={{ color: "black" }}>
+                <span className={classes.rollSpan}>가맹점</span>
+                <span className={classes.rollRestSpan}>으로 시작하기</span>
+              </Link>
               <p className={classes.rollDescription}>
                 매장에 반토 스테이션을 무료로 설치 할 수 있습니다
               </p>

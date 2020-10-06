@@ -19,17 +19,6 @@ import FormLabel from "@material-ui/core/FormLabel";
 import CircleChecked from "@material-ui/icons/CheckCircleOutline";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
-import ProgressText from "../../components/ProgressText.js";
-import InputTitle from "../../components/InputTitle.js";
-import PTextField from "../../components/PTextField.js";
-import SquareButton from "../../components/SquareButton.js";
-import PRadio from "../../components/PRadio.js";
-import Select from "@material-ui/core/Select";
-import InputBase from "@material-ui/core/InputBase";
-import PortionTextField from "../../components/PortionTextField.js";
-
-var _ = require("lodash");
-
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
   headerSpace: {
@@ -37,47 +26,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     width: "100%",
     height: "60px"
-  },
-
-  root: {
-    width: 200,
-    "& .MuiOutlinedInput-input": {
-      color: "green",
-      textAlign: "center",
-      height: "100px"
-    },
-    "& .MuiInputLabel-root": {
-      color: "green",
-      textAlign: "center"
-    },
-    "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-      borderColor: "green",
-      textAlign: "center"
-    },
-    "&:hover .MuiOutlinedInput-input": {
-      color: "red",
-      textAlign: "center"
-    },
-    "&:hover .MuiInputLabel-root": {
-      color: "red",
-      textAlign: "center"
-    },
-    "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-      borderColor: "red",
-      textAlign: "center"
-    },
-    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-input": {
-      color: "purple",
-      textAlign: "center"
-    },
-    "& .MuiInputLabel-root.Mui-focused": {
-      color: "purple",
-      textAlign: "center"
-    },
-    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-      borderColor: "purple",
-      textAlign: "center"
-    }
   },
   headerTitle: { fontSize: "18px", fontWeight: "bold", margin: "auto" },
   textField: {
@@ -98,60 +46,8 @@ const useStyles = makeStyles((theme) => ({
     "&:hover::before": {
       border: "none"
     }
-  },
-  textLabelInput: {
-    "&::placeholder": {
-      color: "blue"
-    },
-    MuiInput: {
-      input: {
-        "&::placeholder": {
-          color: "blue"
-        },
-        inputCenter: {
-          textAlign: "center",
-          color: "red"
-        },
-        color: "white"
-      }
-    }
   }
 }));
-const BootstrapInput = withStyles((theme) => ({
-  root: {
-    "label + &": {
-      marginTop: theme.spacing(3)
-    },
-    textAlign: "right"
-  },
-  input: {
-    // borderRadius: 4,
-    // position: "relative",
-    backgroundColor: theme.palette.background.paper,
-    // border: "1px solid #ced4da",
-    // fontSize: 16,
-    padding: 0,
-    transition: theme.transitions.create(["border-color", "box-shadow"]),
-    // Use the system font instead of the default Roboto font.
-    fontFamily: [
-      "-apple-system",
-      "BlinkMacSystemFont",
-      '"Segoe UI"',
-      "Roboto",
-      '"Helvetica Neue"',
-      "Arial",
-      "sans-serif",
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"'
-    ].join(","),
-    "&:focus": {
-      borderRadius: 4,
-      borderColor: "#80bdff",
-      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)"
-    }
-  }
-}))(InputBase);
 
 function LoginPage(props) {
   const classes = useStyles(props);
@@ -160,7 +56,6 @@ function LoginPage(props) {
   const handleChange = (event) => {
     setValue(event.target.value);
   };
-  let percentage = _.range(0, 26);
 
   return (
     <>
@@ -173,13 +68,44 @@ function LoginPage(props) {
       >
         <div>
           <header>
-            <NavBar title="추가정보 입력" backLink="/store/apply/buy" />
+            <NavBar title="추가정보 입력" backLink="/investor/invest" />
           </header>
 
           <main>
             <section className={classes.section}>
-              <ProgressText text="5/5" />
-              <InputTitle text="협의된 영업자가 있으신가요?(선택)" />
+              <div className={classes.amount}>
+                <p
+                  style={{
+                    fontFamily: "Montserrat",
+                    fontStyle: "normal",
+                    fontWeight: "500",
+                    fontSize: "14px",
+                    opacity: "0.8",
+                    letterSpacing: "5px",
+                    margin: "16px 0 0 24px"
+                  }}
+                >
+                  2/2
+                </p>
+                <p
+                  style={{
+                    fontStyle: "normal",
+                    fontWeight: "500",
+                    fontSize: "16px",
+                    margin: "16px 0 0 24px"
+                  }}
+                >
+                  입금자명이{" "}
+                  <span
+                    style={{
+                      textDecoration: "underline"
+                    }}
+                  >
+                    김준영
+                  </span>
+                  입니다
+                </p>
+              </div>
               <div style={{ marginLeft: "8px" }}>
                 <FormControl
                   component="fieldset"
@@ -233,31 +159,54 @@ function LoginPage(props) {
               </div>
               {value === "male" && (
                 <>
-                  <div style={{ marginTop: "40px" }}>
-                    <InputTitle text="영업자의 전화번호" />
-                    <PTextField placeholder="Phone Number" />
-                  </div>
-                  <div style={{ marginTop: "60px" }}>
-                    <InputTitle text="약속된 수익률" />
+                  <p
+                    style={{
+                      fontStyle: "normal",
+                      fontWeight: "500",
+                      fontSize: "16px",
+                      margin: "16px 0 0 24px"
+                    }}
+                  >
+                    입금자명
+                  </p>
 
-                    <PortionTextField
-                      className={classes.textLabelInput}
-                      id="standard-full-width"
-                      // label="0"
-                      placeholder="%"
-                      // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                      value={
-                        context.getInvestInfo.investAmount === 0
-                          ? ""
-                          : context.getInvestInfo.investAmount
+                  <TextField
+                    variant="outlined"
+                    id="standard-full-width"
+                    // label="Phone Number"
+                    className={classes.textField}
+                    placeholder="Name"
+                    // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
+                    value={context.getInvestInfo.depositor}
+                    onChange={(e) => {
+                      context.setInvest_depositor(e.target.value);
+                    }}
+                    style={{
+                      margin: "0 24px",
+                      marginTop: "12px",
+                      width: "calc(100% - 64px)"
+                    }}
+                    InputLabelProps={{
+                      style: {}
+                    }}
+                    inputProps={{
+                      style: {
+                        paddingLeft: "0px",
+                        fontSize: "26px",
+                        fontFamily: "Montserrat",
+                        fontWeight: "bold",
+
+                        boxSizing: "border-box",
+                        marginTop: "10px"
                       }
-                      onChange={(e) => {
-                        const value = Number(e.target.value);
-
-                        context.setInvest_investAmount(value);
-                      }}
-                    />
-                  </div>
+                    }}
+                    // FormHelperTextProps={{
+                    //   style: {
+                    //     marginTop: "12px",
+                    //     fontSize: "14px"
+                    //   }
+                    // }}
+                  />
                 </>
               )}
 
@@ -273,7 +222,7 @@ function LoginPage(props) {
                     if (context.getInvestInfo.depositor === "") {
                       context.setInvest_depositor("유저");
                     }
-                    props.history.push("/store/apply/addinvestor");
+                    props.history.push("/investor/final");
                   }}
                   style={{
                     width: "64px",

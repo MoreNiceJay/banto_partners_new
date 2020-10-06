@@ -27,7 +27,6 @@ import PRadio from "../../components/PRadio.js";
 import Select from "@material-ui/core/Select";
 import InputBase from "@material-ui/core/InputBase";
 import PortionTextField from "../../components/PortionTextField.js";
-
 var _ = require("lodash");
 
 const useStyles = makeStyles((theme) => ({
@@ -173,13 +172,13 @@ function LoginPage(props) {
       >
         <div>
           <header>
-            <NavBar title="추가정보 입력" backLink="/store/apply/buy" />
+            <NavBar title="추가정보 입력" backLink="/store/apply/portion" />
           </header>
 
           <main>
             <section className={classes.section}>
               <ProgressText text="5/5" />
-              <InputTitle text="협의된 영업자가 있으신가요?(선택)" />
+              <InputTitle text="협의된 투자자가 있으신가요?(선택)" />
               <div style={{ marginLeft: "8px" }}>
                 <FormControl
                   component="fieldset"
@@ -234,7 +233,7 @@ function LoginPage(props) {
               {value === "male" && (
                 <>
                   <div style={{ marginTop: "40px" }}>
-                    <InputTitle text="영업자의 전화번호" />
+                    <InputTitle text="투자자의 전화번호" />
                     <PTextField placeholder="Phone Number" />
                   </div>
                   <div style={{ marginTop: "60px" }}>
@@ -273,7 +272,7 @@ function LoginPage(props) {
                     if (context.getInvestInfo.depositor === "") {
                       context.setInvest_depositor("유저");
                     }
-                    props.history.push("/store/apply/addinvestor");
+                    props.history.push("/store/apply/final");
                   }}
                   style={{
                     width: "64px",

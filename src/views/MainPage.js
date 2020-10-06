@@ -12,6 +12,7 @@ import MuiAlert from "@material-ui/lab/Alert";
 import { autoPlay } from "react-swipeable-views-utils";
 import { Link } from "react-router-dom";
 import Slide from "@material-ui/core/Slide";
+import { useAuth } from "../AuthContext";
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
   myInfoLink: {
@@ -86,6 +87,8 @@ const tutorialSteps = [
 function MainPage(props) {
   const classes = useStyles(props);
   const theme = useTheme();
+  const auth = useAuth();
+
   const [activeStep, setActiveStep] = React.useState(0);
   const maxSteps = tutorialSteps.length;
 
@@ -100,6 +103,7 @@ function MainPage(props) {
   const handleStepChange = (step) => {
     setActiveStep(step);
   };
+
   return (
     <>
       {/* <Slide
@@ -110,6 +114,7 @@ function MainPage(props) {
         unmountOnExit
       >
         <div> */}
+
       <header>
         <div className={classes.emptySpace}></div>
       </header>
@@ -129,7 +134,13 @@ function MainPage(props) {
           />
 
           <Link to="#">
-            <span className={classes.myInfoLink}>내 정보</span>
+            <span className={classes.myInfoLink}>
+              {!!auth.isLogin ? (
+                "내정보"
+              ) : (
+                <Link to="/login/login">로그인</Link>
+              )}
+            </span>
           </Link>
         </div>
         <section className={classes.section}>
@@ -226,6 +237,16 @@ function MainPage(props) {
               보조배터리 대여서비스
             </h1>
           </Link>
+          {auth.isLogin && (
+            <Link
+              onClick={() => {
+                auth.signOut();
+                console.log("싸인아웃");
+              }}
+            >
+              로그아웃
+            </Link>
+          )}
         </section>
       </main>
       <footer></footer>

@@ -13,10 +13,31 @@ export function GlobalProvider({ children }) {
       return { ...prevState, phoneNumber: a };
     });
   }
+  const [register, setRegister] = React.useState({
+    phoneNumber: "",
+    email: "",
+    password: ""
+  });
+
+  const [store, setStore] = React.useState({
+    storeOwnerPhoneNumber: "",
+    storePhoneNumber: "",
+    storeName: "",
+    storeMainAddress: "",
+    storeRestAddress: "",
+    bBuying: false,
+    bSales: false,
+    salesContact: "",
+    salesPortion: 0,
+    bInvestor: false,
+    investorContact: "",
+    investorPortion: 0
+  });
+
   const [invest, setInvest] = React.useState({
     investAmount: 0,
     totalPrice: 0,
-    depositor: "ㅇㅇㅇ"
+    depositor: ""
   });
   const [salesRegisterationInfo, setSalesRegisterationInfo] = React.useState({
     storeOwnerPhoneNumber: "",
@@ -27,6 +48,102 @@ export function GlobalProvider({ children }) {
     bBuying: false,
     investor: { bInvestor: false, investorPhonenumber: "", portion: "" }
   });
+  async function setRegister_phoneNumber(a) {
+    await setRegister((prevState) => {
+      return { ...prevState, phoneNumber: a };
+    });
+  }
+  async function setRegister_email(a) {
+    await setRegister((prevState) => {
+      return { ...prevState, email: a };
+    });
+  }
+  async function setRegister_password(a) {
+    await setRegister((prevState) => {
+      return { ...prevState, password: a };
+    });
+  }
+
+  async function setStore_StoreOwnerPhonenumber(a) {
+    await setStore((prevState) => {
+      return { ...prevState, storeOwnerPhoneNumber: a };
+    });
+  }
+  async function setStore_StorePhoneNumber(a) {
+    await setStore((prevState) => {
+      return { ...prevState, storePhoneNumber: a };
+    });
+  }
+  async function setStore_StoreName(a) {
+    await setStore((prevState) => {
+      return { ...prevState, storeName: a };
+    });
+  }
+  async function setStore_StoreMainAddress(a) {
+    await setStore((prevState) => {
+      return { ...prevState, storeMainAddress: a };
+    });
+  }
+  async function setStore_StoreRestAddress(a) {
+    await setStore((prevState) => {
+      return { ...prevState, storeRestAddress: a };
+    });
+  }
+  async function setStore_bBuying(a) {
+    await setStore((prevState) => {
+      return { ...prevState, bBuying: a };
+    });
+  }
+  async function setStore_bSales(a) {
+    await setStore((prevState) => {
+      return { ...prevState, bSales: a };
+    });
+  }
+  async function setStore_salesContact(a) {
+    await setStore((prevState) => {
+      return {
+        ...prevState,
+        salesContact: a
+      };
+    });
+  }
+
+  async function setStore_salesPortion(a) {
+    await setStore((prevState) => {
+      return {
+        ...prevState,
+        salesPortion: a
+      };
+    });
+  }
+
+  //
+
+  async function setStore_bInvestor(a) {
+    await setStore((prevState) => {
+      return {
+        ...prevState,
+        bInvestor: a
+      };
+    });
+  }
+
+  async function setStore_investorContact(a) {
+    await setStore((prevState) => {
+      return {
+        ...prevState,
+        investorContact: a
+      };
+    });
+  }
+  async function setStore_investorPortion(a) {
+    await setStore((prevState) => {
+      return {
+        ...prevState,
+        investorPortion: a
+      };
+    });
+  }
 
   async function setInvest_investAmount(a) {
     await setInvest((prevState) => {
@@ -108,6 +225,12 @@ export function GlobalProvider({ children }) {
     <>
       <GlobalContext.Provider
         value={{
+          getRegisterInfo: register,
+          setRegister_email,
+          setRegister_phoneNumber,
+
+          getStoreInfo: store,
+
           getInvestInfo: invest,
           setInvest_investAmount,
           setInvest_totalPrice,
@@ -124,7 +247,21 @@ export function GlobalProvider({ children }) {
           setSales_Buying,
           setSales_BInvestor,
           setSales_InvestorPhoneNumber,
-          setSales_InvestorPortion
+          setSales_InvestorPortion,
+
+          //
+          setStore_StoreOwnerPhonenumber,
+          setStore_StorePhoneNumber,
+          setStore_StoreName,
+          setStore_StoreMainAddress,
+          setStore_StoreRestAddress,
+          setStore_bBuying,
+          setStore_bSales,
+          setStore_salesContact,
+          setStore_salesPortion,
+          setStore_bInvestor,
+          setStore_investorContact,
+          setStore_investorPortion
         }}
       >
         {/* <ThemeUpdateContext.Provider value={{ userNinfo, getUserNinfo }}> */}
