@@ -35,6 +35,7 @@ import ApplyDone from "./views/storeViews/ApplyDone.js";
 
 /* Login */
 import LoginPage from "./views/loginViews/LoginPage.js";
+import LoginForgotPassword from "./views/loginViews/LoginForgotPassword.js";
 import RegisterFirstPage from "./views/loginViews/RegisterFirstPage.js";
 import RegisterSecondPage from "./views/loginViews/RegisterSecondPage.js";
 import RegisterThirdPage from "./views/loginViews/RegisterThirdPage.js";
@@ -46,6 +47,15 @@ import RegisterSeventhPage from "./views/loginViews/RegisterSeventhPage.js";
 import RegisterEighthPage from "./views/loginViews/RegisterEighthPage.js";
 import RegisterNinethPage from "./views/loginViews/RegisterNinethPage.js";
 import RegisterTenthPage from "./views/loginViews/RegisterTenthPage.js";
+
+// Tables
+import EarningTable from "./views/EarningTable.js";
+import StationTable from "./views/StationTable.js";
+import StationDetail from "./views/StationDetail.js";
+
+// myPages
+import MyPage from "./views/myPage/MyPage.js";
+import Message from "./views/myPage/Message.js";
 
 const rootElement = document.getElementById("root");
 
@@ -127,6 +137,13 @@ ReactDOM.render(
 
               {/* login */}
               <Route exact path="/login/login" component={LoginPage} />
+
+              <Route
+                exact
+                path="/login/forgotpassword"
+                component={LoginForgotPassword}
+              />
+
               <Route
                 exact
                 path="/login/register/first"
@@ -184,6 +201,18 @@ ReactDOM.render(
                 path="/login/register/tenth"
                 component={RegisterTenthPage}
               />
+
+              {/* Tables */}
+              <Route exact path="/table/earning" component={EarningTable} />
+              <Route exact path="/table/station" component={StationTable} />
+              <Route
+                exact
+                path="/table/stationdetail"
+                component={StationDetail}
+              />
+              {/* Mypage */}
+              <Route exact path="/mypage" component={MyPage} />
+              <Route exact path="/mypage/message" component={Message} />
             </Switch>
           </React.StrictMode>
         </AnimatePresence>

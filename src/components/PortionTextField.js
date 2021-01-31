@@ -27,59 +27,59 @@ const useStyles = makeStyles((theme) => ({
     width: "calc(100% - 64px)"
   }
 }));
+const PPortionTextField = withStyles({
+  // root: {
+  //   color: "black",
+  //   "&$checked": {
+  //     color: "black"
+  //   }
+  // },
+  // checked: {
+  //   color: "black"
+  // }
+})((props) => (
+  <TextField
+    // className={classes.textLabelInput}
+    id="standard-full-width"
+    {...props}
+    // label="0"
+    // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
+    InputLabelProps={{}}
+    FormHelperTextProps={{
+      style: {
+        // marginTop: "212px",
+        color: "#000A12",
+        opacity: "0.7",
+        fontSize: "14px"
+      }
+    }}
+  />
+));
 export default function PortionTextField(props) {
   const classes = useStyles(props);
-  const PortionTextField = withStyles({
-    // root: {
-    //   color: "black",
-    //   "&$checked": {
-    //     color: "black"
-    //   }
-    // },
-    // checked: {
-    //   color: "black"
-    // }
-  })((props) => (
-    <TextField
-      // className={classes.textLabelInput}
-      id="standard-full-width"
-      {...props}
-      // label="0"
-      // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-      className={classes.PortionTextField}
-      InputLabelProps={{}}
-      inputProps={{
-        classes: { input: classes.textLabelInput },
-        inputMode: "numeric",
-        maxLength: 4,
 
-        style: {
-          textAlign: "right",
-          fontSize: "50px",
-          fontFamily: "Montserrat",
-          fontWeight: "800",
-          borderBottom: `5px solid black`,
-          paddingRight: "10px",
-          boxSizing: "border-box"
-        }
-      }}
-      FormHelperTextProps={{
-        style: {
-          // marginTop: "12px",
-          color: "#000A12",
-          opacity: "0.7",
-          fontSize: "14px"
-        }
-      }}
-    />
-  ));
   return (
     <>
-      <PortionTextField
+      <PPortionTextField
         // label="Phone Number"
         // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
         {...props}
+        className={classes.PortionTextField}
+        inputProps={{
+          classes: { input: classes.textLabelInput },
+          inputMode: "numeric",
+          maxLength: 4,
 
+          style: {
+            textAlign: "right",
+            fontSize: "50px",
+            fontFamily: "Montserrat",
+            fontWeight: "800",
+            borderBottom: `5px solid black`,
+            paddingRight: "10px",
+            boxSizing: "border-box"
+          }
+        }}
         // FormHelperTextProps={{
         //   style: {
         //     marginTop: "12px",

@@ -10,6 +10,11 @@ import Paper from "@material-ui/core/Paper";
 import Slide from "@material-ui/core/Slide";
 import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+import firebase from "../../firebaseConfig.js";
+import SquareButton from "../../components/SquareButton.js";
+import Countdown from "react-countdown";
 
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
@@ -29,6 +34,85 @@ const useStyles = makeStyles((theme) => ({
 
 function LoginPage(props) {
   const classes = useStyles(props);
+  const context = useGlobal();
+  const [eObject, setEObject] = React.useState("");
+  const [certNum, setCertNum] = React.useState("");
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+  const [bSent, setBSent] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  let eObjects;
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const phoneInit = () => {
+    let number = context.getRegisterInfo.phoneNumber.replace("0", "");
+    number = "+82" + number;
+    console.log(number);
+
+    firebase
+      .auth()
+      .signInWithPhoneNumber(number, window.recaptchaVerifier)
+      .then(function (e) {
+        setOpen(true);
+
+        window.confirmationResult = e;
+        // e.confirm(code)
+        //   .then(function (result) {
+        //     console.log("유우져", result.user, "user");
+
+        //     return Promise.resolve();
+        //   })
+        //   .then(function () {
+        //     var user = firebase.auth().currentUser;
+
+        //     user.delete().then(function () {
+        //       console.log("확인되었습니다");
+        //     });
+        //   })
+        //   .catch((error) => {
+        //     console.log(error.message);
+        //     console.log(error.code);
+        //     window.alert(error.message);
+        //   });
+      })
+      .catch((error) => {
+        console.log(error.message);
+        console.log(error.code);
+        window.alert(error.message);
+      });
+  };
+
+  const renderer = ({ hours, minutes, seconds, completed }) => {
+    if (completed) {
+      // Render a complete state
+      setBSent(false);
+      return null;
+    } else {
+      // Render a countdown
+      return (
+        <span>
+          {minutes}:{seconds}
+        </span>
+      );
+    }
+  };
+  let e;
+  React.useEffect(() => {
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+      "recaptcha-container",
+      {
+        size: "invisible",
+        callback: function (response) {}
+      }
+    );
+  }, []);
 
   return (
     <>
@@ -39,9 +123,14 @@ function LoginPage(props) {
         mountOnEnter
         unmountOnExit
       >
-        <div>
+        <div style={{ backgroundColor: "#EEEEEE", height: "100vh" }}>
+          <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="info">
+              인증문자가 발송되었습니다 잠시만 기다려주세요
+            </Alert>
+          </Snackbar>
           <header>
-            <NavBar title="회원가입" backLink="/investor/invest" />
+            <NavBar title="회원가입" backLink="/login/login" />
           </header>
 
           <main>
@@ -58,7 +147,7 @@ function LoginPage(props) {
                     margin: "16px 0 0 24px"
                   }}
                 >
-                  1/8
+                  1/3
                 </p>
                 <p
                   style={{
@@ -78,7 +167,10 @@ function LoginPage(props) {
                   className={classes.textField}
                   placeholder="Phone Number"
                   // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                  // value={"01094552438"}
+                  value={context.getRegisterInfo.phoneNumber}
+                  onChange={(e) => {
+                    context.setRegister_phoneNumber(e.target.value);
+                  }}
                   style={{
                     margin: "0 24px",
                     marginTop: "12px",
@@ -105,7 +197,98 @@ function LoginPage(props) {
                   //   }
                   // }}
                 />
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    flexDirection: "rows",
+                    alignItems: "center"
+                  }}
+                >
+                  {bSent && (
+                    <Countdown
+                      date={Date.now() + 180000}
+                      renderer={renderer}
+                      zeroPadTime={2}
+                    />
+                  )}
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      if (!!!context.getRegisterInfo.phoneNumber) {
+                        window.alert("전화번호를 입력해주세요");
+                        return;
+                      }
+                      setBSent(true);
+                      phoneInit();
+                    }}
+                    style={{
+                      height: "32px",
+                      margin: "24px 32px 24px 14px",
+                      borderRadius: "8px",
+                      border: "2px solid #000A12",
+                      fontFamily: "Montserrat",
+                      fontStyle: "normal",
+                      fontWeight: "normal",
+                      fontSize: "12px",
+                      background: "#000A12",
+                      color: "white"
+                    }}
+                  >
+                    {bSent ? "재전송" : "인증번호 전송"}
+                  </Button>
+                </div>
               </div>
+
+              <p
+                style={{
+                  fontStyle: "normal",
+                  fontWeight: "500",
+                  fontSize: "16px",
+                  margin: "16px 0 0 24px"
+                }}
+              >
+                인증번호
+              </p>
+
+              <TextField
+                variant="outlined"
+                id="standard-full-width"
+                // label="Phone Number"
+                disabled={bSent ? "" : "disabled"}
+                className={classes.textField}
+                placeholder="Certification Number"
+                // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
+                value={certNum}
+                onChange={(e) => {
+                  setCertNum(e.target.value);
+                }}
+                style={{
+                  margin: "0 24px",
+                  marginTop: "12px",
+                  width: "calc(100% - 64px)"
+                }}
+                InputLabelProps={{
+                  style: {}
+                }}
+                inputProps={{
+                  style: {
+                    paddingLeft: "0px",
+                    fontSize: "26px",
+                    fontFamily: "Montserrat",
+                    fontWeight: "bold",
+
+                    boxSizing: "border-box",
+                    marginTop: "10px"
+                  }
+                }}
+                // FormHelperTextProps={{
+                //   style: {
+                //     marginTop: "12px",
+                //     fontSize: "14px"
+                //   }
+                // }}
+              />
 
               <div
                 style={{
@@ -113,29 +296,53 @@ function LoginPage(props) {
                   justifyContent: "flex-end"
                 }}
               >
-                <Button
-                  variant="outlined"
+                <div id="recaptcha-container"></div>
+
+                <SquareButton
+                  disabled={
+                    !(!!certNum && !!context.getRegisterInfo.phoneNumber)
+                  }
                   onClick={() => {
-                    props.history.push("/investor/final");
+                    window.confirmationResult
+                      .confirm(certNum)
+                      .then(function (result) {
+                        // User signed in successfully.
+                        var user = result.user;
+                        // ...
+                        return Promise.resolve();
+                      })
+                      .then(function () {
+                        var user = firebase.auth().currentUser;
+
+                        user.delete().then(function () {
+                          props.history.push("/login/register/second");
+                        });
+                      })
+                      .catch(function (error) {
+                        window.alert(error.message);
+                      });
                   }}
-                  style={{
-                    width: "64px",
-                    height: "64px",
-                    margin: "24px 32px",
-                    borderRadius: "15px",
-                    border: "2px solid #000A12",
-                    fontFamily: "Montserrat",
-                    fontStyle: "normal",
-                    fontWeight: "600",
-                    fontSize: "12px",
-                    alignText: "right"
-                  }}
-                >
-                  next
-                </Button>
+                  //     return Promise.resolve();
+                  //   })
+                  //   .then(function () {
+                  //     var user = firebase.auth().currentUser;
+
+                  //     user.delete().then(function () {
+                  //       console.log("확인되었습니다");
+                  //     });
+                  //   })
+                  //   .catch((error) => {
+                  //     console.log(error.message);
+                  //     console.log(error.code);
+                  //     window.alert(error.message);
+                  //   });
+
+                  text="NEXT"
+                />
               </div>
             </section>
           </main>
+
           <footer></footer>
         </div>
       </Slide>

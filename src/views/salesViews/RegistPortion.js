@@ -9,10 +9,10 @@ import MTextField from "@material-ui/core/TextField";
 import { FormButton } from "../../components/FormButton.js";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
+import { useGlobal } from "../../globalContext";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import NativeSelect from "@material-ui/core/NativeSelect";
-import { useGlobal } from "../../globalContext";
 
 var _ = require("lodash");
 

@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import DaumPostcode from "react-daum-postcode";
 import Button from "@material-ui/core/Button";
-import Modal from "@material-ui/core/Modal";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
 import { NavBar } from "../../components/NavBar.js";
 import { TextField } from "../../components/TextField.js";
 import MTextField from "@material-ui/core/TextField";
 import { FormButton } from "../../components/FormButton.js";
 import { useGlobal } from "../../globalContext";
+import Modal from "@material-ui/core/Modal";
 
 const useStyles = makeStyles((theme) => ({
   addressContainer: {

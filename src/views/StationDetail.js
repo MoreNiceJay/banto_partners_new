@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import { HeaderInfo } from "../components/HeaderInfo.js";
+import { NavBar } from "../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { useGlobal } from "../../globalContext";
-import { useAuth } from "../../AuthContext";
+import { useGlobal } from "../globalContext";
+import { useAuth } from "../AuthContext";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Slide from "@material-ui/core/Slide";
@@ -58,25 +58,25 @@ function LoginPage(props) {
   })((props) => <Checkbox color="default" {...props} />);
   const data = [
     {
-      title: "매장명",
+      title: "가게명",
       contentText: context.getStoreInfo.storeName,
       link: "/store/apply/address",
       bUsing: true
     },
     {
-      title: "가맹점주님 연락처",
+      title: "스테이션 ID",
       contentText: context.getStoreInfo.storeOwnerPhoneNumber,
       link: "/store/apply/contact",
       bUsing: true
     },
     {
-      title: "매장 연락처",
+      title: "상태",
       contentText: context.getStoreInfo.storePhoneNumber,
       link: "/store/apply/contact",
       bUsing: true
     },
     {
-      title: "매장주소",
+      title: "등록 날짜",
       contentText:
         context.getStoreInfo.storeMainAddress +
         " " +
@@ -85,7 +85,7 @@ function LoginPage(props) {
       bUsing: true
     },
     {
-      title: "영업자",
+      title: "전화번호",
       contentText:
         `수익률: ${context.getStoreInfo.salesPortion}% ` +
         `연락처: ${context.getStoreInfo.salesContact}`,
@@ -93,7 +93,7 @@ function LoginPage(props) {
       bUsing: context.getStoreInfo.bSales ? true : false
     },
     {
-      title: "투자자",
+      title: "주소",
       contentText:
         `수익률: ${context.getStoreInfo.investorPortion}% ` +
         `연락처: ${context.getStoreInfo.investorContact}`,
@@ -102,13 +102,13 @@ function LoginPage(props) {
     },
 
     {
-      title: "구매여부",
+      title: "영업시간",
       contentText: context.getStoreInfo.bBuying ? "Yes" : "No",
       link: "/store/apply/Address",
       bUsing: true
     },
     {
-      title: "내 수익률",
+      title: "할당된 수익",
       contentText: "10%",
       link: "/store/apply/Address",
       bUsing: true
@@ -126,7 +126,7 @@ function LoginPage(props) {
       >
         <div>
           <header>
-            <NavBar title="추가정보 확인" backLink="/store/apply/addinvestor" />
+            <NavBar title="스테이션 정보" backLink="/table/station" />
           </header>
 
           <main>
@@ -156,7 +156,7 @@ function LoginPage(props) {
                           {value.title}
                         </p>
 
-                        <Link
+                        {/* <Link
                           style={{
                             textDecoration: "underline",
                             fontFamily: "Noto Sans CJK KR",
@@ -167,7 +167,7 @@ function LoginPage(props) {
                           }}
                         >
                           수정
-                        </Link>
+                        </Link> */}
                       </div>
                       <p
                         style={{

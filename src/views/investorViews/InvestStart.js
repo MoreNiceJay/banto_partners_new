@@ -16,8 +16,8 @@ const useStyles = makeStyles((theme) => ({
   amountDescriptionP: {
     fontStyle: "normal",
     fontWeight: "bold",
-    fontSize: "22px",
-    margin: "0 32px",
+    fontSize: "16px",
+    margin: "0 24px",
     marginTop: "27px"
     // textAlign: "left"
   },
@@ -27,6 +27,20 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "12px",
     borderRadius: "15px",
     backgroundColor: "#000A12"
+  },
+  textLabelInput: {
+    "&::placeholder": {
+      color: "blue"
+    },
+    MuiInput: {
+      input: {
+        "&::placeholder": {
+          color: "blue"
+        },
+
+        color: "white"
+      }
+    }
   }
 }));
 function InvestStart(props) {
@@ -55,25 +69,42 @@ function InvestStart(props) {
           <main>
             <section className={classes.section}>
               <div className={classes.amount}>
-                <p className={classes.amountDescriptionP}>투자수량</p>
-                <TextField
-                  id="standard-full-width"
-                  // label="Label"
-                  // placeholder="0"
-                  type="number"
-                  helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                  value={context.getInvestInfo.investAmount.toString()}
+                <p
                   style={{
-                    margin: "0 32px",
+                    fontFamily: "Montserrat",
+                    fontStyle: "normal",
+                    fontWeight: "500",
+                    fontSize: "14px",
+                    opacity: "0.8",
+                    letterSpacing: "5px",
+                    margin: "16px 0 0 24px"
+                  }}
+                >
+                  1/2
+                </p>
+                <p className={classes.amountDescriptionP}>투자 수량</p>
+                <TextField
+                  className={classes.textLabelInput}
+                  id="standard-full-width"
+                  // label="0"
+                  placeholder="0"
+                  helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
+                  value={
+                    context.getInvestInfo.investAmount === 0
+                      ? ""
+                      : context.getInvestInfo.investAmount
+                  }
+                  style={{
+                    margin: "0 24px",
                     marginTop: "12px",
                     width: "calc(100% - 64px)"
                   }}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
+                  InputLabelProps={{}}
                   inputProps={{
+                    classes: { input: classes.textLabelInput },
                     inputMode: "numeric",
                     maxLength: 4,
+
                     style: {
                       textAlign: "right",
                       fontSize: "50px",
@@ -86,7 +117,9 @@ function InvestStart(props) {
                   }}
                   FormHelperTextProps={{
                     style: {
-                      marginTop: "12px",
+                      // marginTop: "12px",
+                      color: "#000A12",
+                      opacity: "0.7",
                       fontSize: "14px"
                     }
                   }}
@@ -103,13 +136,27 @@ function InvestStart(props) {
                 />
               </div>
               <div className={classes.root}>
-                <Paper variant="outlined" square className={classes.card}>
-                  <div style={{ margin: "32px 24px" }}>
+                <Paper
+                  variant="outlined"
+                  square
+                  className={classes.card}
+                  style={{
+                    boxShadow: "0px 6px 10px rgba(0, 10, 18, 0.2)"
+                  }}
+                >
+                  <div
+                    style={{
+                      margin: "40px 24px",
+                      boxShadow: "0px 6px 10px rgba(0, 10, 18, 0.2)"
+                    }}
+                  >
                     <p
                       style={{
                         color: "white",
                         fontWeight: "500",
-                        fontSize: "16px"
+                        fontSize: "16px",
+                        color: "#ECEFF1",
+                        opacity: "0.6"
                       }}
                     >
                       총 금액
@@ -122,7 +169,7 @@ function InvestStart(props) {
                         fontWeight: "800",
                         fontSize: "28px",
                         lineHeight: "34px",
-                        textAlign: "right",
+                        textAlign: "left",
                         marginTop: "16px"
                       }}
                     >
@@ -141,7 +188,7 @@ function InvestStart(props) {
                     }
 
                     context.setInvest_totalPrice(totalPrice);
-                    props.history.push("/investor/final");
+                    props.history.push("/investor/depositor");
                   }}
                   disabled={buttonDisabled}
                   style={{

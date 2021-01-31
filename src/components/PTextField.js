@@ -22,43 +22,44 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "10px"
   }
 }));
+const PtextField = withStyles({
+  // root: {
+  //   color: "black",
+  //   "&$checked": {
+  //     color: "black"
+  //   }
+  // },
+  // checked: {
+  //   color: "black"
+  // }
+})((props) => (
+  <TextField
+    {...props}
+    variant="outlined"
+    id="standard-full-width"
+    inputProps={{
+      style: {
+        paddingLeft: "0px",
+        fontSize: "26px",
+        fontFamily: "Montserrat",
+        fontWeight: "bold",
+
+        boxSizing: "border-box",
+        marginTop: "10px"
+      }
+    }}
+  />
+));
 export default function PTextField(props) {
   const classes = useStyles(props);
-  const PtextField = withStyles({
-    // root: {
-    //   color: "black",
-    //   "&$checked": {
-    //     color: "black"
-    //   }
-    // },
-    // checked: {
-    //   color: "black"
-    // }
-  })((props) => (
-    <TextField
-      {...props}
-      className={classes.textField}
-      variant="outlined"
-      id="standard-full-width"
-      inputProps={{
-        style: {
-          paddingLeft: "0px",
-          fontSize: "26px",
-          fontFamily: "Montserrat",
-          fontWeight: "bold",
 
-          boxSizing: "border-box",
-          marginTop: "10px"
-        }
-      }}
-    />
-  ));
   return (
     <>
       <PtextField
         // label="Phone Number"
         // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
         {...props}
+        className={classes.textField}
 
         // FormHelperTextProps={{
         //   style: {

@@ -3,10 +3,12 @@ import { makeStyles } from "@material-ui/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
 import { NavBar } from "../../components/NavBar.js";
 import Slide from "@material-ui/core/Slide";
+import DaumPostcode from "react-daum-postcode";
 
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
+import { useAuth } from "../../AuthContext";
 import ProgressText from "../../components/ProgressText.js";
 import InputTitle from "../../components/InputTitle.js";
 import PTextField from "../../components/PTextField.js";
@@ -96,11 +98,35 @@ const useStyles = makeStyles((theme) => ({
 
 function RegistContact(props) {
   const classes = useStyles(props);
-  const [storeOwnerContact, setStoreOwnerContact] = React.useState("");
-  const [storeContact, setStoreContact] = React.useState("");
+  const [error1, setError1] = React.useState(null);
+  const [error2, setError2] = React.useState(null);
+  const [error3, setError3] = React.useState(null);
+
+  const [daumOpen, setDaumOpen] = React.useState(false);
+
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
+  const context = useGlobal();
+  const auth = useAuth();
 
+  const handleComplete = (data) => {
+    let fullAddress = data.address;
+    let extraAddress = "";
+
+    if (data.addressType === "R") {
+      if (data.bname !== "") {
+        extraAddress += data.bname;
+      }
+      if (data.buildingName !== "") {
+        extraAddress +=
+          extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
+      }
+      fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
+      console.log(fullAddress);
+      context.setStore_StoreMainAddress(fullAddress);
+      setDaumOpen(false);
+    }
+  };
   const handleOpen = () => {
     setOpen(true);
   };
@@ -109,6 +135,9 @@ function RegistContact(props) {
     setOpen(false);
   };
 
+  const handleDaumClose = () => {
+    setDaumOpen(false);
+  };
   function getModalStyle() {
     const top = 50;
     const left = 50;
@@ -143,7 +172,7 @@ function RegistContact(props) {
           size="large"
           className={classes.modalNextTimeButton}
           onClick={() => {
-            // context.setSales_StorePortion(portion);
+            context.setStore_bBuying(false);
             props.history.push("/store/apply/portion");
           }}
         >
@@ -155,8 +184,7 @@ function RegistContact(props) {
           color="primary"
           className={classes.modalBuyButton}
           onClick={() => {
-            // context.setSales_StorePortion(portion);
-
+            context.setStore_bBuying(false);
             props.history.push("/store/apply/portion");
           }}
         >
@@ -166,31 +194,29 @@ function RegistContact(props) {
     </div>
   );
 
-  const context = useGlobal();
-
   function mySubmitHandler() {
     // if (storeOwnerContact.length < 11) {
     //   window.alert("가맹점주님의 연락처는 필수 입니다");
     //   return;
     // }
-    context.setSales_StoreOwnerPhonenumber(storeOwnerContact);
-    context.setSales_StorePhoneNumber(storeOwnerContact);
 
-    // props.history.push("/store/apply/address");
+    props.history.push("/store/apply/addinvestor");
   }
-  function onChangeStoreOwnerPhoneNumber(e) {
-    setStoreOwnerContact(e.target.value);
-    console.log(e.target.value);
-  }
-  function onChangeStorePhoneNumber(e) {
-    setStoreContact(e.target.value);
-  }
+  const body = (
+    <div style={modalStyle} className={classes.paper}>
+      <DaumPostcode onComplete={handleComplete} {...props} />
+      <Button
+        style={{ position: "absolute", marginTop: "5px", right: "5px" }}
+        variant="contained"
+        onClick={() => {
+          setDaumOpen(false);
+        }}
+      >
+        취소
+      </Button>
+    </div>
+  );
 
-  React.useEffect(() => {
-    // console.log(context.salesInfo.storeOwnerPhoneNumber);
-    setStoreOwnerContact(context.salesInfo.storeOwnerPhoneNumber);
-    setStoreContact(context.salesInfo.storePhoneNumber);
-  }, []);
   return (
     <>
       <Slide
@@ -202,7 +228,7 @@ function RegistContact(props) {
       >
         <div>
           <header>
-            <NavBar title="등록하기" backLink="/storemenu" />
+            <NavBar title="등록하기" backLink="/store/apply/contact" />
           </header>
           <main>
             <section>
@@ -210,33 +236,45 @@ function RegistContact(props) {
                 <div className={classes.contactPerson}>
                   <ProgressText text="2/5" />
 
-                  <InputTitle text="매장명( 예. 반토카페 일산점)" />
+                  <InputTitle text="매장명  예)반토카페 일산점" />
                   <PTextField
-                    placeholder="Email"
+                    placeholder="Store"
                     type="Contact"
-                    // value={storeOwnerContact}
+                    value={context.getStoreInfo.storeName}
+                    error={!!error1}
+                    onChange={(e) => {
+                      if (e.target.value.length < 1) {
+                        setError1("올바른 상호명을 입력해 주세요");
+                      } else {
+                        setError1(null);
+                      }
 
-                    // autoFocus
-                    onChange={() => {}}
+                      context.setStore_StoreName(e.target.value);
+                    }}
+                    helperText={error1}
                   />
                 </div>
                 <div style={{ marginTop: "44px" }}>
                   <InputTitle text="매장 주소" />
                   <PTextField
+                    disabled
                     placeholder="Address"
                     type="Contact"
-                    // value={storeOwnerContact}
-
+                    value={context.getStoreInfo.storeMainAddress}
+                    onClick={() => {
+                      setDaumOpen(true);
+                    }}
                     // autoFocus
-                    onChange={() => {}}
                   />
                   <PTextField
                     placeholder="상세주소"
                     type="Contact"
                     // value={storeOwnerContact}
-
+                    value={context.getStoreInfo.storeRestAddress}
                     // autoFocus
-                    onChange={() => {}}
+                    onChange={(e) => {
+                      context.setStore_StoreRestAddress(e.target.value);
+                    }}
                   />
                   <Modal
                     open={open}
@@ -251,13 +289,27 @@ function RegistContact(props) {
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <SquareButton
                   onClick={handleOpen}
-                  disabled={false}
+                  disabled={
+                    !(
+                      !!context.getStoreInfo.storeRestAddress &&
+                      !!context.getStoreInfo.storeMainAddress &&
+                      !!context.getStoreInfo.storeName
+                    )
+                  }
                   text="다음"
                 />
               </div>
             </section>
           </main>
           <footer></footer>
+          <Modal
+            open={daumOpen}
+            onClose={handleDaumClose}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            {body}
+          </Modal>
         </div>
       </Slide>
     </>

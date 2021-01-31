@@ -3,6 +3,8 @@ import { makeStyles } from "@material-ui/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
 import { NavBar } from "../../components/NavBar.js";
 import { MenuList } from "../../components/MenuList.js";
+import { useGlobal } from "../../globalContext";
+import { useAuth } from "../../AuthContext";
 
 import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";

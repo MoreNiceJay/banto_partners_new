@@ -16,16 +16,24 @@ const useStyles = makeStyles((theme) => ({}));
 
 function SalesMenu(props) {
   const classes = useStyles(props);
+
   const roleMenu = [
     {
-      title: "스테이션 설치/등록",
-      link: "/sales/regist/contact",
-      badge: false
+      titleBold: "스테이션 등록",
+      titleRegular: "하기",
+      link: "/sales/regist/contact"
     },
-    { title: "수익확인", link: "#", badge: false },
+    {
+      titleBold: "수익",
+      titleRegular: "확인",
+      link: "/table/earning?role=sales"
+    },
 
-    { title: "스테이션 정보", link: "#", badge: false },
-    { title: "알림함", link: "#", badge: true }
+    {
+      titleBold: "스테이션",
+      titleRegular: " 정보",
+      link: "#"
+    }
   ];
   return (
     <>

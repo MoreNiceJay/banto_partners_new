@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 function LoginPage(props) {
   const classes = useStyles(props);
-
+  const context = useGlobal();
   return (
     <>
       <Slide
@@ -41,7 +41,7 @@ function LoginPage(props) {
       >
         <div>
           <header>
-            <NavBar title="추가정보 입력" backLink="/investor/invest" />
+            <NavBar title="추가정보 입력" backLink="/main" />
           </header>
 
           <main>
@@ -78,7 +78,10 @@ function LoginPage(props) {
                   className={classes.textField}
                   placeholder="Name"
                   // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                  // value={"01094552438"}
+                  value={context.getRegisterInfo.name}
+                  onChange={(e) => {
+                    context.setRegister_name(e.target.value);
+                  }}
                   style={{
                     margin: "0 24px",
                     marginTop: "12px",
@@ -126,7 +129,10 @@ function LoginPage(props) {
                   className={classes.textField}
                   placeholder="ex) 790215"
                   // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                  // value={"01094552438"}
+                  value={context.getRegisterInfo.birthdate}
+                  onChange={(e) => {
+                    context.setRegister_birthdate(e.target.value);
+                  }}
                   style={{
                     margin: "0 24px",
                     marginTop: "12px",
@@ -163,7 +169,7 @@ function LoginPage(props) {
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    props.history.push("/investor/final");
+                    props.history.push("/login/register/sixth");
                   }}
                   style={{
                     width: "64px",

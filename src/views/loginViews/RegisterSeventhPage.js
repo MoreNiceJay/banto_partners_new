@@ -48,12 +48,24 @@ const useStyles = makeStyles((theme) => ({
 
 function LoginPage(props) {
   const classes = useStyles(props);
-  const [value, setValue] = React.useState("female");
-
+  const [value, setValue] = React.useState("false");
+  const context = useGlobal();
   const handleChange = (event) => {
     setValue(event.target.value);
+    if (event.target.value === "true") {
+      context.setRegister_bBusinessLicense(true);
+    } else {
+      context.setRegister_bBusinessLicense(false);
+    }
   };
 
+  React.useEffect(() => {
+    if (context.getRegisterInfo.bBusinessLicense) {
+      setValue("true");
+    } else {
+      setValue("false");
+    }
+  }, []);
   return (
     <>
       <Slide
@@ -65,7 +77,7 @@ function LoginPage(props) {
       >
         <div>
           <header>
-            <NavBar title="추가정보 입력" backLink="/investor/invest" />
+            <NavBar title="추가정보 입력" backLink="/login/register/sixth" />
           </header>
 
           <main>
@@ -108,23 +120,7 @@ function LoginPage(props) {
                   onChange={handleChange}
                 >
                   <FormControlLabel
-                    value="female"
-                    control={
-                      <Radio
-                        style={{
-                          color: "black",
-                          "&$checked": {
-                            color: "black"
-                          },
-
-                          checked: {}
-                        }}
-                      />
-                    }
-                    label="네"
-                  />
-                  <FormControlLabel
-                    value="male"
+                    value="false"
                     control={
                       <Radio
                         style={{
@@ -139,6 +135,22 @@ function LoginPage(props) {
                     }
                     label="아니오"
                   />
+                  <FormControlLabel
+                    value="true"
+                    control={
+                      <Radio
+                        style={{
+                          color: "black",
+                          "&$checked": {
+                            color: "black"
+                          },
+
+                          checked: {}
+                        }}
+                      />
+                    }
+                    label="네"
+                  />
                 </RadioGroup>
               </FormControl>
               <div
@@ -150,7 +162,7 @@ function LoginPage(props) {
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    props.history.push("/investor/final");
+                    props.history.push("/login/register/eighth");
                   }}
                   style={{
                     width: "64px",

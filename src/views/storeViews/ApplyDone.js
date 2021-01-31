@@ -5,6 +5,7 @@ import { NavBar } from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
+import { useAuth } from "../../AuthContext";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Slide from "@material-ui/core/Slide";
@@ -29,7 +30,8 @@ const useStyles = makeStyles((theme) => ({
 
 function LoginPage(props) {
   const classes = useStyles(props);
-
+  const context = useGlobal();
+  const auth = useAuth();
   return (
     <>
       <Slide
@@ -71,7 +73,7 @@ function LoginPage(props) {
                     marginTop: "41px"
                   }}
                 >
-                  문자/카카오톡으로 입금정보가
+                  완료
                 </p>
                 <p
                   style={{
@@ -82,7 +84,18 @@ function LoginPage(props) {
                     marginTop: "8px"
                   }}
                 >
-                  전송되었습니다!
+                  '마이페이지'에서 신청 진행을
+                </p>
+                <p
+                  style={{
+                    fontFamily: "Noto Sans CJK KR",
+                    fontStyle: "normal",
+                    fontWeight: "bold",
+                    fontSize: "24px",
+                    marginTop: "8px"
+                  }}
+                >
+                  확인 할 수 있습니다
                 </p>
               </div>
               <div

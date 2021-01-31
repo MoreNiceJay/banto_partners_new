@@ -9,16 +9,22 @@
     "@material-ui/icons": "4.9.1",
     "@material-ui/lab": "4.0.0-alpha.56",
     "@material-ui/styles": "4.10.0",
+    "axios": "0.20.0",
     "firebase": "7.22.0",
     "framer-motion": "2.6.13",
     "lodash": "4.17.20",
+    "moment": "2.29.1",
+    "query-string": "6.13.8",
     "react": "16.13.1",
+    "react-countdown": "2.2.2",
     "react-daum-postcode": "2.0.0",
     "react-dom": "16.13.1",
+    "react-infinite-scroll-component": "5.1.0",
     "react-router-dom": "5.2.0",
     "react-scripts": "3.4.3",
     "react-swipeable-views": "0.13.9",
-    "styled-components": "5.1.1"
+    "styled-components": "5.1.1",
+    "yup": "0.29.3"
   },
   "devDependencies": {
     "typescript": "3.8.3"

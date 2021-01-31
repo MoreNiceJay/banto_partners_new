@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 function LoginPage(props) {
   const classes = useStyles(props);
-
+  const context = useGlobal();
   return (
     <>
       <Slide
@@ -85,7 +85,7 @@ function LoginPage(props) {
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    props.history.push("/investor/final");
+                    props.history.push("/main");
                   }}
                   style={{
                     width: "64px",

@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import firebase from "./firebaseConfig";
+import moment from "moment";
+var db = firebase.firestore();
+
 export const AuthContext = React.createContext();
 export function useAuth() {
   return React.useContext(AuthContext);
@@ -11,9 +14,36 @@ export const AuthProvider = ({ children }) => {
   let db = firebase.firestore();
   let userRef = db.collection("Users");
   const [user, setUser] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
   const [isLogin, setIsLogin] = useState(false);
   const [bUserInfoAdded, setBUserInfoAdded] = useState(false);
   var auth = firebase.auth();
+
+  React.useEffect(() => {
+    if (!user) {
+      return;
+    }
+    var docRef = db.collection("Users").doc(user.email);
+
+    docRef
+      .get()
+      .then(function (doc) {
+        if (doc.exists) {
+          console.log("Document data:", doc.data());
+          setUserInfo(doc.data());
+          console.log("Document data:", doc.data().buyer[0]);
+          doc.data().buyer.map((v) => {
+            console.log(v);
+          });
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
+      });
+  }, [user]);
   const signOut = () => {
     firebase
       .auth()
@@ -27,16 +57,54 @@ export const AuthProvider = ({ children }) => {
       });
   };
 
-  const sendPasswordResetEmail = (email) => {
-    auth
-      .sendPasswordResetEmail(email)
-      .then(function () {
-        // Email sent.
-      })
-      .catch(function (error) {
-        // An error happened.
-      });
+  // 디비 관련 함수 (유저가 아님 TODO: 나중에 옮기기)
+  const createStoreApplication = () => {
+    const applicationRef = db.collection("Applications");
+    applicationRef.add({
+      progress: "discussing",
+      userId: user.email,
+      createdAt: moment().format()
+    });
   };
+
+  //디비 관련 함수 끝
+  const updateExtraProfiles = (
+    name,
+    birthdate,
+    bank,
+    accountNumber,
+    accountHolder,
+    bBusinessLicense,
+    businessLicenseImg
+  ) => {
+    return new Promise((resolve, reject) => {
+      var postData = {
+        bExtraProfileUpdated: true,
+        name,
+        birthdate,
+        bank,
+        accountNumber,
+        accountHolder,
+        bBusinessLicense,
+        businessLicenseImg
+      };
+      userRef.doc(user.email).update(postData);
+    });
+  };
+
+  const sendPasswordResetEmail = (email) => {
+    return new Promise((resolve, reject) => {
+      auth
+        .sendPasswordResetEmail(email)
+        .then(function () {
+          resolve();
+        })
+        .catch(function (error) {
+          reject(error);
+        });
+    });
+  };
+
   const sendEmailVerfication = () => {
     user
       .sendEmailVerification()
@@ -54,35 +122,40 @@ export const AuthProvider = ({ children }) => {
         .createUserWithEmailAndPassword(email, password)
         .then(() => {
           setUserStatus();
-          userRef.doc(email).set({});
+          userRef.doc(email).set({ bExtraProfileUpdated: false });
           resolve(userRef.doc(email));
         })
         .catch((error) => {
           reject(error);
+          console.log(error);
           // ...
         });
     });
   };
   const singInWithEmail = (email, password) => {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((value) => {
-        console.log("로그인 벨류", value);
-        setUserStatus();
+    return new Promise((resolve, reject) => {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then((value) => {
+          setUserStatus();
 
-        return Promise.resolve({ success: true });
-      })
-      .catch(function (error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // window.alert(errorMessage);
-        // ...
-        return Promise.reject({ errorCode, errorMessage });
-      });
-    return Promise.resolve();
+          resolve(user);
+        })
+        .catch(function (error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // window.alert(errorMessage);
+          // ...
+          console.log(errorCode);
+          console.log(errorMessage);
+
+          reject(error);
+        });
+    });
   };
+
   const setUserStatus = () => {
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
@@ -134,6 +207,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        userInfo,
         isLogin,
         bUserInfoAdded,
         signOut,
@@ -141,7 +215,11 @@ export const AuthProvider = ({ children }) => {
         sendEmailVerfication,
         singUpWithEmail,
         singInWithEmail,
-        setUserStatus
+        setUserStatus,
+        updateExtraProfiles,
+
+        // 디비 업데이트 함수
+        createStoreApplication
       }}
     >
       {children}

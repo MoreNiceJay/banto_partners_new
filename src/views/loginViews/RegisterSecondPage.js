@@ -10,6 +10,7 @@ import Paper from "@material-ui/core/Paper";
 import Slide from "@material-ui/core/Slide";
 import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
+import SquareButton from "../../components/SquareButton.js";
 
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
@@ -26,10 +27,14 @@ const useStyles = makeStyles((theme) => ({
     }
   }
 }));
+function validateEmail(email) {
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}
 
 function LoginPage(props) {
   const classes = useStyles(props);
-
+  const context = useGlobal();
   return (
     <>
       <Slide
@@ -39,9 +44,9 @@ function LoginPage(props) {
         mountOnEnter
         unmountOnExit
       >
-        <div>
+        <div style={{ backgroundColor: "#EEEEEE", height: "100vh" }}>
           <header>
-            <NavBar title="회원가입" backLink="/investor/invest" />
+            <NavBar title="추가정보입력" backLink="/login/register/first" />
           </header>
 
           <main>
@@ -58,7 +63,7 @@ function LoginPage(props) {
                     margin: "16px 0 0 24px"
                   }}
                 >
-                  2/8
+                  2/3
                 </p>
                 <p
                   style={{
@@ -68,7 +73,7 @@ function LoginPage(props) {
                     margin: "16px 0 0 24px"
                   }}
                 >
-                  인증번호
+                  이메일
                 </p>
 
                 <TextField
@@ -76,9 +81,12 @@ function LoginPage(props) {
                   id="standard-full-width"
                   // label="Phone Number"
                   className={classes.textField}
-                  placeholder="Certification Number"
+                  placeholder="E-mail"
                   // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                  // value={"01094552438"}
+                  value={context.getRegisterInfo.email}
+                  onChange={(e) => {
+                    context.setRegister_email(e.target.value);
+                  }}
                   style={{
                     margin: "0 24px",
                     marginTop: "12px",
@@ -106,59 +114,25 @@ function LoginPage(props) {
                   // }}
                 />
               </div>
+
               <div
                 style={{
                   display: "flex",
                   justifyContent: "flex-end"
                 }}
               >
-                <Button
+                <SquareButton
                   variant="outlined"
+                  disabled={!!!context.getRegisterInfo.email}
                   onClick={() => {
-                    props.history.push("/investor/final");
+                    if (!validateEmail(context.getRegisterInfo.email)) {
+                      window.alert("이메일 형식을 확인해 주세요");
+                      return;
+                    }
+                    props.history.push("/login/register/third");
                   }}
-                  style={{
-                    height: "32px",
-                    margin: "24px 32px",
-                    borderRadius: "8px",
-                    border: "2px solid #000A12",
-                    fontFamily: "Montserrat",
-                    fontStyle: "normal",
-                    fontWeight: "normal",
-                    fontSize: "12px",
-                    background: "#000A12",
-                    color: "white"
-                  }}
-                >
-                  인증번호 전송
-                </Button>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end"
-                }}
-              >
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    props.history.push("/investor/final");
-                  }}
-                  style={{
-                    width: "64px",
-                    height: "64px",
-                    margin: "24px 32px",
-                    borderRadius: "15px",
-                    border: "2px solid #000A12",
-                    fontFamily: "Montserrat",
-                    fontStyle: "normal",
-                    fontWeight: "600",
-                    fontSize: "12px",
-                    alignText: "right"
-                  }}
-                >
-                  next
-                </Button>
+                  text="NEXT"
+                />
               </div>
             </section>
           </main>

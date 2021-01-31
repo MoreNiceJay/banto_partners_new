@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     fontSize: "16px",
     margin: "0 24px",
-    marginTop: "16px"
+    paddingTop: "16px"
     // textAlign: "left"
   }
 }));

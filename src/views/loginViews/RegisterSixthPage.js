@@ -48,9 +48,10 @@ const useStyles = makeStyles((theme) => ({
 function LoginPage(props) {
   const classes = useStyles(props);
   const [age, setAge] = React.useState("");
-
+  const context = useGlobal();
   const handleChange = (event) => {
     setAge(event.target.value);
+    context.setRegister_bank(event.target.value);
   };
 
   return (
@@ -64,7 +65,7 @@ function LoginPage(props) {
       >
         <div>
           <header>
-            <NavBar title="추가정보 입력" backLink="/investor/invest" />
+            <NavBar title="추가정보 입력" backLink="/login/register/fifth" />
           </header>
 
           <main>
@@ -144,9 +145,58 @@ function LoginPage(props) {
                         }
                       }}
                     >
-                      <MenuItem value={10}>KEB하나은행</MenuItem>
-                      <MenuItem value={20}>SC제일은행</MenuItem>
-                      <MenuItem value={30}>국민은행</MenuItem>
+                      <MenuItem value={0}>경남은행</MenuItem>
+                      <MenuItem value={1}>광주은행</MenuItem>
+                      <MenuItem value={2}>국민은행</MenuItem>
+                      <MenuItem value={3}>기업은행</MenuItem>
+                      <MenuItem value={4}>농협</MenuItem>
+                      <MenuItem value={5}>지역농협</MenuItem>
+                      <MenuItem value={6}>대구은행</MenuItem>
+                      <MenuItem value={7}>부산은행</MenuItem>
+                      <MenuItem value={8}>도이치은행</MenuItem>
+                      <MenuItem value={9}>산업은행</MenuItem>
+                      <MenuItem value={10}>상호저축은행</MenuItem>
+                      <MenuItem value={11}>새마을금고</MenuItem>
+                      <MenuItem value={12}>수협</MenuItem>
+                      <MenuItem value={13}>신한은행</MenuItem>
+                      <MenuItem value={14}>신협</MenuItem>
+                      <MenuItem value={15}>씨티은행</MenuItem>
+                      <MenuItem value={16}>외한은행</MenuItem>
+                      <MenuItem value={17}>우리은행</MenuItem>
+                      <MenuItem value={18}>우체국</MenuItem>
+                      <MenuItem value={19}>전북은행</MenuItem>
+                      <MenuItem value={20}>제주은행</MenuItem>
+                      <MenuItem value={21}>카카오뱅크</MenuItem>
+                      <MenuItem value={22}>하나은행</MenuItem>
+                      <MenuItem value={23}>케이뱅크</MenuItem>
+                      <MenuItem value={24}>SC은행</MenuItem>
+                      <MenuItem value={25}>HSBC은행</MenuItem>
+                      <MenuItem value={26}>교보증권</MenuItem>
+                      <MenuItem value={27}>대신증권</MenuItem>
+                      <MenuItem value={28}>대우증권</MenuItem>
+                      <MenuItem value={29}>동부증권</MenuItem>
+                      <MenuItem value={30}>메리츠종합금융증권</MenuItem>
+                      <MenuItem value={31}>미래에셋증권</MenuItem>
+                      <MenuItem value={32}>부국증권</MenuItem>
+                      <MenuItem value={33}>삼성증권</MenuItem>
+                      <MenuItem value={34}>신영증권</MenuItem>
+                      <MenuItem value={35}>신한금융투자</MenuItem>
+                      <MenuItem value={36}>아이엠투자증권</MenuItem>
+                      <MenuItem value={37}>우리투자증권</MenuItem>
+                      <MenuItem value={38}>유안타증권</MenuItem>
+                      <MenuItem value={39}>유진투자증권</MenuItem>
+                      <MenuItem value={40}>이트레이드증권</MenuItem>
+                      <MenuItem value={41}>키움증권</MenuItem>
+                      <MenuItem value={42}>하나대투증권</MenuItem>
+                      <MenuItem value={43}>하이투자증권</MenuItem>
+                      <MenuItem value={44}>한국투자증권</MenuItem>
+                      <MenuItem value={45}>한화투자증권</MenuItem>
+                      <MenuItem value={46}>현대증권</MenuItem>
+                      <MenuItem value={47}>HMC투자증권</MenuItem>
+                      <MenuItem value={48}>LIG투자증권</MenuItem>
+                      <MenuItem value={49}>NH농협증권</MenuItem>
+                      <MenuItem value={50}>SK증권</MenuItem>
+                      <MenuItem value={51}>산림조합</MenuItem>
                     </Select>
                   </FormControl>
                 </div>
@@ -171,7 +221,10 @@ function LoginPage(props) {
                   className={classes.textField}
                   placeholder="Account Number"
                   // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                  // value={"01094552438"}
+                  value={context.getRegisterInfo.accountNumber}
+                  onChange={(e) => {
+                    context.setRegister_accountNumber(e.target.value);
+                  }}
                   style={{
                     margin: "0 24px",
                     marginTop: "12px",
@@ -218,7 +271,10 @@ function LoginPage(props) {
                   className={classes.textField}
                   placeholder="Account Holder"
                   // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                  // value={"01094552438"}
+                  value={context.getRegisterInfo.accountHolder}
+                  onChange={(e) => {
+                    context.setRegister_accountHolder(e.target.value);
+                  }}
                   style={{
                     margin: "0 24px",
                     marginTop: "12px",
@@ -256,7 +312,7 @@ function LoginPage(props) {
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    props.history.push("/investor/final");
+                    props.history.push("/login/register/seventh");
                   }}
                   style={{
                     width: "64px",

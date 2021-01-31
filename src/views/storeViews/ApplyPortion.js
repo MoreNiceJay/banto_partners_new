@@ -6,6 +6,7 @@ import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
+import { useAuth } from "../../AuthContext";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Slide from "@material-ui/core/Slide";
@@ -25,8 +26,8 @@ import PTextField from "../../components/PTextField.js";
 import SquareButton from "../../components/SquareButton.js";
 import PRadio from "../../components/PRadio.js";
 import Select from "@material-ui/core/Select";
-import InputBase from "@material-ui/core/InputBase";
 import PortionTextField from "../../components/PortionTextField.js";
+import InputBase from "@material-ui/core/InputBase";
 
 var _ = require("lodash");
 
@@ -155,12 +156,28 @@ const BootstrapInput = withStyles((theme) => ({
 
 function LoginPage(props) {
   const classes = useStyles(props);
-  const [value, setValue] = React.useState("female");
-  const context = useGlobal();
+  const [bSales, setBSales] = React.useState("false");
   const handleChange = (event) => {
-    setValue(event.target.value);
+    console.log(event.target.value);
+    setBSales(event.target.value);
+    if (event.target.value === "true") {
+      context.setStore_bSales(true);
+    } else {
+      context.setStore_bSales(false);
+    }
   };
+  const context = useGlobal();
+  const auth = useAuth();
   let percentage = _.range(0, 26);
+
+  React.useEffect(() => {
+    if (context.getStoreInfo.bSales) {
+      setBSales("true");
+    } else {
+      setBSales("false");
+    }
+    console.log("hi");
+  }, []);
 
   return (
     <>
@@ -173,7 +190,7 @@ function LoginPage(props) {
       >
         <div>
           <header>
-            <NavBar title="추가정보 입력" backLink="/store/apply/buy" />
+            <NavBar title="추가정보 입력" backLink="/store/apply/Address" />
           </header>
 
           <main>
@@ -189,11 +206,11 @@ function LoginPage(props) {
                   <RadioGroup
                     aria-label="gender"
                     name="gender1"
-                    value={value}
+                    value={bSales}
                     onChange={handleChange}
                   >
                     <FormControlLabel
-                      value="female"
+                      value="true"
                       control={
                         <Radio
                           icon={<CircleUnchecked />}
@@ -211,7 +228,7 @@ function LoginPage(props) {
                       label="Yes"
                     />
                     <FormControlLabel
-                      value="male"
+                      value="false"
                       control={
                         <Radio
                           icon={<CircleUnchecked />}
@@ -231,11 +248,17 @@ function LoginPage(props) {
                   </RadioGroup>
                 </FormControl>
               </div>
-              {value === "male" && (
+              {bSales === "true" && (
                 <>
                   <div style={{ marginTop: "40px" }}>
                     <InputTitle text="영업자의 전화번호" />
-                    <PTextField placeholder="Phone Number" />
+                    <PTextField
+                      placeholder="Phone Number"
+                      value={context.getStoreInfo.salesContact}
+                      onChange={(e) => {
+                        context.setStore_salesContact(e.target.value);
+                      }}
+                    />
                   </div>
                   <div style={{ marginTop: "60px" }}>
                     <InputTitle text="약속된 수익률" />
@@ -247,14 +270,13 @@ function LoginPage(props) {
                       placeholder="%"
                       // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
                       value={
-                        context.getInvestInfo.investAmount === 0
+                        context.getStoreInfo.salesPortion === 0
                           ? ""
-                          : context.getInvestInfo.investAmount
+                          : context.getStoreInfo.salesPortion
                       }
                       onChange={(e) => {
                         const value = Number(e.target.value);
-
-                        context.setInvest_investAmount(value);
+                        context.setStore_salesPortion(value);
                       }}
                     />
                   </div>

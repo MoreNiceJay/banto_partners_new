@@ -5,12 +5,17 @@ import { NavBar } from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
+import { useAuth } from "../../AuthContext";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Slide from "@material-ui/core/Slide";
 import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import CircleChecked from "@material-ui/icons/CheckCircleOutline";
+import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
+import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
   headerSpace: {
@@ -29,16 +34,80 @@ const useStyles = makeStyles((theme) => ({
 
 function LoginPage(props) {
   const classes = useStyles(props);
+  const [state, setState] = React.useState({
+    checkedA: true,
+    checkedB: true,
+    checkedF: true,
+    checkedG: true
+  });
+  const context = useGlobal();
+  const auth = useAuth();
+  const name = context.getRegisterInfo.name;
+  const birthdate = context.getRegisterInfo.birthdate;
+  const bank = context.getRegisterInfo.bank;
+  const accountNumber = context.getRegisterInfo.accountNumber;
+  const accountHolder = context.getRegisterInfo.accountHolder;
+  const bBusinessLicense = context.getRegisterInfo.bBusinessLicense;
+  const businessLicenseImg = context.getRegisterInfo.businessLicenseImg;
+
+  const handleChange = (event) => {
+    setState({ ...state, [event.target.name]: event.target.checked });
+  };
+  const BlackCheckbox = withStyles({
+    root: {
+      color: "black",
+      "&$checked": {
+        color: "black"
+      }
+    },
+    checked: {
+      color: "black"
+    }
+  })((props) => <Checkbox color="default" {...props} />);
   const data = [
     {
-      contact: "01094552438",
-      email: "morenicejay@gmail.com",
-      name: "이장협",
-      socialNumber: "890327",
-      bank: "하나은행",
-      accountNumber: "4119188707",
-      accountHolder: "이장협",
-      businessAccount: true
+      title: "성명",
+      contentText: context.getRegisterInfo.name,
+      link: "/login/register/fifth",
+      bUsing: true
+    },
+    {
+      title: "생년월일",
+      contentText: context.getRegisterInfo.birthdate,
+      link: "/login/register/fifth",
+      bUsing: true
+    },
+    {
+      title: "은행",
+      contentText: context.getRegisterInfo.bank,
+      link: "/login/register/sixth",
+      bUsing: true
+    },
+    {
+      title: "계좌번호",
+      contentText: context.getRegisterInfo.accountNumber,
+
+      link: "/login/register/sixth",
+      bUsing: true
+    },
+    {
+      title: "계좌주",
+      contentText: context.getRegisterInfo.accountHolder,
+      link: "/login/register/sixth",
+      bUsing: true
+    },
+    {
+      title: "사업자 유무",
+      contentText: context.getRegisterInfo.bBusinessLicense ? "Yes" : "No",
+      link: "/login/register/seventh",
+      bUsing: context.getRegisterInfo.bSales ? true : false
+    },
+    {
+      title: "사업등록증",
+      contentText: context.getRegisterInfo.businessLicenseImg,
+
+      link: "/login/register/seventh",
+      bUsing: context.getRegisterInfo.bInvestor ? true : false
     }
   ];
 
@@ -53,64 +122,129 @@ function LoginPage(props) {
       >
         <div>
           <header>
-            <NavBar title="추가정보 확인" backLink="/investor/invest" />
+            <NavBar title="추가정보 확인" backLink="/login/register/eighth" />
           </header>
 
           <main>
             <section className={classes.section}>
-              <div className={classes.amount}>
-                <p
-                  style={{
-                    fontStyle: "normal",
-                    fontWeight: "500",
-                    fontSize: "16px",
-                    margin: "16px 0 0 24px",
-                    color: "#000A12",
-                    opacity: "0.4"
-                  }}
-                >
-                  전화번호
-                </p>
+              {data.map((value) => {
+                return (
+                  <div>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirextion: "rows",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        margin: "16px 0 0 24px"
+                      }}
+                    >
+                      <p
+                        style={{
+                          fontStyle: "normal",
+                          fontWeight: "500",
+                          fontSize: "16px",
+                          color: "#000A12",
+                          opacity: "0.4"
+                        }}
+                      >
+                        {value.title}
+                      </p>
 
-                <p
-                  style={{
-                    fontFamily: "Montserrat",
-                    fontStyle: "normal",
-                    fontWeight: "bold",
-                    fontSize: "24px",
-                    margin: "16px 0 0 24px",
-                    color: "#000A12"
-                  }}
-                >
-                  01094552438
-                </p>
-              </div>
+                      <Link
+                        to={value.link}
+                        style={{
+                          textDecoration: "underline",
+                          fontFamily: "Noto Sans CJK KR",
+                          fontStyle: "normal",
+                          fontWeight: "500",
+                          fontSize: "12px",
+                          marginRight: "24px"
+                        }}
+                      >
+                        수정
+                      </Link>
+                    </div>
+                    <p
+                      style={{
+                        fontFamily: "Montserrat",
+                        fontStyle: "normal",
+                        fontWeight: "bold",
+                        fontSize: "24px",
+                        margin: "16px 0 60px 24px",
+                        color: "#000A12"
+                      }}
+                    >
+                      {value.contentText}
+                    </p>
+                  </div>
+                );
+              })}
             </section>
             <section>
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <Link
-                  style={{
-                    textDecoration: "underline",
-                    fontFamily: "Noto Sans CJK KR",
-                    fontStyle: "normal",
-                    fontWeight: "500",
-                    fontSize: "12px",
-                    marginRight: "24px"
-                  }}
-                >
-                  비밀번호를 잊으셨나요?
-                </Link>
-              </div>
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column"
                 }}
               >
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "rows",
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                  }}
+                >
+                  <FormControlLabel
+                    style={{ marginLeft: "14px" }}
+                    control={
+                      <BlackCheckbox
+                        checked={state.checkedA}
+                        onChange={handleChange}
+                        name="checkedA"
+                        icon={<CircleUnchecked />}
+                        checkedIcon={<CircleCheckedFilled />}
+                      />
+                    }
+                    label={
+                      <span
+                        style={{
+                          fontStyle: "normal",
+                          fontWeight: "normal",
+                          fontSize: "14px",
+                          lineHeight: "21px"
+                        }}
+                      >
+                        2020년 하반기 정책사항에 동의 합니다
+                      </span>
+                    }
+                  />
+                  <p style={{ textAlign: "right" }}>
+                    <Link
+                      style={{
+                        marginRight: "24px",
+                        textDecoration: "underline"
+                      }}
+                    >
+                      약관확인
+                    </Link>
+                  </p>
+                </div>
+
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    props.history.push("/investor/final");
+                    auth.updateExtraProfiles(
+                      name,
+                      birthdate,
+                      bank,
+                      accountNumber,
+                      accountHolder,
+                      bBusinessLicense,
+                      businessLicenseImg
+                    );
+                    props.history.push("/login/register/tenth");
                   }}
                   style={{
                     width: "calc(100% - 64px)",

@@ -16,7 +16,13 @@ export function GlobalProvider({ children }) {
   const [register, setRegister] = React.useState({
     phoneNumber: "",
     email: "",
-    password: ""
+    name: "",
+    birthdate: "",
+    bank: "",
+    accountNumber: "",
+    accountHolder: "",
+    bBusinessLicense: false,
+    businessLicenseImg: ""
   });
 
   const [store, setStore] = React.useState({
@@ -48,6 +54,7 @@ export function GlobalProvider({ children }) {
     bBuying: false,
     investor: { bInvestor: false, investorPhonenumber: "", portion: "" }
   });
+  // register
   async function setRegister_phoneNumber(a) {
     await setRegister((prevState) => {
       return { ...prevState, phoneNumber: a };
@@ -58,12 +65,48 @@ export function GlobalProvider({ children }) {
       return { ...prevState, email: a };
     });
   }
-  async function setRegister_password(a) {
+
+  async function setRegister_name(a) {
     await setRegister((prevState) => {
-      return { ...prevState, password: a };
+      return { ...prevState, name: a };
     });
   }
 
+  async function setRegister_birthdate(a) {
+    await setRegister((prevState) => {
+      return { ...prevState, birthdate: a };
+    });
+  }
+
+  async function setRegister_bank(a) {
+    await setRegister((prevState) => {
+      return { ...prevState, bank: a };
+    });
+  }
+
+  async function setRegister_accountNumber(a) {
+    await setRegister((prevState) => {
+      return { ...prevState, accountNumber: a };
+    });
+  }
+
+  async function setRegister_accountHolder(a) {
+    await setRegister((prevState) => {
+      return { ...prevState, accountHolder: a };
+    });
+  }
+
+  async function setRegister_bBusinessLicense(a) {
+    await setRegister((prevState) => {
+      return { ...prevState, bBusinessLicense: a };
+    });
+  }
+  async function setRegister_businessLicenseImg(a) {
+    await setRegister((prevState) => {
+      return { ...prevState, businessLicenseImg: a };
+    });
+  }
+  // store
   async function setStore_StoreOwnerPhonenumber(a) {
     await setStore((prevState) => {
       return { ...prevState, storeOwnerPhoneNumber: a };
@@ -117,8 +160,6 @@ export function GlobalProvider({ children }) {
     });
   }
 
-  //
-
   async function setStore_bInvestor(a) {
     await setStore((prevState) => {
       return {
@@ -144,6 +185,7 @@ export function GlobalProvider({ children }) {
       };
     });
   }
+  // invest
 
   async function setInvest_investAmount(a) {
     await setInvest((prevState) => {
@@ -161,7 +203,7 @@ export function GlobalProvider({ children }) {
       return { ...prevState, depositor: a };
     });
   }
-
+  // sales
   async function setSales_StoreOwnerPhonenumber(a) {
     await setSalesRegisterationInfo((prevState) => {
       return { ...prevState, storeOwnerPhoneNumber: a };
@@ -225,18 +267,25 @@ export function GlobalProvider({ children }) {
     <>
       <GlobalContext.Provider
         value={{
+          // getUser: userInfo,
+          // setUser: setUser,
+          // register
           getRegisterInfo: register,
           setRegister_email,
           setRegister_phoneNumber,
-
-          getStoreInfo: store,
-
+          setRegister_name,
+          setRegister_birthdate,
+          setRegister_bank,
+          setRegister_accountNumber,
+          setRegister_accountHolder,
+          setRegister_bBusinessLicense,
+          setRegister_businessLicenseImg,
+          // invest
           getInvestInfo: invest,
           setInvest_investAmount,
           setInvest_totalPrice,
           setInvest_depositor,
-          getUser: userInfo,
-          setUser: setUser,
+          // sales
           salesInfo: salesRegisterationInfo,
           setSales_StoreOwnerPhonenumber,
           setSales_StorePhoneNumber,
@@ -248,8 +297,8 @@ export function GlobalProvider({ children }) {
           setSales_BInvestor,
           setSales_InvestorPhoneNumber,
           setSales_InvestorPortion,
-
-          //
+          // Store
+          getStoreInfo: store,
           setStore_StoreOwnerPhonenumber,
           setStore_StorePhoneNumber,
           setStore_StoreName,

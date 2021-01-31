@@ -10,7 +10,12 @@ import Paper from "@material-ui/core/Paper";
 import Slide from "@material-ui/core/Slide";
 import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import CircleChecked from "@material-ui/icons/CheckCircleOutline";
+import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
+import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
   headerSpace: {
@@ -29,6 +34,27 @@ const useStyles = makeStyles((theme) => ({
 
 function LoginPage(props) {
   const classes = useStyles(props);
+  const [state, setState] = React.useState({
+    checkedA: false,
+    checkedB: false,
+    checkedF: false,
+    checkedG: false
+  });
+  const handleChange = (event) => {
+    setState({ ...state, [event.target.name]: event.target.checked });
+  };
+
+  const BlackCheckbox = withStyles({
+    root: {
+      color: "black",
+      "&$checked": {
+        color: "black"
+      }
+    },
+    checked: {
+      color: "black"
+    }
+  })((props) => <Checkbox color="default" {...props} />);
 
   return (
     <>
@@ -41,7 +67,7 @@ function LoginPage(props) {
       >
         <div>
           <header>
-            <NavBar title="추가정보입력" backLink="/investor/invest" />
+            <NavBar title="정책동의 " backLink="/login/register/third" />
           </header>
 
           <main>
@@ -58,107 +84,141 @@ function LoginPage(props) {
                     margin: "16px 0 0 24px"
                   }}
                 >
-                  1/5
+                  3/3
                 </p>
                 <p
                   style={{
+                    fontFamily: "Montserrat",
                     fontStyle: "normal",
-                    fontWeight: "500",
+                    fontWeight: "700",
                     fontSize: "16px",
+                    opacity: "0.8",
                     margin: "16px 0 0 24px"
                   }}
                 >
-                  이메일
+                  정책 동의
                 </p>
 
-                <TextField
-                  variant="outlined"
-                  id="standard-full-width"
-                  // label="Phone Number"
-                  className={classes.textField}
-                  placeholder="E-mail"
-                  // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                  // value={"01094552438"}
+                <div style={{ marginTop: "40px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "rows",
+                      alignItems: "center",
+                      justifyContent: "space-between"
+                    }}
+                  >
+                    <FormControlLabel
+                      style={{ marginLeft: "12px" }}
+                      control={
+                        <BlackCheckbox
+                          checked={state.checkedA}
+                          onChange={handleChange}
+                          name="checkedA"
+                          icon={<CircleUnchecked />}
+                          checkedIcon={<CircleChecked />}
+                        />
+                      }
+                      label={
+                        <span
+                          style={{
+                            fontStyle: "normal",
+                            fontWeight: "normal",
+                            fontSize: "14px",
+                            lineHeight: "21px"
+                          }}
+                        >
+                          2020년 하반기 정책사항에 동의 합니다
+                        </span>
+                      }
+                    />
+                    <p style={{}}>
+                      <Link
+                        style={{
+                          marginRight: "32px",
+                          textDecoration: "underline"
+                        }}
+                      >
+                        {" "}
+                        약관확인
+                      </Link>
+                    </p>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "rows",
+                      alignItems: "center",
+                      justifyContent: "space-between"
+                    }}
+                  >
+                    <FormControlLabel
+                      style={{ marginLeft: "12px" }}
+                      control={
+                        <BlackCheckbox
+                          checked={state.checkedA}
+                          onChange={handleChange}
+                          name="checkedA"
+                          icon={<CircleUnchecked />}
+                          checkedIcon={<CircleChecked />}
+                        />
+                      }
+                      label={
+                        <span
+                          style={{
+                            fontStyle: "normal",
+                            fontWeight: "normal",
+                            fontSize: "14px",
+                            lineHeight: "21px"
+                          }}
+                        >
+                          2020년 하반기 정책사항에 동의 합니다
+                        </span>
+                      }
+                    />
+                    <p style={{}}>
+                      <Link
+                        style={{
+                          marginRight: "32px",
+                          textDecoration: "underline"
+                        }}
+                      >
+                        {" "}
+                        약관확인
+                      </Link>
+                    </p>
+                  </div>
+                </div>
+                <div
                   style={{
-                    margin: "0 24px",
-                    marginTop: "12px",
-                    width: "calc(100% - 64px)"
+                    display: "flex",
+                    justifyContent: "flex-end"
                   }}
-                  InputLabelProps={{
-                    style: {}
-                  }}
-                  inputProps={{
-                    style: {
-                      paddingLeft: "0px",
-                      fontSize: "26px",
-                      fontFamily: "Montserrat",
-                      fontWeight: "bold",
-
-                      boxSizing: "border-box",
-                      marginTop: "10px"
+                >
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      props.history.push("/login/register/final");
+                    }}
+                    disabled={
+                      !state.checkedA && !state.checkedB && !state.checkC
                     }
-                  }}
-                  // FormHelperTextProps={{
-                  //   style: {
-                  //     marginTop: "12px",
-                  //     fontSize: "14px"
-                  //   }
-                  // }}
-                />
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end"
-                }}
-              >
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    props.history.push("/investor/final");
-                  }}
-                  style={{
-                    height: "32px",
-                    margin: "24px 32px",
-                    borderRadius: "8px",
-                    border: "2px solid #000A12",
-                    fontFamily: "Montserrat",
-                    fontStyle: "normal",
-                    fontWeight: "normal",
-                    fontSize: "12px",
-                    background: "#000A12",
-                    color: "white"
-                  }}
-                >
-                  인증메일 전송
-                </Button>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end"
-                }}
-              >
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    props.history.push("/investor/final");
-                  }}
-                  style={{
-                    width: "64px",
-                    height: "64px",
-                    margin: "24px 32px",
-                    borderRadius: "15px",
-                    border: "2px solid #000A12",
-                    fontFamily: "Montserrat",
-                    fontStyle: "normal",
-                    fontWeight: "600",
-                    fontSize: "12px",
-                    alignText: "right"
-                  }}
-                >
-                  next
-                </Button>
+                    style={{
+                      width: "64px",
+                      height: "64px",
+                      margin: "24px 32px",
+                      borderRadius: "15px",
+                      border: "2px solid #000A12",
+                      fontFamily: "Montserrat",
+                      fontStyle: "normal",
+                      fontWeight: "600",
+                      fontSize: "12px",
+                      alignText: "right"
+                    }}
+                  >
+                    next
+                  </Button>
+                </div>
               </div>
             </section>
           </main>

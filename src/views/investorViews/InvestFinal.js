@@ -11,39 +11,40 @@ import Paper from "@material-ui/core/Paper";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import { green } from "@material-ui/core/colors";
 import CircleChecked from "@material-ui/icons/CheckCircleOutline";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import { Link } from "react-router-dom";
 import Slide from "@material-ui/core/Slide";
 import { useGlobal } from "../../globalContext";
-
 const useStyles = makeStyles((theme) => ({
   card: { backgroundColor: "black", margin: "12px 16px", borderRadius: "15px" },
   description: {
     textAlign: "center",
     fontStyle: "normal",
-    fontWeight: "bold",
-    fontSize: "14px"
+    fontWeight: "700",
+    fontSize: "14px",
+    marginTop: "16px"
   },
   card2: {
-    backgroundColor: "white",
+    backgroundColor: "#F7F7F7",
     margin: "12px 16px",
     borderRadius: "15px",
-    border: "2px solid #000A12",
+    border: "2px solid #F7F7F7",
     marginTop: "32px"
   },
   bankInfo: {
     display: "flex",
     flexDirection: "column",
     "& li": { marginTop: "32px" },
-    textAlign: "center"
+    textAlign: "left",
+    marginLeft: "24px"
   },
   bankInfoDescription: {
     fontWeight: "500",
     fontSize: "14px",
-    lineHeight: "21px"
+    lineHeight: "21px",
+    opacity: "0.8"
   },
   bankInfoInfo: {
     fontWeight: "900",
@@ -91,7 +92,7 @@ function InvestFinal(props) {
       >
         <div>
           <header>
-            <NavBar title="투자하기" backLink="/investor/invest" />
+            <NavBar title="투자하기" backLink="/investor/depositor" />
           </header>
 
           <main>
@@ -101,9 +102,9 @@ function InvestFinal(props) {
                   <p
                     style={{
                       color: "#5DDEF4",
-                      fontWeight: "500",
+                      fontWeight: "400",
                       fontSize: "16px",
-                      textAlign: "center"
+                      textAlign: "left"
                     }}
                   >
                     총 금액
@@ -118,10 +119,36 @@ function InvestFinal(props) {
                       lineHeight: "34px",
                       textAlign: "right",
                       marginTop: "16px",
-                      textAlign: "center"
+                      textAlign: "left"
                     }}
                   >
                     {numberWithCommas(context.getInvestInfo.totalPrice) + " 원"}
+                  </p>
+                  <p
+                    style={{
+                      color: "#5DDEF4",
+                      fontWeight: "400",
+                      fontSize: "16px",
+                      marginTop: "56px",
+                      textAlign: "left"
+                    }}
+                  >
+                    입금자명
+                  </p>
+                  <p
+                    style={{
+                      color: "#5DDEF4",
+                      fontFamily: "Montserrat",
+                      fontStyle: "normal",
+                      fontWeight: "bold",
+                      fontSize: "32px",
+                      lineHeight: "34px",
+                      textAlign: "right",
+                      marginTop: "16px",
+                      textAlign: "left"
+                    }}
+                  >
+                    {numberWithCommas(context.getInvestInfo.depositor)}
                   </p>
                 </div>
               </Paper>
@@ -149,16 +176,23 @@ function InvestFinal(props) {
                     </ul>
                   </div>
                 </Paper>
-                <div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "rows",
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                  }}
+                >
                   <FormControlLabel
-                    style={{ marginLeft: "24px" }}
+                    style={{ marginLeft: "14px" }}
                     control={
                       <GreenCheckbox
                         checked={state.checkedA}
                         onChange={handleChange}
                         name="checkedA"
                         icon={<CircleUnchecked />}
-                        checkedIcon={<CircleChecked />}
+                        checkedIcon={<CircleCheckedFilled />}
                       />
                     }
                     label={
@@ -177,11 +211,10 @@ function InvestFinal(props) {
                   <p style={{ textAlign: "right" }}>
                     <Link
                       style={{
-                        marginRight: "32px",
+                        marginRight: "24px",
                         textDecoration: "underline"
                       }}
                     >
-                      {" "}
                       약관확인
                     </Link>
                   </p>
@@ -203,6 +236,9 @@ function InvestFinal(props) {
                     fontSize: "18px",
                     color: "#ECEFF1",
                     backgroundColor: "black"
+                  }}
+                  onClick={() => {
+                    props.history.push("/investor/done");
                   }}
                 >
                   완료

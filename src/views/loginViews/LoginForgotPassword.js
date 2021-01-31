@@ -47,15 +47,12 @@ function LoginPage(props) {
         unmountOnExit
       >
         <div style={{ backgroundColor: "#EEEEEE", height: "100vh" }}>
+          {" "}
           <header>
-            <div className={classes.emptySpace} />
-            <div className={classes.headerSpace}>
-              <span className={classes.headerTitle}>로그인</span>
-              <span />
-            </div>
+            <NavBar title="추가정보 입력" backLink="/login/login" />
+            <span />
           </header>
-
-          <main style={{ backgroundColor: "#EEEEEE" }}>
+          <main>
             <section className={classes.section}>
               <div className={classes.amount}>
                 {/* <p
@@ -76,8 +73,7 @@ function LoginPage(props) {
                     fontStyle: "normal",
                     fontWeight: "500",
                     fontSize: "16px",
-                    margin: "0 0 0 24px",
-                    paddingTop: "16px"
+                    margin: "16px 0 0 24px"
                   }}
                 >
                   이메일
@@ -122,58 +118,11 @@ function LoginPage(props) {
                   // }}
                 />
               </div>
-              <p
-                style={{
-                  fontStyle: "normal",
-                  fontWeight: "500",
-                  fontSize: "16px",
-                  margin: "60px 0 0 24px"
-                }}
-              >
-                비밀번호
-              </p>
-
-              <TextField
-                variant="outlined"
-                id="standard-full-width"
-                // label="Phone Number"
-                className={classes.textField}
-                placeholder="Password"
-                type="password"
-                // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                style={{
-                  margin: "0 24px",
-                  marginTop: "12px",
-                  width: "calc(100% - 64px)"
-                }}
-                InputLabelProps={{
-                  style: {}
-                }}
-                inputProps={{
-                  style: {
-                    paddingLeft: "0px",
-                    fontSize: "26px",
-                    fontFamily: "Montserrat",
-                    fontWeight: "bold",
-
-                    boxSizing: "border-box",
-                    marginTop: "10px"
-                  }
-                }}
-                // FormHelperTextProps={{
-                //   style: {
-                //     marginTop: "12px",
-                //     fontSize: "14px"
-                //   }
-                // }}
-              />
             </section>
             <section>
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              {/* <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <Link
-                  to="/login/forgotpassword"
+                  to=""
                   style={{
                     textDecoration: "underline",
                     fontFamily: "Noto Sans CJK KR",
@@ -183,9 +132,9 @@ function LoginPage(props) {
                     marginRight: "24px"
                   }}
                 >
-                  비밀번호를 잊으셨나요?
+                 아이디가 생각나지 않으세요?
                 </Link>
-              </div>
+              </div> */}
               <div
                 style={{
                   display: "flex",
@@ -195,7 +144,15 @@ function LoginPage(props) {
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    props.history.push("/login/register/first");
+                    auth
+                      .sendPasswordResetEmail(email)
+                      .then(() => {
+                        window.alert("이메일로 링크가 전송됐습니다");
+                        props.history.push("/login/login");
+                      })
+                      .catch((error) => {
+                        window.alert(error.message);
+                      });
                   }}
                   style={{
                     width: "calc(100% - 64px)",
@@ -206,12 +163,13 @@ function LoginPage(props) {
                     fontFamily: "Noto Sans CJK KR",
                     fontStyle: "normal",
                     fontWeight: "500",
-                    fontSize: "18px"
+                    fontSize: "18px",
+                    backgroundColor: "white"
                   }}
                 >
-                  회원가입
+                  이메일로 링크 전송
                 </Button>
-                <Button
+                {/* <Button
                   variant="outlined"
                   onClick={() => {
                     setLoding(true);
@@ -246,7 +204,7 @@ function LoginPage(props) {
                   }}
                 >
                   로그인
-                </Button>
+                </Button> */}
 
                 {auth.isLogin ?? (
                   <Link

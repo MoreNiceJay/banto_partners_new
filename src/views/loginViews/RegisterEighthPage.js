@@ -57,7 +57,7 @@ function LoginPage(props) {
     jason: false,
     antoine: false
   });
-
+  const context = useGlobal();
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
@@ -76,7 +76,7 @@ function LoginPage(props) {
       >
         <div>
           <header>
-            <NavBar title="추가정보 입력" backLink="/investor/invest" />
+            <NavBar title="추가정보 입력" backLink="/login/register/seventh" />
           </header>
 
           <main>
@@ -229,7 +229,7 @@ function LoginPage(props) {
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    props.history.push("/investor/final");
+                    props.history.push("/login/register/nineth");
                   }}
                   style={{
                     width: "64px",

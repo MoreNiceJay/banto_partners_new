@@ -13,7 +13,8 @@ const useStyles = makeStyles((theme) => ({
     fontStyle: "normal",
     fontWeight: "600",
     fontSize: "12px",
-    border: "2px solid #000A12"
+    border: "2px solid #000A12",
+    backgroundColor: "white"
 
     // "& .Mui-disabled": {
     //   border: "2px solid red"

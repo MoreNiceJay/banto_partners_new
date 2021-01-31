@@ -10,6 +10,7 @@ import Paper from "@material-ui/core/Paper";
 import Slide from "@material-ui/core/Slide";
 import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
+import { useAuth } from "../../AuthContext";
 
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
@@ -29,7 +30,10 @@ const useStyles = makeStyles((theme) => ({
 
 function LoginPage(props) {
   const classes = useStyles(props);
-
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
+  const auth = useAuth();
+  const context = useGlobal();
   return (
     <>
       <Slide
@@ -41,7 +45,7 @@ function LoginPage(props) {
       >
         <div>
           <header>
-            <NavBar title="회원가입" backLink="/investor/invest" />
+            <NavBar title="회원가입" backLink="/login/register/second" />
           </header>
 
           <main>
@@ -58,7 +62,7 @@ function LoginPage(props) {
                     margin: "16px 0 0 24px"
                   }}
                 >
-                  3/8
+                  3/3
                 </p>
                 <p
                   style={{
@@ -76,9 +80,13 @@ function LoginPage(props) {
                   id="standard-full-width"
                   // label="Phone Number"
                   className={classes.textField}
-                  placeholder="Phone Number"
+                  placeholder="Password"
+                  type="password"
                   // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                  // value={"01094552438"}
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
                   style={{
                     margin: "0 24px",
                     marginTop: "12px",
@@ -123,6 +131,11 @@ function LoginPage(props) {
                 // label="Phone Number"
                 className={classes.textField}
                 placeholder="Confirm Password"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                }}
                 // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
                 // value={"01094552438"}
                 style={{
@@ -160,7 +173,32 @@ function LoginPage(props) {
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    props.history.push("/investor/final");
+                    if (confirmPassword !== password) {
+                      alert("비밀번호와 확인비밀번호가 같지 않습니다");
+                      return;
+                    }
+
+                    auth
+                      .singUpWithEmail(
+                        context.getRegisterInfo.email,
+                        confirmPassword
+                      )
+                      .then((doc) => {
+                        console.log("닥", doc);
+                        doc.set({
+                          phoneNumber: context.getRegisterInfo.phoneNumber
+                        });
+                        return Promise.resolve();
+                      })
+
+                      .then(() => {
+                        props.history.push("/login/register/fourth");
+                      })
+                      .catch((error) => {
+                        var errorCode = error.code;
+                        var errorMessage = error.message;
+                        window.alert(errorMessage);
+                      });
                   }}
                   style={{
                     width: "64px",
