@@ -49,7 +49,7 @@ export const MenuList = (props) => {
   ];
   return (
     <>
-      <section className={classes.roleMenu}>
+      <section className={classes.roleMenu} {...props}>
         {props.menuList.map((value) => {
           return (
             <Link to={value.link}>

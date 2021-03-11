@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import firebase from "./firebaseConfig";
 import moment from "moment";
 var db = firebase.firestore();
-
+import * as common from "./common";
 export const AuthContext = React.createContext();
 export function useAuth() {
   return React.useContext(AuthContext);
@@ -14,46 +14,96 @@ export const AuthProvider = ({ children }) => {
   let db = firebase.firestore();
   let userRef = db.collection("Users");
   const [user, setUser] = useState(null);
-  const [userInfo, setUserInfo] = useState(null);
+  const [userExtraInfo, setUserExtraInfo] = useState(null);
+  const [userId, setUserId] = useState(null);
+
   const [isLogin, setIsLogin] = useState(false);
-  const [bUserInfoAdded, setBUserInfoAdded] = useState(false);
+  const [userStations, setUserStations] = useState([]);
+  const [pending, setPending] = useState(true);
+  const [secondPending, setSecondPending] = useState(true);
+  //필요있는지 생각해보기
+  const [newMessageCount, setNewMessageCount] = useState(0);
+  const [bExtraInfo, setBExtraInfo] = useState(true);
   var auth = firebase.auth();
 
-  React.useEffect(() => {
-    if (!user) {
-      return;
-    }
-    var docRef = db.collection("Users").doc(user.email);
-
-    docRef
-      .get()
-      .then(function (doc) {
-        if (doc.exists) {
-          console.log("Document data:", doc.data());
-          setUserInfo(doc.data());
-          console.log("Document data:", doc.data().buyer[0]);
-          doc.data().buyer.map((v) => {
-            console.log(v);
-          });
-        } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      setUser(user);
+    });
+  }, []);
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const fetchUserStatus = async () => {
+        try {
+          const userRef = db.collection("Users").doc(user.email);
+          const doc = await userRef.get();
+          let otherInfo = {};
+          if (doc.exists) {
+            otherInfo = doc.data();
+          }
+          return { code: 200, data: otherInfo };
+        } catch (e) {
+          console.log("5", e);
         }
-      })
-      .catch(function (error) {
-        console.log("Error getting document:", error);
-      });
+      };
+      const fetchStations = async (userId) => {
+        try {
+          let stationRef = db.collection("Stations");
+          let query = stationRef.where("buyer", "==", userId);
+          let array = [];
+          const querySnapshot = await query.get();
+          querySnapshot.forEach(function (doc) {
+            let data = doc.data();
+            array.push(data);
+          });
+          return { code: 200, data: array };
+        } catch (e) {
+          return { code: 400, msg: "시스템에러 고객센터에 문의해주세요" };
+        }
+      };
+
+      if (!user) {
+        return;
+      }
+      const userInfo = await fetchUserStatus();
+
+      if (userInfo.code !== 200) {
+        console.log(userInfo.msg);
+        return;
+      }
+      console.log("엑스트라인포", userInfo.data);
+      setUserExtraInfo(userInfo.data);
+      const userStations = await fetchStations(user.email);
+      if (userStations.code !== 200) {
+        console.log(userStations.msg);
+        return;
+      }
+      console.log(userStations.data);
+      setUserStations(userStations.data);
+      setPending(false);
+    };
+
+    fetchUserInfo();
   }, [user]);
-  const signOut = () => {
+
+  if (pending) {
+    return <>Loading...</>;
+  }
+
+  const signOut = async () => {
     firebase
       .auth()
       .signOut()
       .then(function () {
         // Sign-out successful.
-        setUserStatus();
+        fetchUserStatus();
+
+        // delete all context info
+        return { code: 200 };
       })
       .catch(function (error) {
-        // An error happened.
+        // An error happened
+        return { code: 400, msg: "시스템 에러 고객센터에 문의해주세요" };
       });
   };
 
@@ -68,7 +118,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   //디비 관련 함수 끝
-  const updateExtraProfiles = (
+  const updateExtraProfiles = async ({
     name,
     birthdate,
     bank,
@@ -76,20 +126,29 @@ export const AuthProvider = ({ children }) => {
     accountHolder,
     bBusinessLicense,
     businessLicenseImg
-  ) => {
-    return new Promise((resolve, reject) => {
-      var postData = {
-        bExtraProfileUpdated: true,
-        name,
-        birthdate,
-        bank,
-        accountNumber,
-        accountHolder,
-        bBusinessLicense,
-        businessLicenseImg
-      };
-      userRef.doc(user.email).update(postData);
-    });
+  }) => {
+    let user = firebase.auth().currentUser;
+    if (!user) {
+      return { code: 400, message: "로그인이 필요합니다" };
+      return;
+    }
+
+    var postData = {
+      bExtraInfoUpdated: true,
+      name,
+      birthdate,
+      bank,
+      accountNumber,
+      accountHolder,
+      bBusinessLicense,
+      businessLicenseImg
+    };
+    try {
+      await userRef.doc(user.email).update(postData);
+    } catch (e) {
+      return { code: 400, msg: "시스템 에러, 다시시도해 주세요" };
+    }
+    return { code: 200 };
   };
 
   const sendPasswordResetEmail = (email) => {
@@ -121,8 +180,11 @@ export const AuthProvider = ({ children }) => {
         .auth()
         .createUserWithEmailAndPassword(email, password)
         .then(() => {
-          setUserStatus();
-          userRef.doc(email).set({ bExtraProfileUpdated: false });
+          setUserExtraInfo();
+          userRef.doc(email).set({
+            bExtraInfoUpdated: false,
+            id: common.shuffle(7)
+          });
           resolve(userRef.doc(email));
         })
         .catch((error) => {
@@ -132,94 +194,128 @@ export const AuthProvider = ({ children }) => {
         });
     });
   };
-  const singInWithEmail = (email, password) => {
-    return new Promise((resolve, reject) => {
-      firebase
+  const singInWithEmail = async (email, password) => {
+    try {
+      let value = await firebase
         .auth()
-        .signInWithEmailAndPassword(email, password)
-        .then((value) => {
-          setUserStatus();
-
-          resolve(user);
-        })
-        .catch(function (error) {
-          // Handle Errors here.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          // window.alert(errorMessage);
-          // ...
-          console.log(errorCode);
-          console.log(errorMessage);
-
-          reject(error);
-        });
-    });
+        .signInWithEmailAndPassword(email, password);
+      console.log(value);
+    } catch (error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // window.alert(errorMessage);
+      // ...
+      console.log("1", errorCode);
+      console.log("2", errorMessage);
+    }
   };
 
-  const setUserStatus = () => {
-    firebase.auth().onAuthStateChanged(function (user) {
-      if (user) {
-        // User is signed in.
-        var displayName = user.displayName;
-        var email = user.email;
-        var emailVerified = user.emailVerified;
-        var photoURL = user.photoURL;
-        var isAnonymous = user.isAnonymous;
-        var uid = user.uid;
-        var providerData = user.providerData;
-        // ...
-
-        console.log("로그인!", displayName, email, emailVerified, uid);
-        console.log("로그인!", user);
-        setUser(user);
-        setIsLogin(true);
-      } else {
-        // User is signed out.
-        // ...
-        setUser(null);
-        setIsLogin(false);
-
-        console.log("로그아웃...");
+  const fetchUserStatus = async () => {
+    try {
+      const userRef = db.collection("Users").doc(user.email);
+      const doc = await userRef.get();
+      let otherInfo = {};
+      if (doc.exists) {
+        otherInfo = doc.data();
       }
+      return { code: 200, data: otherInfo };
+    } catch (e) {
+      console.log("5", e);
+    }
+  };
+
+  const updateUserPhoneNumber = async (userId, phoneNumber) => {
+    try {
+      await db.collection("Users").doc(userId).update({ phoneNumber });
+      return { code: 200 };
+    } catch (e) {
+      console.log(e);
+      return { code: 400, msg: "시스템 오류 다시 시도해주세요" };
+    }
+  };
+  const updateApplication = async (role, application) => {
+    return new Promise((resolve, reject) => {
+      let user = firebase.auth().currentUser;
+
+      if (!user) {
+        reject({ code: 400, message: "로그인이 필요합니다" });
+        return;
+      }
+      if (role === "BUYER") {
+        let today = String(new Date());
+        application.applicationId = uuidv4();
+        application.updated = today;
+        application.status = "WAITING";
+        application.role = role;
+        db.collection("BuyerApplications")
+          .doc(`${role}_${today}_${user.email}`)
+          .set(application);
+        resolve({ code: 200 });
+        return;
+      }
+
+      let today = String(new Date());
+      application.applicationId = uuidv4();
+      application.updated = today;
+      application.status = "WAITING";
+      application.role = role;
+      userRef
+        .doc(user.email)
+        .collection("Applications")
+        .doc(`${role}_${today}_${application.storeName}`)
+        .set(application);
+      resolve({ code: 200 });
+      return;
     });
   };
-
-  const updateUserPhoneNumber = (phoneNumber) => {
-    var user = firebase.auth().currentUser;
-
-    user
-      .updateProfile({
-        photoURL: "https://example.com/jane-q-user/profile.jpg"
-      })
-      .then(function () {
-        // Update successful.
-      })
-      .catch(function (error) {
-        // An error happened.
+  const fetchStations = async (userId) => {
+    try {
+      let stationRef = db.collection("Stations");
+      let query = stationRef.where("buyer", "==", userId);
+      let array = [];
+      const querySnapshot = await query.get();
+      querySnapshot.forEach(function (doc) {
+        let data = doc.data();
+        array.push(data);
       });
+      return { code: 200, data: array };
+    } catch (e) {
+      return { code: 400, msg: "시스템에러 고객센터에 문의해주세요" };
+    }
   };
 
-  useEffect(() => {
-    setUserStatus();
-  }, [user]);
-
+  function uuidv4() {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
+      c
+    ) {
+      var r = (Math.random() * 16) | 0,
+        v = c == "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
   return (
     <AuthContext.Provider
       value={{
         user,
-        userInfo,
+        userId,
         isLogin,
-        bUserInfoAdded,
+        userExtraInfo,
+        newMessageCount,
+        bExtraInfo,
         signOut,
         sendPasswordResetEmail,
         sendEmailVerfication,
+        updateUserPhoneNumber,
         singUpWithEmail,
         singInWithEmail,
-        setUserStatus,
+        // setUserExtraInfo,
         updateExtraProfiles,
-
+        updateApplication,
         // 디비 업데이트 함수
-        createStoreApplication
+        createStoreApplication,
+        userStations,
+        fUser: firebase.auth()
       }}
     >
       {children}

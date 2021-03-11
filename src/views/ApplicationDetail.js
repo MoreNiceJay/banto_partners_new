@@ -44,13 +44,14 @@ function LoginPage(props) {
       const query = qs.parse(props.location.search, {
         ignoreQueryPrefix: true // /about?details=true 같은 쿼리 주소의 '?'를 생략해주는 옵션입니다.
       });
-      const stationId = query.stationId;
-      setId(stationId);
-      console.log("스테이션 아이디", stationId);
+      const applicationId = query.applicationId;
+      setId(applicationId);
       let db = firebase.firestore();
       const applicationRef = db
-        .collection("Stations")
-        .where("stationId", "==", stationId);
+        .collection("Users")
+        .doc(auth.user.email)
+        .collection("Applications")
+        .where("applicationId", "==", applicationId);
 
       const querySnapshot = await applicationRef.get();
       let data;
@@ -108,26 +109,6 @@ function LoginPage(props) {
       data: apiData && apiData.storePhoneNumber,
       link: "/sales/regist/contact"
     },
-    {
-      title: "설치 날짜",
-      data: apiData && apiData.storePhoneNumber,
-      link: "/sales/regist/contact"
-    },
-    {
-      title: "영업 시간",
-      data: apiData && apiData.storePhoneNumber,
-      link: "/sales/regist/contact"
-    },
-    {
-      title: "상태",
-      data: apiData && apiData.storePhoneNumber,
-      link: "/sales/regist/contact"
-    },
-    {
-      title: "잔여 배터리",
-      data: apiData && apiData.storePhoneNumber,
-      link: "/sales/regist/contact"
-    },
 
     {
       title: "가맹점 수익",
@@ -167,10 +148,7 @@ function LoginPage(props) {
       >
         <div>
           <header>
-            <NavBar
-              title="스테이션 정보"
-              backLink="/table/station?role=sales"
-            />
+            <NavBar title="스테이션 정보" backLink="application?role=sales" />
           </header>
 
           <main>
@@ -283,7 +261,7 @@ function LoginPage(props) {
                 <Button
                   variant="outlined"
                   onClick={async () => {
-                    if (window.confirm("설치된 스테이션을 회수 하시겠습니까")) {
+                    if (window.confirm("신청서를 삭제하시겠습니까")) {
                       const result = await common.deleteApplication(id);
                       if (result.code !== 200) {
                         alert(result.msg);
@@ -308,7 +286,7 @@ function LoginPage(props) {
                     color: "white"
                   }}
                 >
-                  회수하기
+                  삭제하기
                 </Button>
               </div>
             </section>

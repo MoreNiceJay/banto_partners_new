@@ -21,7 +21,6 @@ import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
-import * as common from "../common";
 import qs from "qs";
 
 const useStyles = makeStyles((theme) => ({
@@ -74,8 +73,8 @@ function LoginPage(props) {
   console.log("어스", auth.user);
 
   React.useEffect(() => {
-    const fetchStationDataAsync = async () => {
-      const result = await common.fetchStations(auth.user.email, "");
+    const fetchApplicationDataAsync = async () => {
+      const result = await context.fetchApplications(auth.user.email, "");
 
       if (result.code !== 200) {
         // alert(result.msg);
@@ -83,6 +82,7 @@ function LoginPage(props) {
       if (!result.data) {
         // alert("No applications");
       }
+      console.log("1", result.data);
       let dataAdded = result.data && result.data;
 
       setData({
@@ -90,7 +90,7 @@ function LoginPage(props) {
         pageNumber: apiData.pageNumber + 1
       });
     };
-    fetchStationDataAsync();
+    fetchApplicationDataAsync();
   }, [auth.userId]);
   const BlackCheckbox = withStyles({
     root: {
@@ -137,7 +137,7 @@ function LoginPage(props) {
             zIndex: "99999"
           }}
         >
-          <NavBar title="스테이션" backLink="/salesmenu" />
+          <NavBar title="신청서 정보" backLink="/main" />
         </header>
 
         {/* </div> */}
@@ -158,10 +158,22 @@ function LoginPage(props) {
                       style={{ height: "90px" }}
                       onClick={() => {
                         props.history.push(
-                          `/table/stationdetail?stationId=${i.stationId}`
+                          `/table/applicationdetail?applicationId=${i.applicationId}`
                         );
                       }}
                     >
+                      <TableCell
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: "bold",
+                          verticalAlign: "top"
+                        }}
+                        component="th"
+                        scope="row"
+                      >
+                        <p>2020.01.23</p>
+                      </TableCell>
+
                       <TableCell
                         style={{ height: "60px", verticalAlign: "top" }}
                         align="left"
@@ -198,18 +210,7 @@ function LoginPage(props) {
                             marginTop: "8px"
                           }}
                         >
-                          {i.isOn ? "On" : "Off"}
-                        </p>
-                        <p
-                          style={{
-                            fontFamily: "Montserrat",
-                            fontStyle: "normal",
-                            fontWeight: "800",
-                            fontSize: "26px",
-                            marginTop: "8px"
-                          }}
-                        >
-                          ({common.timeForToday(i.lastUpdated)})
+                          {i.status === "WAITING" ? "승인 대기중" : "승인완료"}
                         </p>
                       </TableCell>
                     </TableRow>

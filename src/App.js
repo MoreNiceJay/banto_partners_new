@@ -114,6 +114,7 @@ function SwipeableTextMobileStepper() {
         <Paper square elevation={0} className={classes.header}>
           {/* <Typography>{tutorialSteps[activeStep].label}</Typography> */}
         </Paper>
+        <a href="/login/register/fifth"> 작업장 </a>
         <a href="https://naver.com">
           <AutoPlaySwipeableViews
             axis={theme.direction === "rtl" ? "x-reverse" : "x"}

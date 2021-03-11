@@ -21,20 +21,25 @@ function SalesMenu(props) {
 
   const roleMenu = [
     {
-      titleBold: "스테이션 등록",
+      titleBold: "스테이션 신청",
       titleRegular: "하기",
-      link: "/store/apply/contact"
+      link: "/store/apply/address"
     },
     {
       titleBold: "수익",
       titleRegular: "확인",
-      link: "#"
+      link: "/table/earning?role=store"
     },
 
     {
       titleBold: "스테이션",
       titleRegular: " 정보",
-      link: "#"
+      link: "/table/station?role=store"
+    },
+    {
+      titleBold: "신청서",
+      titleRegular: "상태",
+      link: "/table/application?role=store"
     }
   ];
   return (

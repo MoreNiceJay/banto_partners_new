@@ -43,7 +43,6 @@ function LoginPage(props) {
           <header>
             <NavBar title="추가정보 입력" backLink="/main" />
           </header>
-
           <main>
             <section className={classes.section}>
               <div className={classes.amount}>
@@ -58,7 +57,7 @@ function LoginPage(props) {
                     margin: "16px 0 0 24px"
                   }}
                 >
-                  2/8
+                  1/4
                 </p>
                 <p
                   style={{
@@ -147,7 +146,6 @@ function LoginPage(props) {
                       fontSize: "26px",
                       fontFamily: "Montserrat",
                       fontWeight: "bold",
-
                       boxSizing: "border-box",
                       marginTop: "10px"
                     }
@@ -169,6 +167,20 @@ function LoginPage(props) {
                 <Button
                   variant="outlined"
                   onClick={() => {
+                    if (
+                      !context.getRegisterInfo.name ||
+                      !context.getRegisterInfo.birthdate
+                    ) {
+                      alert("비어있는 내용이 있습니다");
+                      return;
+                    }
+                    if (context.getRegisterInfo.birthdate.length !== 6) {
+                      alert(
+                        "생년월일을 정확히 입력해 주세요",
+                        context.getRegisterInfo.birthdate.count
+                      );
+                      return;
+                    }
                     props.history.push("/login/register/sixth");
                   }}
                   style={{

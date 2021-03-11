@@ -10,7 +10,7 @@ import Paper from "@material-ui/core/Paper";
 import Slide from "@material-ui/core/Slide";
 import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-
+import SmallButton from "../../components/SmallButton";
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
   headerSpace: {
@@ -76,6 +76,28 @@ function LoginPage(props) {
                   가입이 완료되었습니다!
                 </p>
               </div>
+              <div>
+                <p
+                  style={{
+                    marginTop: "20px",
+                    textAlign: "center",
+                    fontSize: "18px",
+                    fontWeight: "500"
+                  }}
+                >
+                  수익 정산을 받기 위해서 부가정보가 필요 합니다
+                </p>
+                <p
+                  style={{
+                    marginTop: "15px",
+                    textAlign: "center",
+                    fontSize: "18px",
+                    fontWeight: "500"
+                  }}
+                >
+                  지금 작성하시겠습니까?
+                </p>
+              </div>
               <div style={{ position: "fixed", bottom: "0px", width: "100%" }}>
                 <div
                   style={{
@@ -84,43 +106,26 @@ function LoginPage(props) {
                     alignContent: "center"
                   }}
                 >
-                  <Button
-                    variant="outlined"
+                  <SmallButton
+                    color={"white"}
+                    title="다음에 하기"
+                    padding={"22px 44px"}
+                    width="calc(50% - 40px)"
+                    height="52px"
                     onClick={() => {
                       props.history.push("/main");
                     }}
-                    style={{
-                      margin: "24px 32px",
-                      borderRadius: "15px",
-                      border: "2px solid #000A12",
-                      fontFamily: "Montserrat",
-                      fontStyle: "normal",
-                      fontWeight: "600",
-                      fontSize: "12px",
-                      alignText: "right"
-                    }}
-                  >
-                    다음에 하기
-                  </Button>
-
-                  <Button
-                    variant="outlined"
+                  />
+                  <SmallButton
+                    color={"black"}
+                    title="지금 작성하기"
+                    padding={"22px 44px"}
+                    width="calc(50% - 40px)"
+                    height="52px"
                     onClick={() => {
                       props.history.push("/login/register/fifth");
                     }}
-                    style={{
-                      margin: "24px 32px",
-                      borderRadius: "15px",
-                      border: "2px solid #000A12",
-                      fontFamily: "Montserrat",
-                      fontStyle: "normal",
-                      fontWeight: "600",
-                      fontSize: "12px",
-                      alignText: "right"
-                    }}
-                  >
-                    지금 작성하기
-                  </Button>
+                  />
                 </div>
               </div>
             </section>

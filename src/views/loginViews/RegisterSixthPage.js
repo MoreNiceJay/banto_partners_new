@@ -82,7 +82,7 @@ function LoginPage(props) {
                     margin: "16px 0 0 24px"
                   }}
                 >
-                  2/8
+                  2/4
                 </p>
                 <p
                   style={{
@@ -145,58 +145,64 @@ function LoginPage(props) {
                         }
                       }}
                     >
-                      <MenuItem value={0}>경남은행</MenuItem>
-                      <MenuItem value={1}>광주은행</MenuItem>
-                      <MenuItem value={2}>국민은행</MenuItem>
-                      <MenuItem value={3}>기업은행</MenuItem>
-                      <MenuItem value={4}>농협</MenuItem>
-                      <MenuItem value={5}>지역농협</MenuItem>
-                      <MenuItem value={6}>대구은행</MenuItem>
-                      <MenuItem value={7}>부산은행</MenuItem>
-                      <MenuItem value={8}>도이치은행</MenuItem>
-                      <MenuItem value={9}>산업은행</MenuItem>
-                      <MenuItem value={10}>상호저축은행</MenuItem>
-                      <MenuItem value={11}>새마을금고</MenuItem>
-                      <MenuItem value={12}>수협</MenuItem>
-                      <MenuItem value={13}>신한은행</MenuItem>
-                      <MenuItem value={14}>신협</MenuItem>
-                      <MenuItem value={15}>씨티은행</MenuItem>
-                      <MenuItem value={16}>외한은행</MenuItem>
-                      <MenuItem value={17}>우리은행</MenuItem>
-                      <MenuItem value={18}>우체국</MenuItem>
-                      <MenuItem value={19}>전북은행</MenuItem>
-                      <MenuItem value={20}>제주은행</MenuItem>
-                      <MenuItem value={21}>카카오뱅크</MenuItem>
-                      <MenuItem value={22}>하나은행</MenuItem>
-                      <MenuItem value={23}>케이뱅크</MenuItem>
-                      <MenuItem value={24}>SC은행</MenuItem>
-                      <MenuItem value={25}>HSBC은행</MenuItem>
-                      <MenuItem value={26}>교보증권</MenuItem>
-                      <MenuItem value={27}>대신증권</MenuItem>
-                      <MenuItem value={28}>대우증권</MenuItem>
-                      <MenuItem value={29}>동부증권</MenuItem>
-                      <MenuItem value={30}>메리츠종합금융증권</MenuItem>
-                      <MenuItem value={31}>미래에셋증권</MenuItem>
-                      <MenuItem value={32}>부국증권</MenuItem>
-                      <MenuItem value={33}>삼성증권</MenuItem>
-                      <MenuItem value={34}>신영증권</MenuItem>
-                      <MenuItem value={35}>신한금융투자</MenuItem>
-                      <MenuItem value={36}>아이엠투자증권</MenuItem>
-                      <MenuItem value={37}>우리투자증권</MenuItem>
-                      <MenuItem value={38}>유안타증권</MenuItem>
-                      <MenuItem value={39}>유진투자증권</MenuItem>
-                      <MenuItem value={40}>이트레이드증권</MenuItem>
-                      <MenuItem value={41}>키움증권</MenuItem>
-                      <MenuItem value={42}>하나대투증권</MenuItem>
-                      <MenuItem value={43}>하이투자증권</MenuItem>
-                      <MenuItem value={44}>한국투자증권</MenuItem>
-                      <MenuItem value={45}>한화투자증권</MenuItem>
-                      <MenuItem value={46}>현대증권</MenuItem>
-                      <MenuItem value={47}>HMC투자증권</MenuItem>
-                      <MenuItem value={48}>LIG투자증권</MenuItem>
-                      <MenuItem value={49}>NH농협증권</MenuItem>
-                      <MenuItem value={50}>SK증권</MenuItem>
-                      <MenuItem value={51}>산림조합</MenuItem>
+                      <MenuItem value={"경남은행"}>경남은행</MenuItem>
+                      <MenuItem value={"광주은행"}>광주은행</MenuItem>
+                      <MenuItem value={"국민은행"}>국민은행</MenuItem>
+                      <MenuItem value={"기업은행"}>기업은행</MenuItem>
+                      <MenuItem value={"농협"}>농협</MenuItem>
+                      <MenuItem value={"지역농협"}>지역농협</MenuItem>
+                      <MenuItem value={"대구은행"}>대구은행</MenuItem>
+                      <MenuItem value={"부산은행"}>부산은행</MenuItem>
+                      <MenuItem value={"도이치은행"}>도이치은행</MenuItem>
+                      <MenuItem value={"산업은행"}>산업은행</MenuItem>
+                      <MenuItem value={"상호저축은행"}>상호저축은행</MenuItem>
+                      <MenuItem value={"새마을금고"}>새마을금고</MenuItem>
+                      <MenuItem value={"수협"}>수협</MenuItem>
+                      <MenuItem value={"신한은행"}>신한은행</MenuItem>
+                      <MenuItem value={"신협"}>신협</MenuItem>
+                      <MenuItem value={"씨티은행"}>씨티은행</MenuItem>
+                      <MenuItem value={"외한은행"}>외한은행</MenuItem>
+                      <MenuItem value={"우리은행"}>우리은행</MenuItem>
+                      <MenuItem value={"우체국"}>우체국</MenuItem>
+                      <MenuItem value={"전북은행"}>전북은행</MenuItem>
+                      <MenuItem value={"제주은행"}>제주은행</MenuItem>
+                      <MenuItem value={"카카오뱅크"}>카카오뱅크</MenuItem>
+                      <MenuItem value={"하나은행"}>하나은행</MenuItem>
+                      <MenuItem value={"케이뱅크"}>케이뱅크</MenuItem>
+                      <MenuItem value={"SC은행"}>SC은행</MenuItem>
+                      <MenuItem value={"HSBC은행"}>HSBC은행</MenuItem>
+                      <MenuItem value={"교보증권"}>교보증권</MenuItem>
+                      <MenuItem value={"대신증권"}>대신증권</MenuItem>
+                      <MenuItem value={"대우증권"}>대우증권</MenuItem>
+                      <MenuItem value={"동부증권"}>동부증권</MenuItem>
+                      <MenuItem value={"메리츠종합금융증권"}>
+                        메리츠종합금융증권
+                      </MenuItem>
+                      <MenuItem value={"미래에셋증권"}>미래에셋증권</MenuItem>
+                      <MenuItem value={"부국증권"}>부국증권</MenuItem>
+                      <MenuItem value={"삼성증권"}>삼성증권</MenuItem>
+                      <MenuItem value={"신영증권"}>신영증권</MenuItem>
+                      <MenuItem value={"신한금융투자"}>신한금융투자</MenuItem>
+                      <MenuItem value={"아이엠투자증권"}>
+                        아이엠투자증권
+                      </MenuItem>
+                      <MenuItem value={"우리투자증권"}>우리투자증권</MenuItem>
+                      <MenuItem value={"유안타증권"}>유안타증권</MenuItem>
+                      <MenuItem value={"유진투자증권"}>유진투자증권</MenuItem>
+                      <MenuItem value={"이트레이드증권"}>
+                        이트레이드증권
+                      </MenuItem>
+                      <MenuItem value={"키움증권"}>키움증권</MenuItem>
+                      <MenuItem value={"하나대투증권"}>하나대투증권</MenuItem>
+                      <MenuItem value={"하이투자증권"}>하이투자증권</MenuItem>
+                      <MenuItem value={"한국투자증권"}>한국투자증권</MenuItem>
+                      <MenuItem value={"한화투자증권"}>한화투자증권</MenuItem>
+                      <MenuItem value={"현대증권"}>현대증권</MenuItem>
+                      <MenuItem value={"HMC투자증권"}>HMC투자증권</MenuItem>
+                      <MenuItem value={"LIG투자증권"}>LIG투자증권</MenuItem>
+                      <MenuItem value={"NH농협증권"}>NH농협증권</MenuItem>
+                      <MenuItem value={"SK증권"}>SK증권</MenuItem>
+                      <MenuItem value={"산림조합"}>산림조합</MenuItem>
                     </Select>
                   </FormControl>
                 </div>
@@ -312,6 +318,18 @@ function LoginPage(props) {
                 <Button
                   variant="outlined"
                   onClick={() => {
+                    if (
+                      !context.getRegisterInfo.bank &&
+                      !context.getRegisterInfo.accountNumber &&
+                      !context.getRegisterInfo.accountHolder
+                    ) {
+                      alert("빈칸없이 입력해 주세요");
+                      return;
+                    }
+                    if (context.getRegisterInfo.accountNumber.length < 6) {
+                      alert("올바른 계좌번호를 입력해 주세요");
+                      return;
+                    }
                     props.history.push("/login/register/seventh");
                   }}
                   style={{

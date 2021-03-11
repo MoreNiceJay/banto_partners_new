@@ -32,7 +32,7 @@ function RegistAddress(props) {
   const [open, setOpen] = React.useState(false);
   const [storeName, setStoreName] = React.useState("");
   const [mainAddress, setMainAddress] = React.useState("*필수");
-  const [restAddress, setRestAddress] = React.useState("*필수");
+  const [restAddress, setRestAddress] = React.useState(null);
 
   const handleComplete = (data) => {
     let fullAddress = data.address;
@@ -55,8 +55,8 @@ function RegistAddress(props) {
   React.useEffect(() => {
     // console.log(context.salesInfo.storeOwnerPhoneNumber);
     setStoreName(context.salesInfo.storeName);
-    setMainAddress(context.salesInfo.storeAddress.mainAddress);
-    setRestAddress(context.salesInfo.storeAddress.restAddress);
+    setMainAddress(context.salesInfo.mainAddress);
+    setRestAddress(context.salesInfo.restAddress);
     // setStoreContact(context.salesInfo.storePhoneNumber);
   }, []);
   function getModalStyle() {
@@ -99,7 +99,7 @@ function RegistAddress(props) {
       <header>
         <NavBar title="" backLink="/sales/regist/contact" />
         <HeaderInfo
-          title={"등록" + "\u00A0" + "\u00A0" + "\u00A0" + "2/3"}
+          title={"등록" + "\u00A0" + "\u00A0" + "\u00A0" + "1/3"}
           description="가맹점을 등록합니다"
         />
       </header>
@@ -127,17 +127,22 @@ function RegistAddress(props) {
               className={classes.addressTextField}
               id="outlined-basic2"
               variant="outlined"
-              label="나머지 주소"
+              label="*필수 나머지 주소"
               value={restAddress}
               onChange={onChangeRestAddress}
             />
           </div>
           <FormButton
             onClick={() => {
+              if (!storeName || !mainAddress || !restAddress) {
+                alert("정보를 기입해주세요");
+                return;
+              }
+
               context.setSales_StoreName(storeName);
               context.setSales_StoreMainAddress(mainAddress);
               context.setSales_StoreRestAddress(restAddress);
-              props.history.push("/sales/regist/portion");
+              props.history.push("/sales/regist/contact");
             }}
             title="다음"
           />

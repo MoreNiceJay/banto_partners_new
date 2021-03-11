@@ -195,7 +195,7 @@ function LoginPage(props) {
 
           <main>
             <section className={classes.section}>
-              <ProgressText text="5/5" />
+              <ProgressText text="3/5" />
               <InputTitle text="협의된 영업자가 있으신가요?(선택)" />
               <div style={{ marginLeft: "8px" }}>
                 <FormControl

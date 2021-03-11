@@ -23,13 +23,18 @@ function InvestorMenu(props) {
     {
       titleBold: "수익",
       titleRegular: "확인",
-      link: "#"
+      link: "/table/earning?role=buyer"
     },
 
     {
       titleBold: "스테이션",
       titleRegular: " 정보",
-      link: "#"
+      link: "/table/station?role=buyer"
+    },
+    {
+      titleBold: "신청서",
+      titleRegular: "상태",
+      link: "/table/application?role=buyer"
     }
   ];
 

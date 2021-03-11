@@ -101,14 +101,25 @@ function RegistContact(props) {
   const [error1, setError1] = React.useState(null);
   const [error2, setError2] = React.useState(null);
   const [error3, setError3] = React.useState(null);
+  const [modalStyle] = React.useState(getModalStyle);
 
   const [daumOpen, setDaumOpen] = React.useState(false);
 
-  const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
   const context = useGlobal();
   const auth = useAuth();
 
+  function getModalStyle() {
+    const top = 50;
+    const left = 50;
+    console.log(top);
+    console.log(left);
+    return {
+      top: `${top}%`,
+      left: `${left}%`,
+      transform: `translate(-${top}%, -${left}%)`
+    };
+  }
   const handleComplete = (data) => {
     let fullAddress = data.address;
     let extraAddress = "";
@@ -123,76 +134,17 @@ function RegistContact(props) {
       }
       fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
       console.log(fullAddress);
-      context.setStore_StoreMainAddress(fullAddress);
+      context.setStore_storeMainAddress(fullAddress);
       setDaumOpen(false);
     }
   };
   const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+    props.history.push("/store/apply/contact");
   };
 
   const handleDaumClose = () => {
     setDaumOpen(false);
   };
-  function getModalStyle() {
-    const top = 50;
-    const left = 50;
-    console.log(top);
-    console.log(left);
-    return {
-      top: `${top}%`,
-      left: `${left}%`,
-      transform: `translate(-${top}%, -${left}%)`
-    };
-  }
-  const modalBody = (
-    <div style={modalStyle} className={classes.paper}>
-      <h2 id="simple-modal-title" className={classes.modalTitle}>
-        기기 구매하기
-      </h2>
-      <p id="simple-modal-description" className={classes.modalDescription}>
-        반토스테이션 구매 후 가맹점에 설치하면 수익이 70%까지 올라갑니다
-      </p>
-      <p
-        style={{
-          margin: "8px 20px 0px 20px",
-          fontWeight: "bold",
-          color: "#00838f"
-        }}
-      >
-        *입금정보는 문자로 보내드립니다
-      </p>
-      <div className={classes.modalButtons}>
-        <Button
-          variant="outlined"
-          size="large"
-          className={classes.modalNextTimeButton}
-          onClick={() => {
-            context.setStore_bBuying(false);
-            props.history.push("/store/apply/portion");
-          }}
-        >
-          다음에 하기
-        </Button>
-        <Button
-          variant="outlined"
-          size="large"
-          color="primary"
-          className={classes.modalBuyButton}
-          onClick={() => {
-            context.setStore_bBuying(false);
-            props.history.push("/store/apply/portion");
-          }}
-        >
-          구매하기
-        </Button>
-      </div>
-    </div>
-  );
 
   function mySubmitHandler() {
     // if (storeOwnerContact.length < 11) {
@@ -234,7 +186,7 @@ function RegistContact(props) {
             <section>
               <div className={classes.contact}>
                 <div className={classes.contactPerson}>
-                  <ProgressText text="2/5" />
+                  <ProgressText text="1/5" />
 
                   <InputTitle text="매장명  예)반토카페 일산점" />
                   <PTextField
@@ -249,7 +201,7 @@ function RegistContact(props) {
                         setError1(null);
                       }
 
-                      context.setStore_StoreName(e.target.value);
+                      context.setStore_storeName(e.target.value);
                     }}
                     helperText={error1}
                   />
@@ -273,17 +225,9 @@ function RegistContact(props) {
                     value={context.getStoreInfo.storeRestAddress}
                     // autoFocus
                     onChange={(e) => {
-                      context.setStore_StoreRestAddress(e.target.value);
+                      context.setStore_storeRestAddress(e.target.value);
                     }}
                   />
-                  <Modal
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="simple-modal-title"
-                    aria-describedby="simple-modal-description"
-                  >
-                    {modalBody}
-                  </Modal>
                 </div>
               </div>
               <div style={{ display: "flex", justifyContent: "flex-end" }}>

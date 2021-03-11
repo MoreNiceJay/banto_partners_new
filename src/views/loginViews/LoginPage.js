@@ -195,25 +195,6 @@ function LoginPage(props) {
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    props.history.push("/login/register/first");
-                  }}
-                  style={{
-                    width: "calc(100% - 64px)",
-                    height: "64px",
-                    margin: "24px 32px 0 32px",
-                    borderRadius: "15px",
-                    border: "2px solid #000A12",
-                    fontFamily: "Noto Sans CJK KR",
-                    fontStyle: "normal",
-                    fontWeight: "500",
-                    fontSize: "18px"
-                  }}
-                >
-                  회원가입
-                </Button>
-                <Button
-                  variant="outlined"
-                  onClick={() => {
                     setLoding(true);
 
                     auth
@@ -234,6 +215,25 @@ function LoginPage(props) {
                   style={{
                     width: "calc(100% - 64px)",
                     height: "64px",
+                    margin: "24px 32px 0 32px",
+                    borderRadius: "15px",
+                    border: "2px solid #000A12",
+                    fontFamily: "Noto Sans CJK KR",
+                    fontStyle: "normal",
+                    fontWeight: "500",
+                    fontSize: "18px"
+                  }}
+                >
+                  로그인
+                </Button>
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    props.history.push("/login/register/first");
+                  }}
+                  style={{
+                    width: "calc(100% - 64px)",
+                    height: "64px",
                     margin: "24px 32px",
                     borderRadius: "15px",
                     backgroundColor: "#000A12",
@@ -245,7 +245,7 @@ function LoginPage(props) {
                     color: "white"
                   }}
                 >
-                  로그인
+                  회원가입
                 </Button>
 
                 {auth.isLogin ?? (

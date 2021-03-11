@@ -15,8 +15,10 @@ import CircleChecked from "@material-ui/icons/CheckCircleOutline";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import { Link } from "react-router-dom";
+import * as common from "../../common";
 import Slide from "@material-ui/core/Slide";
 import { useGlobal } from "../../globalContext";
+import { useAuth } from "../../AuthContext";
 const useStyles = makeStyles((theme) => ({
   card: { backgroundColor: "black", margin: "12px 16px", borderRadius: "15px" },
   description: {
@@ -56,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
 function InvestFinal(props) {
   const classes = useStyles(props);
   const context = useGlobal();
+  const auth = useAuth();
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
@@ -68,7 +71,7 @@ function InvestFinal(props) {
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
-
+  console.log(context.getInvestInfo.stationAmount);
   const GreenCheckbox = withStyles({
     root: {
       color: "black",
@@ -107,7 +110,8 @@ function InvestFinal(props) {
                       textAlign: "left"
                     }}
                   >
-                    총 금액
+                    {" "}
+                    보내는 은행
                   </p>
                   <p
                     style={{
@@ -122,7 +126,7 @@ function InvestFinal(props) {
                       textAlign: "left"
                     }}
                   >
-                    {numberWithCommas(context.getInvestInfo.totalPrice) + " 원"}
+                    {context.getInvestInfo.bank}
                   </p>
                   <p
                     style={{
@@ -148,7 +152,61 @@ function InvestFinal(props) {
                       textAlign: "left"
                     }}
                   >
-                    {numberWithCommas(context.getInvestInfo.depositor)}
+                    {context.getInvestInfo.depositor}
+                  </p>
+                  <p
+                    style={{
+                      color: "#5DDEF4",
+                      fontWeight: "400",
+                      fontSize: "16px",
+                      marginTop: "56px",
+                      textAlign: "left"
+                    }}
+                  >
+                    계좌번호
+                  </p>
+                  <p
+                    style={{
+                      color: "#5DDEF4",
+                      fontFamily: "Montserrat",
+                      fontStyle: "normal",
+                      fontWeight: "bold",
+                      fontSize: "32px",
+                      lineHeight: "34px",
+                      textAlign: "right",
+                      marginTop: "16px",
+                      textAlign: "left"
+                    }}
+                  >
+                    {context.getInvestInfo.accountNumber}
+                  </p>
+                  <p
+                    style={{
+                      color: "#5DDEF4",
+                      fontWeight: "400",
+                      fontSize: "16px",
+                      marginTop: "56px",
+                      textAlign: "left"
+                    }}
+                  >
+                    총 금액 / 스테이션 수
+                  </p>
+                  <p
+                    style={{
+                      color: "#5DDEF4",
+                      fontFamily: "Montserrat",
+                      fontStyle: "normal",
+                      fontWeight: "bold",
+                      fontSize: "32px",
+                      lineHeight: "34px",
+                      textAlign: "right",
+                      marginTop: "16px",
+                      textAlign: "left"
+                    }}
+                  >
+                    {numberWithCommas(context.getInvestInfo.totalPrice) +
+                      " 원 / "}{" "}
+                    {`${context.getInvestInfo.stationAmount}대`}
                   </p>
                 </div>
               </Paper>
@@ -172,6 +230,20 @@ function InvestFinal(props) {
                       <li>
                         <p className={classes.bankInfoDescription}>계좌명</p>
                         <p className={classes.bankInfoInfo}>반토주식회사</p>
+                      </li>
+                      <li>
+                        <p className={classes.bankInfoDescription}>영업 방법</p>
+                        <p className={classes.bankInfoInfo}>
+                          {context.getInvestInfo.method}
+                        </p>
+                      </li>
+                      <li>
+                        <p className={classes.bankInfoDescription}>
+                          영업자 & 가맹점주님 ID
+                        </p>
+                        <p className={classes.bankInfoInfo}>
+                          {context.getInvestInfo.ownSalesMangers.id}
+                        </p>
                       </li>
                     </ul>
                   </div>
@@ -237,7 +309,11 @@ function InvestFinal(props) {
                     color: "#ECEFF1",
                     backgroundColor: "black"
                   }}
-                  onClick={() => {
+                  onClick={async () => {
+                    await auth.updateApplication(
+                      "BUYER",
+                      context.getInvestInfo
+                    );
                     props.history.push("/investor/done");
                   }}
                 >

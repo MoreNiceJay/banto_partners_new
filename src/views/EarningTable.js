@@ -22,9 +22,10 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import queryString from "query-string";
+import * as common from "../../src/common";
+
 const firebase = require("firebase");
 var db = firebase.firestore();
-
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
   headerSpace: {
@@ -50,6 +51,7 @@ function numberWithCommas(x) {
 function LoginPage({ props, location }) {
   const classes = useStyles(props);
   const data = [];
+  const todayTimestamp = common.getTimeStamp();
   const [state, setState] = React.useState({
     checkedA: true,
     checkedB: true,
@@ -60,8 +62,11 @@ function LoginPage({ props, location }) {
     data: [],
     pageNumber: 1,
     items: 2,
-    hasMore: true
+    hasMore: true,
+    cursor: todayTimestamp
   });
+  const [earning, setEarning] = React.useState(0);
+  const [calender, setCalender] = React.useState(null);
   const context = useGlobal();
   const auth = useAuth();
   function createData(name, calories, fat, carbs, protein) {
@@ -79,42 +84,94 @@ function LoginPage({ props, location }) {
       color: "black"
     }
   })((props) => <Checkbox color="default" {...props} />);
-
-  // const rows = [
-  //   createData("스타벅스 강남점", "bti2123", true),
-  //   createData("스타벅스 강남점", "bti2123", true),
-  //   createData("스타벅스 강남점", "bti2123", true),
-  //   createData("스타벅스 강남점", "bti2123", true),
-  //   createData("스타벅스 강남점", "bti2123", true)
-  // ];
+  //TODO date 구하기
   React.useEffect(() => {
-    console.log("유저임", auth.user.email);
+    setCalender(common.getTodayDateForm());
   }, []);
-  const fetchData = () => {
-    Axios(
-      `https://jsonplaceholder.typicode.com/posts/${apiData.pageNumber}`
-    ).then((a) => {
-      console.log("에이", a);
 
-      setData({
-        data: [...apiData.data, a.data],
-        pageNumber: apiData.pageNumber + 1
-      });
-    });
-    console.log(apiData);
+  const handleCalender = (arg) => {
+    let date = calender.split("-");
+    let year = Number(date[0]);
+    let month = Number(date[1]);
+    let lastTimeStamp = common.getTimeStamp();
+
+    if (arg === "add") {
+      if (calender === common.getTodayDateForm()) {
+        return;
+      }
+      if (month === 12) {
+        year = year + 1;
+        month = 1;
+        month = common.leadingZeros(month, 2);
+        year = String(year);
+        setCalender(year + "-" + month);
+        setData({ data: [], cursor: lastTimeStamp });
+        return;
+      }
+      month = month + 1;
+      month = common.leadingZeros(month, 2);
+      year = String(year);
+      setCalender(year + "-" + month);
+    }
+    if (arg === "dec") {
+      //TODO increase callender by 1
+      if (month === 1) {
+        year = year - 1;
+        month = 12;
+        month = common.leadingZeros(month, 2);
+
+        year = String(year);
+        setData({ data: [], cursor: lastTimeStamp });
+        setCalender(year + "-" + month);
+        return;
+      }
+      month = month - 1;
+      month = common.leadingZeros(month, 2);
+      year = String(year);
+    }
+
+    setData({ data: [], cursor: lastTimeStamp });
+    setCalender(year + "-" + month);
+    return;
   };
-  React.useEffect(() => {
-    Axios(`https://jsonplaceholder.typicode.com/posts`).then((a) => {
-      console.log(a);
-      console.log("에이", a);
-      let dataAdded = a.data.concat(apiData);
+  const fetchData = async () => {
+    Axios.post("https://partners.mulli.world/users/earningData", {
+      stations: ["T1219071903", "T1219071904"],
+      yearMonth: calender,
+      cursor: apiData.cursor
+    }).then((a) => {
+      console.log();
+      let dataAdded = a.data.data.earningData;
       setData({
         data: [...apiData.data, ...dataAdded],
-        pageNumber: apiData.pageNumber + 1
+        pageNumber: apiData.pageNumber + 1,
+        cursor: a.data.data.cursor,
+        yearMonth: calender,
+        hasMore: a.data.data.hasMore
       });
     });
+  };
+  const fetchRevenue = async () => {
+    Axios.post("https://partners.mulli.world/users/monthlyRevenue", {
+      stations: ["T1219071903", "T1219071904"],
+      yearMonth: calender
+    }).then((a) => {
+      console.log();
+      let dataAdded = a.data.data.earning;
+      setEarning(dataAdded);
+    });
+  };
+  React.useEffect(() => {
+    console.log("cursor in apiData1", apiData.cursor);
+
+    (async () => {
+      await fetchData();
+      await fetchRevenue();
+    })();
+    console.log("cursor in fetchData2", apiData.cursor);
+
     console.log("에이피아이", apiData);
-  }, []);
+  }, [calender]);
 
   return (
     <>
@@ -164,7 +221,7 @@ function LoginPage({ props, location }) {
                   opacity: "0.6"
                 }}
               >
-                2020.10월 수익
+                {calender && calender.replace("-", ".")} 수익
               </p>
               <p
                 style={{
@@ -178,7 +235,7 @@ function LoginPage({ props, location }) {
                   marginTop: "16px"
                 }}
               >
-                {numberWithCommas(122000) + " 원"}
+                {numberWithCommas(earning && earning) + " 원"}
               </p>
             </div>
           </Paper>
@@ -199,17 +256,22 @@ function LoginPage({ props, location }) {
         >
           <img
             onClick={() => {
-              window.alert("헬러");
+              handleCalender("add");
             }}
             style={{ width: "28px", height: "28px" }}
             src={require("../assets/img/select - left.png")}
             alt="leftButton"
           />
-          <span style={{ margin: "0 30px" }}>2020.01</span>
+          <span style={{ margin: "0 30px" }}>
+            {calender && calender.replace("-", ".")}
+          </span>
           <img
             style={{ width: "28px", height: "28px" }}
             src={require("../assets/img/select - right.png")}
             alt="leftButton"
+            onClick={() => {
+              handleCalender("dec");
+            }}
           />
         </div>
 
@@ -217,7 +279,7 @@ function LoginPage({ props, location }) {
         <InfiniteScroll
           dataLength={apiData.data.length}
           next={fetchData}
-          hasMore={true}
+          hasMore={apiData.hasMore}
           loader={<h5 style={{ fontSize: "20px", zIndex: "2" }}>Loading...</h5>}
         >
           <TableContainer component={Paper}>
@@ -225,77 +287,83 @@ function LoginPage({ props, location }) {
               <TableBody>
                 {apiData.data &&
                   // apiData.data.userId &&
-                  apiData.data.map((i, index) => (
-                    <TableRow key={index} style={{ height: "90px" }}>
-                      <TableCell
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: "bold",
-                          verticalAlign: "top"
-                        }}
-                        component="th"
-                        scope="row"
-                      >
-                        <p>2020.01.23</p>
-                      </TableCell>
+                  apiData.data.map((i, index) => {
+                    console.log(i.storeName);
+                    return (
+                      <TableRow key={index} style={{ height: "90px" }}>
+                        <TableCell
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "bold",
+                            verticalAlign: "top"
+                          }}
+                          component="th"
+                          scope="row"
+                        >
+                          <p>{i.rentalTimeStamp}</p>
+                        </TableCell>
 
-                      <TableCell
-                        style={{ height: "60px", verticalAlign: "top" }}
-                        align="left"
-                      >
-                        <p
-                          style={{
-                            fontWeight: "bold",
-                            fontSize: "16px",
-                            color: "#00838F"
-                          }}
+                        <TableCell
+                          style={{ height: "60px", verticalAlign: "top" }}
+                          align="left"
                         >
-                          스타벅스 강남점
-                        </p>
-                        <p
-                          style={{
-                            fontWeight: "bold",
-                            fontSize: "16px",
-                            color: "#00838F"
-                          }}
+                          <p
+                            style={{
+                              fontWeight: "bold",
+                              fontSize: "16px",
+                              color: "#00838F"
+                            }}
+                          >
+                            {i.storeName}
+                          </p>
+                          <p
+                            style={{
+                              fontWeight: "bold",
+                              fontSize: "16px",
+                              color: "#00838F"
+                            }}
+                          >
+                            ({i.rentalStationId})
+                          </p>
+                        </TableCell>
+                        <TableCell
+                          style={{ height: "60px", verticalAlign: "top" }}
+                          align="right"
                         >
-                          (bti2123)
-                        </p>
-                      </TableCell>
-                      <TableCell
-                        style={{ height: "60px", verticalAlign: "top" }}
-                        align="right"
-                      >
-                        <p
-                          style={{
-                            fontSize: "13px",
-                            color: "#263238"
-                          }}
-                        >
-                          15시간
-                        </p>
-                        <p
-                          style={{
-                            fontSize: "13px",
-                            color: "#263238"
-                          }}
-                        >
-                          (대여중)
-                        </p>
-                        <p
-                          style={{
-                            fontFamily: "Montserrat",
-                            fontStyle: "normal",
-                            fontWeight: "800",
-                            fontSize: "26px",
-                            marginTop: "8px"
-                          }}
-                        >
-                          1,500
-                        </p>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                          <p
+                            style={{
+                              fontSize: "13px",
+                              color: "#263238"
+                            }}
+                          >
+                            {common.diffTime(
+                              i.rentalTimeStamp,
+                              i.returnTimeStamp
+                            )}
+                          </p>
+                          <p
+                            style={{
+                              fontSize: "13px",
+                              color: "#263238"
+                            }}
+                          >
+                            {i.status}
+                          </p>
+                          <p
+                            style={{
+                              fontFamily: "Montserrat",
+                              fontStyle: "normal",
+                              fontWeight: "800",
+                              fontSize: "26px",
+                              marginTop: "8px"
+                            }}
+                          >
+                            {numberWithCommas(i.price) + "원"}
+                          </p>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
               </TableBody>
             </Table>
           </TableContainer>

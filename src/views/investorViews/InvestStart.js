@@ -88,7 +88,7 @@ function InvestStart(props) {
                   id="standard-full-width"
                   // label="0"
                   placeholder="0"
-                  helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
+                  helperText="투자하신 기기 수량만큼 수익(70%)이 창출됩니다"
                   value={
                     context.getInvestInfo.investAmount === 0
                       ? ""
@@ -131,7 +131,8 @@ function InvestStart(props) {
                     } else if (value === 0) {
                       setButtonDisabled(true);
                     }
-                    context.setInvest_investAmount(value);
+                    context.setInvest_stationAmount(value);
+                    context.setInvest_totalPrice(totalPrice);
                   }}
                 />
               </div>

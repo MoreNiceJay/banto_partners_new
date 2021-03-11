@@ -22,7 +22,10 @@ export const NavBar = (props) => {
     <>
       <div className={classes.emptySpace} />
       <div className={classes.headerSpace}>
-        <Link to={props.backLink} className={classes.backButton}>
+        <Link
+          onClick={() => window.history.back()}
+          className={classes.backButton}
+        >
           <img
             className={classes.backButtonImg}
             src={require("../assets/img/backButton.png")}

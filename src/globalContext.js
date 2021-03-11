@@ -1,4 +1,9 @@
 import React from "react";
+import firebase from "./firebaseConfig";
+import moment from "moment";
+import { ThemeConsumer } from "styled-components";
+import { reject } from "lodash";
+var db = firebase.firestore();
 const GlobalContext = React.createContext();
 export function useGlobal() {
   return React.useContext(GlobalContext);
@@ -8,6 +13,8 @@ export function GlobalProvider({ children }) {
   const [userInfo, setUserInfo] = React.useState({
     phoneNumber: ""
   });
+  let db = firebase.firestore();
+
   async function setUser(a) {
     await setUserInfo((prevState) => {
       return { ...prevState, phoneNumber: a };
@@ -21,39 +28,169 @@ export function GlobalProvider({ children }) {
     bank: "",
     accountNumber: "",
     accountHolder: "",
+    id: "",
+    point: 0,
     bBusinessLicense: false,
     businessLicenseImg: ""
   });
+  const [invest, setInvest] = React.useState({
+    applicationId: "",
+    status: "WAITING",
+    salesMethod: "",
+    salesPortion: 0,
+    salesManager: "",
+    preSalesIds: [],
+    preSalesManagers: [],
+    buyer: "",
+    buyerPortion: 0,
+    storeOwner: "",
+    storePortion: "",
+    amount: 0,
+    totalPrice: 0,
+    bReserved: false,
+    depositor: "",
+    bank: "",
+    bankAccount: "",
+    createdBy: "",
+    confirmedBy: "",
+    installedBy: "",
+    franchiseId: "",
+    bIsOn: false,
+    lastUpdated: ""
+  });
 
   const [store, setStore] = React.useState({
-    storeOwnerPhoneNumber: "",
-    storePhoneNumber: "",
+    applicationId: "",
+    status: "WAITING",
     storeName: "",
     storeMainAddress: "",
     storeRestAddress: "",
-    bBuying: false,
-    bSales: false,
-    salesContact: "",
-    salesPortion: 0,
-    bInvestor: false,
-    investorContact: "",
-    investorPortion: 0
-  });
-
-  const [invest, setInvest] = React.useState({
-    investAmount: 0,
-    totalPrice: 0,
-    depositor: ""
-  });
-  const [salesRegisterationInfo, setSalesRegisterationInfo] = React.useState({
     storeOwnerPhoneNumber: "",
     storePhoneNumber: "",
-    storeName: "",
-    storeAddress: { mainAddress: "", restAddress: "" },
+    storeOwner: "",
     storePortion: 0,
-    bBuying: false,
-    investor: { bInvestor: false, investorPhonenumber: "", portion: "" }
+    salesManager: "",
+    salesPortion: 0,
+    buyer: "",
+    buyerPortion: 0,
+    stationId: [],
+    storePhoto: [],
+    naverStoreUrl: "",
+    createdBy: "",
+    confirmedBy: "",
+    contractYear: 0
   });
+
+  const [salesRegisterationInfo, setSalesRegisterationInfo] = React.useState({
+    applicationId: "",
+    status: "WAITING",
+    storeName: "",
+    storeMainAddress: "",
+    storeRestAddress: "",
+    storeOwnerPhoneNumber: "",
+    storePhoneNumber: "",
+    storeOwner: "",
+    storePortion: 0,
+    salesManager: "",
+    salesPortion: 0,
+    buyer: "",
+    buyerPortion: 0,
+    stationId: [],
+    storePhoto: [],
+    naverStoreUrl: "",
+    createdBy: "",
+    confirmedBy: "",
+    contractYear: 0
+  });
+
+  async function isAvailable(stationId) {
+    return new Promise((resolve, reject) => {
+      let stationRef = db.collection("Stations");
+      let stations = stationRef.where("stationId", "==", stationId);
+      stations.get().then(function (qs) {
+        // qs.forEach(function (doc) {
+        //   console.log(doc.id, " => ", doc.data());
+        //   console.log(doc.length, " => ", typeof doc);
+        if (qs.size) {
+          resolve({ code: 200, data: qs });
+        } else {
+          resolve({ code: 200, data: null });
+        }
+        // });
+      });
+    }).catch(function (error) {
+      reject({ code: 400, msg: "시스템에러 고객센터에 문의해주세요" });
+    });
+  }
+
+  async function fetchApplications(userId, role) {
+    try {
+      const dataArray = [];
+      const applicationRef = db
+        .collection("Users")
+        .doc(userId)
+        .collection("Applications");
+
+      const querySnapshot = await applicationRef.get();
+
+      querySnapshot.forEach((doc) => {
+        dataArray.push(doc.data());
+      });
+
+      return {
+        code: 200,
+        data: dataArray
+      };
+    } catch (error) {
+      return {
+        code: 400,
+        msg: "시스템에러 고객센터에 문의해주세요"
+      };
+    }
+  }
+  async function isAvailable(stationId) {
+    return new Promise((resolve, reject) => {
+      let stationRef = db.collection("Stations");
+      let stations = stationRef.where("stationId", "==", stationId);
+      stations.get().then(function (qs) {
+        // qs.forEach(function (doc) {
+        //   console.log(doc.id, " => ", doc.data());
+        //   console.log(doc.length, " => ", typeof doc);
+        if (qs.size) {
+          resolve({ code: 200, data: qs });
+        } else {
+          resolve({ code: 200, data: null });
+        }
+        // });
+      });
+    }).catch(function (error) {
+      reject({ code: 400, msg: "시스템에러 고객센터에 문의해주세요" });
+    });
+  }
+  async function getBuyerId(stationId) {
+    return new Promise((resolve, reject) => {
+      let stationRef = db.collection("Stations");
+      let stations = stationRef.where("stationId", "==", stationId);
+      let buyerId = "";
+      let buyerPortion = 0;
+      stations.get().then(function (qs) {
+        qs.forEach(function (doc) {
+          console.log(doc.id, " => ", doc.data());
+          buyerId = doc.data().buyer;
+          buyerPortion = doc.data().buyerPortion;
+        });
+
+        if (qs.size) {
+          resolve({ code: 200, data: { buyer: buyerId, buyerPortion } });
+        } else {
+          resolve({ code: 200, data: null });
+        }
+      });
+    }).catch(function (error) {
+      reject({ code: 400, msg: "시스템에러 고객센터에 문의해주세요" });
+    });
+  }
+
   // register
   async function setRegister_phoneNumber(a) {
     await setRegister((prevState) => {
@@ -106,167 +243,258 @@ export function GlobalProvider({ children }) {
       return { ...prevState, businessLicenseImg: a };
     });
   }
-  // store
-  async function setStore_StoreOwnerPhonenumber(a) {
-    await setStore((prevState) => {
-      return { ...prevState, storeOwnerPhoneNumber: a };
-    });
-  }
-  async function setStore_StorePhoneNumber(a) {
-    await setStore((prevState) => {
-      return { ...prevState, storePhoneNumber: a };
-    });
-  }
-  async function setStore_StoreName(a) {
-    await setStore((prevState) => {
-      return { ...prevState, storeName: a };
-    });
-  }
-  async function setStore_StoreMainAddress(a) {
-    await setStore((prevState) => {
-      return { ...prevState, storeMainAddress: a };
-    });
-  }
-  async function setStore_StoreRestAddress(a) {
-    await setStore((prevState) => {
-      return { ...prevState, storeRestAddress: a };
-    });
-  }
-  async function setStore_bBuying(a) {
-    await setStore((prevState) => {
-      return { ...prevState, bBuying: a };
-    });
-  }
-  async function setStore_bSales(a) {
-    await setStore((prevState) => {
-      return { ...prevState, bSales: a };
-    });
-  }
-  async function setStore_salesContact(a) {
-    await setStore((prevState) => {
-      return {
-        ...prevState,
-        salesContact: a
-      };
-    });
-  }
 
-  async function setStore_salesPortion(a) {
-    await setStore((prevState) => {
-      return {
-        ...prevState,
-        salesPortion: a
-      };
-    });
-  }
-
-  async function setStore_bInvestor(a) {
-    await setStore((prevState) => {
-      return {
-        ...prevState,
-        bInvestor: a
-      };
-    });
-  }
-
-  async function setStore_investorContact(a) {
-    await setStore((prevState) => {
-      return {
-        ...prevState,
-        investorContact: a
-      };
-    });
-  }
-  async function setStore_investorPortion(a) {
-    await setStore((prevState) => {
-      return {
-        ...prevState,
-        investorPortion: a
-      };
-    });
-  }
   // invest
-
-  async function setInvest_investAmount(a) {
+  async function setInvest_salesMethod(a) {
     await setInvest((prevState) => {
-      return { ...prevState, investAmount: a };
+      return { ...prevState, salesMethod: a };
+    });
+  }
+  async function setInvest_salesPortion(a) {
+    await setInvest((prevState) => {
+      return { ...prevState, salesPortion: a };
+    });
+  }
+  async function setInvest_salesManager(a) {
+    await setInvest((prevState) => {
+      return { ...prevState, salesManager: a };
+    });
+  }
+  async function setInvest_preSalesIds(a) {
+    await setInvest((prevState) => {
+      return { ...prevState, preSalesIds: [...prevState.preSalesIds, a] };
+    });
+  }
+  async function setInvest_preSalesManagers(a) {
+    await setInvest((prevState) => {
+      return {
+        ...prevState,
+        preSalesManagers: [...prevState.preSalesManagers, a]
+      };
+    });
+  }
+  async function setInvest_buyer(a) {
+    await setInvest((prevState) => {
+      return { ...prevState, buyer: a };
     });
   }
 
+  async function setInvest_buyerPortion(a) {
+    await setInvest((prevState) => {
+      return { ...prevState, buyerPortion: a };
+    });
+  }
+  async function setInvest_storeOwner(a) {
+    await setInvest((prevState) => {
+      return { ...prevState, storeOwner: a };
+    });
+  }
+
+  async function setInvest_storePortion(a) {
+    await setInvest((prevState) => {
+      return { ...prevState, storePortion: a };
+    });
+  }
+
+  async function setInvest_amount(a) {
+    await setInvest((prevState) => {
+      return { ...prevState, amount: a };
+    });
+  }
   async function setInvest_totalPrice(a) {
     await setInvest((prevState) => {
       return { ...prevState, totalPrice: a };
     });
   }
+
+  async function setInvest_bReserved(a) {
+    await setInvest((prevState) => {
+      return { ...prevState, bReserved: a };
+    });
+  }
+
   async function setInvest_depositor(a) {
     await setInvest((prevState) => {
       return { ...prevState, depositor: a };
     });
   }
-  // sales
-  async function setSales_StoreOwnerPhonenumber(a) {
-    await setSalesRegisterationInfo((prevState) => {
+
+  async function setInvest_bank(a) {
+    await setInvest((prevState) => {
+      return { ...prevState, bank: a };
+    });
+  }
+  async function setInvest_bankAccount(a) {
+    await setInvest((prevState) => {
+      return { ...prevState, bankAccount: a };
+    });
+  }
+
+  // store
+  async function setStore_storeName(a) {
+    await setStore((prevState) => {
+      return { ...prevState, storeName: a };
+    });
+  }
+  async function setStore_storeMainAddress(a) {
+    await setStore((prevState) => {
+      return { ...prevState, storeMainAddress: a };
+    });
+  }
+  async function setStore_storeRestAddress(a) {
+    await setStore((prevState) => {
+      return { ...prevState, storeRestAddress: a };
+    });
+  }
+  async function setStore_storeOwnerPhoneNumber(a) {
+    await setStore((prevState) => {
       return { ...prevState, storeOwnerPhoneNumber: a };
     });
   }
-  async function setSales_StorePhoneNumber(a) {
-    await setSalesRegisterationInfo((prevState) => {
+  async function setStore_storePhoneNumber(a) {
+    await setStore((prevState) => {
       return { ...prevState, storePhoneNumber: a };
     });
   }
-  async function setSales_StoreName(a) {
+  async function setStore_storeOwner(a) {
+    await setStore((prevState) => {
+      return { ...prevState, storeOwner: a };
+    });
+  }
+  async function setStore_storePortion(a) {
+    await setStore((prevState) => {
+      return { ...prevState, storePortion: a };
+    });
+  }
+
+  async function setStore_salesManager(a) {
+    await setStore((prevState) => {
+      return { ...prevState, salesManager: a };
+    });
+  }
+  async function setStore_salesPortion(a) {
+    await setStore((prevState) => {
+      return { ...prevState, salesPortion: a };
+    });
+  }
+  async function setStore_buyer(a) {
+    await setStore((prevState) => {
+      return { ...prevState, buyer: a };
+    });
+  }
+
+  async function setStore_buyerPortion(a) {
+    await setStore((prevState) => {
+      return { ...prevState, buyerPortion: a };
+    });
+  }
+  async function setStore_stationId(a) {
+    await setStore((prevState) => {
+      return { ...prevState, stationId: [...prevState.stationId, a] };
+    });
+  }
+  async function setStore_storePhoto(a) {
+    await setStore((prevState) => {
+      return { ...prevState, stationId: [...prevState.storePhoto, a] };
+    });
+  }
+  async function setStore_naverStoreUrl(a) {
+    await setStore((prevState) => {
+      return { ...prevState, naverStoreUrl: a };
+    });
+  }
+  async function setStore_contractYear(a) {
+    await setStore((prevState) => {
+      return { ...prevState, contractYear: a };
+    });
+  }
+
+  // sales
+  async function setSales_storeName(a) {
     await setSalesRegisterationInfo((prevState) => {
       return { ...prevState, storeName: a };
     });
   }
-  async function setSales_StoreMainAddress(a) {
+  async function setSales_storeMainAddress(a) {
     await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, ...(prevState.storeAddress.mainAddress = a) };
+      return { ...prevState, storeMainAddress: a };
     });
   }
-  async function setSales_StoreRestAddress(a) {
+  async function setSales_storeRestAddress(a) {
     await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, ...(prevState.storeAddress.restAddress = a) };
+      return { ...prevState, storeRestAddress: a };
     });
   }
-  async function setSales_StorePortion(a) {
+  async function setSales_storeOwnerPhoneNumber(a) {
+    await setSalesRegisterationInfo((prevState) => {
+      return { ...prevState, storeOwnerPhoneNumber: a };
+    });
+  }
+  async function setSales_storePhoneNumber(a) {
+    await setSalesRegisterationInfo((prevState) => {
+      return { ...prevState, storePhoneNumber: a };
+    });
+  }
+  async function setSales_storeOwner(a) {
+    await setSalesRegisterationInfo((prevState) => {
+      return { ...prevState, storeOwner: a };
+    });
+  }
+  async function setSales_storePortion(a) {
     await setSalesRegisterationInfo((prevState) => {
       return { ...prevState, storePortion: a };
     });
   }
-  async function setSales_Buying(a) {
+
+  async function setSales_salesManager(a) {
     await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, bBuying: a };
+      return { ...prevState, salesManager: a };
     });
   }
-  async function setSales_BInvestor(a) {
+  async function setSales_salesPortion(a) {
     await setSalesRegisterationInfo((prevState) => {
-      return {
-        ...prevState,
-        ...(prevState.investor.bInvestor = a)
-      };
+      return { ...prevState, salesPortion: a };
     });
   }
-  async function setSales_InvestorPhoneNumber(a) {
+  async function setSales_buyer(a) {
     await setSalesRegisterationInfo((prevState) => {
-      return {
-        ...prevState,
-        ...(prevState.investor.investorPhonenumber = a)
-      };
+      return { ...prevState, buyer: a };
     });
   }
-  async function setSales_InvestorPortion(a) {
+
+  async function setSales_buyerPortion(a) {
     await setSalesRegisterationInfo((prevState) => {
-      return {
-        ...prevState,
-        ...(prevState.investor.portion = a)
-      };
+      return { ...prevState, buyerPortion: a };
     });
   }
+  async function setSales_stationId(a) {
+    await setSalesRegisterationInfo((prevState) => {
+      return { ...prevState, stationId: [...prevState.stationId, a] };
+    });
+  }
+  async function setSales_storePhoto(a) {
+    await setSalesRegisterationInfo((prevState) => {
+      return { ...prevState, stationId: [...prevState.storePhoto, a] };
+    });
+  }
+  async function setSales_naverStoreUrl(a) {
+    await setSalesRegisterationInfo((prevState) => {
+      return { ...prevState, naverStoreUrl: a };
+    });
+  }
+  async function setSales_contractYear(a) {
+    await setSalesRegisterationInfo((prevState) => {
+      return { ...prevState, contractYear: a };
+    });
+  }
+
   return (
     <>
       <GlobalContext.Provider
         value={{
+          isAvailable,
+          getBuyerId,
+          fetchApplications,
           // getUser: userInfo,
           // setUser: setUser,
           // register
@@ -282,35 +510,55 @@ export function GlobalProvider({ children }) {
           setRegister_businessLicenseImg,
           // invest
           getInvestInfo: invest,
-          setInvest_investAmount,
-          setInvest_totalPrice,
+          setInvest_bankAccount,
+          setInvest_bank,
           setInvest_depositor,
+          setInvest_bReserved,
+          setInvest_totalPrice,
+          setInvest_amount,
+          setInvest_storePortion,
+          setInvest_storeOwner,
+          setInvest_buyerPortion,
+          setInvest_buyer,
+          setInvest_preSalesManagers,
+          setInvest_preSalesIds,
+          setInvest_salesManager,
+          setInvest_salesPortion,
+          setInvest_salesMethod,
           // sales
           salesInfo: salesRegisterationInfo,
-          setSales_StoreOwnerPhonenumber,
-          setSales_StorePhoneNumber,
-          setSales_StoreName,
-          setSales_StoreMainAddress,
-          setSales_StoreRestAddress,
-          setSales_StorePortion,
-          setSales_Buying,
-          setSales_BInvestor,
-          setSales_InvestorPhoneNumber,
-          setSales_InvestorPortion,
+          setSales_storeName,
+          setSales_storeMainAddress,
+          setSales_storeRestAddress,
+          setSales_storeOwnerPhoneNumber,
+          setSales_storePhoneNumber,
+          setSales_storeOwner,
+          setSales_storePortion,
+          setSales_salesManager,
+          setSales_salesPortion,
+          setSales_buyer,
+          setSales_buyerPortion,
+          setSales_stationId,
+          setSales_storePhoto,
+          setSales_naverStoreUrl,
+          setSales_contractYear,
           // Store
           getStoreInfo: store,
-          setStore_StoreOwnerPhonenumber,
-          setStore_StorePhoneNumber,
-          setStore_StoreName,
-          setStore_StoreMainAddress,
-          setStore_StoreRestAddress,
-          setStore_bBuying,
-          setStore_bSales,
-          setStore_salesContact,
+          setStore_storeName,
+          setStore_storeMainAddress,
+          setStore_storeRestAddress,
+          setStore_storeOwnerPhoneNumber,
+          setStore_storePhoneNumber,
+          setStore_storeOwner,
+          setStore_storePortion,
+          setStore_salesManager,
           setStore_salesPortion,
-          setStore_bInvestor,
-          setStore_investorContact,
-          setStore_investorPortion
+          setStore_buyer,
+          setStore_buyerPortion,
+          setStore_stationId,
+          setStore_storePhoto,
+          setStore_naverStoreUrl,
+          setStore_contractYear
         }}
       >
         {/* <ThemeUpdateContext.Provider value={{ userNinfo, getUserNinfo }}> */}

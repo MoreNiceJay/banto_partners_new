@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
 import { NavBar } from "../../components/NavBar.js";
-import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
 import { useAuth } from "../../AuthContext";
@@ -16,10 +15,14 @@ import Checkbox from "@material-ui/core/Checkbox";
 import CircleChecked from "@material-ui/icons/CheckCircleOutline";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
-import { MenuList } from "../../components/MenuList.js";
 import { BlackBackgroundLgButton } from "../../components/BlackBackgroundLgButton.js";
-
+import { MultipleForms } from "../../components/MultipleForms.js";
 const useStyles = makeStyles((theme) => ({
+  root: {
+    "& > *": {
+      width: "100%"
+    }
+  },
   emptySpace: { width: "100%", height: "44px" },
   headerSpace: {
     display: "flex",
@@ -33,39 +36,11 @@ const useStyles = makeStyles((theme) => ({
       border: "none"
     }
   },
-  container: { backgroundColor: "#E5E5E5", width: "100%", height: "100vh" },
-  header: {
-    backgroundColor: "#E5E5E5",
-    width: "100%",
-    height: "30%",
-    borderBottom: "1px solid black",
-    display: "flex",
-    alignItems: "center"
-  },
-  headerContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignContent: "center",
-    justifyContent: "space-around",
-    width: "100%",
-    height: "50%"
-  },
-  emailContainer: {
-    width: "100%",
-    alignContent: "center",
-    textAlign: "center"
-  },
-  emailSpan: { textAlign: "center", width: "100%", alignSelf: "center" },
-  useInfoEditButton: {
-    alignSelf: "center",
-    backgroundColor: "#E0E0E0",
-    width: "108px"
-  }
+  infoTextField: { marginTop: "10px", width: "calc(100% - 25px)" }
 }));
 
 function LoginPage(props) {
   const classes = useStyles(props);
-  console.log(auth);
   const [state, setState] = React.useState({
     checkedA: true,
     checkedB: true,
@@ -90,39 +65,25 @@ function LoginPage(props) {
   })((props) => <Checkbox color="default" {...props} />);
   const data = [
     {
-      titleBold: "정산 계좌정보",
-      titleRegular: "",
-      link: "/mypage/deposit"
+      title: "이메일",
+      contentText: auth.user.email && auth.user.email,
+      link: "/store/apply/address",
+      bUsing: true,
+      disabled: true,
+      bButton: false
     },
     {
-      titleBold: "알림",
-      titleRegular: "",
-      link: "/mypage/message"
-    },
-    {
-      titleBold: "설정",
-      titleRegular: "",
-      link: "/mypage/settings"
+      title: "전화번호",
+      contentText: context.getStoreInfo.storeOwnerPhoneNumber,
+      link: "/store/apply/contact",
+      bUsing: true,
+      value: auth.user.phoneNumber && auth.user.phoneNumber,
+      bButton: true
     }
   ];
-  const MyPageHeader = () => (
-    <div className={classes.headerContainer}>
-      <div className={classes.emailContainer}>
-        <span className={classes.emailSpan}>
-          {auth.user.email && auth.user.email}
-        </span>
-      </div>
-      <Button
-        className={classes.useInfoEditButton}
-        onClick={() => {
-          props.history.push("/mypage/userinfo");
-        }}
-      >
-        회원 정보 수정
-      </Button>
-    </div>
-  );
+  console.log("나와", auth);
 
+  ///////////////////////////////////
   return (
     <>
       <Slide
@@ -132,28 +93,16 @@ function LoginPage(props) {
         mountOnEnter
         unmountOnExit
       >
-        <div className={classes.container}>
-          <header className={classes.header}>
-            <MyPageHeader></MyPageHeader>
+        <div>
+          <header>
+            <NavBar title="내정보" backLink="/store/apply/addinvestor" />
           </header>
 
           <main>
             <section className={classes.section}>
-              <MenuList style={{ paddingTop: "140px" }} menuList={data} />
+              <MultipleForms data={data} />
             </section>
-            <BlackBackgroundLgButton
-              title="로그아웃"
-              onClick={async () => {
-                if (window.confirm("로그아웃 하시겠습니까")) {
-                  const result = await auth.signOut();
-                  if (result.code !== 200) {
-                    alert(result.msg);
-                    return;
-                  }
-                  props.history.push("/main");
-                }
-              }}
-            ></BlackBackgroundLgButton>
+            <BlackBackgroundLgButton title={"확인"} />
           </main>
           <footer></footer>
         </div>

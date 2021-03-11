@@ -19,35 +19,32 @@ function SalesMenu(props) {
 
   const roleMenu = [
     {
-      titleBold: "등록",
-      titleRegular: "하기",
-      link: "/sales/regist/address"
+      titleBold: "알람세팅",
+      titleRegular: "",
+      link: "/mypage/settings/alarmsetting"
     },
     {
-      titleBold: "수익",
-      titleRegular: "확인",
-      link: "/table/earning?role=sales"
+      titleBold: "고객센터",
+      titleRegular: "",
+      link: "/mypage/settings/customercenter"
     },
 
     {
-      titleBold: "스테이션",
-      titleRegular: " 정보",
-      link: "/table/station?role=sales"
+      titleBold: "공지",
+      titleRegular: " ",
+      link: "/mypage/settings/notice"
     },
     {
-      titleBold: "신청서",
-      titleRegular: "상태",
-      link: "/table/application?role=sales"
+      titleBold: "정책",
+      titleRegular: " ",
+      link: "/mypage/settings/policies"
     }
   ];
   return (
     <>
       <header>
         <NavBar title="" backLink="battery-service-roll" />
-        <HeaderInfo
-          title="영업"
-          description="가맹점을 모집해 수익을 창출 할 수 있습니다"
-        />
+        <HeaderInfo title="Settings" description="" />
       </header>
       <main>
         <MenuList menuList={roleMenu} />

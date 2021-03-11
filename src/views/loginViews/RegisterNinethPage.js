@@ -234,17 +234,25 @@ function LoginPage(props) {
 
                 <Button
                   variant="outlined"
-                  onClick={() => {
-                    auth.updateExtraProfiles(
-                      name,
-                      birthdate,
-                      bank,
-                      accountNumber,
-                      accountHolder,
-                      bBusinessLicense,
-                      businessLicenseImg
-                    );
-                    props.history.push("/login/register/tenth");
+                  onClick={async () => {
+                    try {
+                      const result = await auth.updateExtraProfiles(
+                        name,
+                        birthdate,
+                        bank,
+                        accountNumber,
+                        accountHolder,
+                        bBusinessLicense,
+                        businessLicenseImg
+                      );
+
+                      console.log(result);
+                      if (result.code === 200) {
+                        props.history.push("/login/register/tenth");
+                      }
+                    } catch (e) {
+                      alert(e.message);
+                    }
                   }}
                   style={{
                     width: "calc(100% - 64px)",

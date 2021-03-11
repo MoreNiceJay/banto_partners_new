@@ -42,14 +42,14 @@ function RegistContact(props) {
   const context = useGlobal();
 
   function mySubmitHandler() {
-    // if (storeOwnerContact.length < 11) {
-    //   window.alert("가맹점주님의 연락처는 필수 입니다");
-    //   return;
-    // }
+    if (storeOwnerContact.length < 11) {
+      window.alert("가맹점주님의 연락처는 필수 입니다");
+      return;
+    }
     context.setSales_StoreOwnerPhonenumber(storeOwnerContact);
     context.setSales_StorePhoneNumber(storeOwnerContact);
 
-    props.history.push("/sales/regist/address");
+    props.history.push("/sales/regist/portion");
   }
   function onChangeStoreOwnerPhoneNumber(e) {
     setStoreOwnerContact(e.target.value);
@@ -66,12 +66,10 @@ function RegistContact(props) {
   }, []);
   return (
     <>
-      {context.salesInfo.storeOwnerPhoneNumber}
-
       <header>
-        <NavBar title="" backLink="/salesmenu" />
+        <NavBar title="" backLink="/sales/address" />
         <HeaderInfo
-          title={"등록" + "\u00A0" + "\u00A0" + "\u00A0" + "1/3"}
+          title={"등록" + "\u00A0" + "\u00A0" + "\u00A0" + "2/3"}
           description="가맹점을 등록합니다"
         />
       </header>

@@ -73,35 +73,54 @@ function LoginPage(props) {
                   }}
                 >
                   {" "}
-                  가입이 완료되었습니다!
+                  추가 정보 입력이 완료 되었습니다.
+                </p>
+                <p
+                  style={{
+                    fontFamily: "Noto Sans CJK KR",
+                    fontStyle: "normal",
+                    fontWeight: "bold",
+                    fontSize: "24px",
+                    marginTop: "41px"
+                  }}
+                >
+                  이제 수익을 입금 받으실 수 있습니다
                 </p>
               </div>
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "flex-end"
+                  position: "fixed",
+                  bottom: "100px",
+                  width: "100%"
                 }}
               >
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    props.history.push("/main");
-                  }}
+                <div
                   style={{
-                    width: "64px",
-                    height: "64px",
-                    margin: "24px 32px",
-                    borderRadius: "15px",
-                    border: "2px solid #000A12",
-                    fontFamily: "Montserrat",
-                    fontStyle: "normal",
-                    fontWeight: "600",
-                    fontSize: "12px",
-                    alignText: "right"
+                    display: "flex",
+                    justifyContent: "flex-end"
                   }}
                 >
-                  Start
-                </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      props.history.push("/main");
+                    }}
+                    style={{
+                      width: "64px",
+                      height: "64px",
+                      margin: "24px 32px",
+                      borderRadius: "15px",
+                      border: "2px solid #000A12",
+                      fontFamily: "Montserrat",
+                      fontStyle: "normal",
+                      fontWeight: "600",
+                      fontSize: "12px",
+                      alignText: "right"
+                    }}
+                  >
+                    Start
+                  </Button>
+                </div>
               </div>
             </section>
           </main>

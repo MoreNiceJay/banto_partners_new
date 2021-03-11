@@ -103,7 +103,6 @@ function MainPage(props) {
   const handleStepChange = (step) => {
     setActiveStep(step);
   };
-
   return (
     <>
       {/* <Slide
@@ -135,8 +134,8 @@ function MainPage(props) {
 
           <Link to="#">
             <span className={classes.myInfoLink}>
-              {!!auth.isLogin ? (
-                "내정보"
+              {!!auth.user ? (
+                <Link to="/mypage">설정</Link>
               ) : (
                 <Link to="/login/login">로그인</Link>
               )}
@@ -237,7 +236,7 @@ function MainPage(props) {
               보조배터리 대여서비스
             </h1>
           </Link>
-          {auth.isLogin && (
+          {auth.user && (
             <Link
               onClick={() => {
                 auth.signOut();

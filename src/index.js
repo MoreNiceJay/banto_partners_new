@@ -9,10 +9,12 @@ import { AuthProvider } from "./AuthContext";
 import App from "./App";
 import MainPage from "./views/MainPage.js";
 import BatteryServiceRoll from "./views/BatteryServiceRoll.js";
-/* member store */
+/* buyer */
 import InvestorMenu from "./views/investorViews/InvestorMenu.js";
 import InvestStart from "./views/investorViews/InvestStart.js";
 import InvestDepositor from "./views/investorViews/InvestDepositor.js";
+import InvestMethod from "./views/investorViews/InvestMethod.js";
+
 import InvestFinal from "./views/investorViews/InvestFinal.js";
 import InvestDone from "./views/investorViews/InvestDone.js";
 
@@ -52,11 +54,23 @@ import RegisterTenthPage from "./views/loginViews/RegisterTenthPage.js";
 import EarningTable from "./views/EarningTable.js";
 import StationTable from "./views/StationTable.js";
 import StationDetail from "./views/StationDetail.js";
+import ApplicationDetail from "./views/ApplicationDetail.js";
+
+import ApplicationTable from "./views/ApplicationTable.js";
 
 // myPages
 import MyPage from "./views/myPage/MyPage.js";
 import Message from "./views/myPage/Message.js";
+import Deposit from "./views/myPage/Deposit.js";
+import Settings from "./views/myPage/Settings.js";
+import UserInfo from "./views/myPage/UserInfo.js";
 
+// Settings
+import AlramSettings from "./views/myPage/settings/AlarmSetting";
+import CustomerCenter from "./views/myPage/settings/CustomerCenter.js";
+import Notice from "./views/myPage/settings/Notice.js";
+import Policies from "./views/myPage/settings/Policies.js";
+import PhoneAuth from "./views/myPage/settings/PhoneAuth.js";
 const rootElement = document.getElementById("root");
 
 ReactDOM.render(
@@ -82,6 +96,7 @@ ReactDOM.render(
                 path="/investor/depositor"
                 component={InvestDepositor}
               />
+              <Route exact path="/investor/method" component={InvestMethod} />
               <Route exact path="/investor/done" component={InvestDone} />
 
               <Route exact path="/investor/final" component={InvestFinal} />
@@ -207,12 +222,50 @@ ReactDOM.render(
               <Route exact path="/table/station" component={StationTable} />
               <Route
                 exact
+                path="/table/application"
+                component={ApplicationTable}
+              />
+              <Route
+                exact
                 path="/table/stationdetail"
                 component={StationDetail}
+              />
+              <Route
+                exact
+                path="/table/applicationdetail"
+                component={ApplicationDetail}
               />
               {/* Mypage */}
               <Route exact path="/mypage" component={MyPage} />
               <Route exact path="/mypage/message" component={Message} />
+              <Route exact path="/mypage/deposit" component={Deposit} />
+              <Route exact path="/mypage/settings" component={Settings} />
+              <Route exact path="/mypage/userinfo" component={UserInfo} />
+
+              {/* settings */}
+              <Route
+                exact
+                path="/mypage/settings/alarmsetting"
+                component={AlramSettings}
+              />
+              <Route
+                exact
+                path="/mypage/settings/customercenter"
+                component={CustomerCenter}
+              />
+              <Route exact path="/mypage/settings/notice" component={Notice} />
+              <Route
+                exact
+                path="/mypage/settings/policies"
+                component={Policies}
+              />
+
+              {/* phoneAUth */}
+              <Route
+                exact
+                path="/mypage/userinfo/phoneauth"
+                component={PhoneAuth}
+              />
             </Switch>
           </React.StrictMode>
         </AnimatePresence>

@@ -22,6 +22,10 @@ import FormLabel from "@material-ui/core/FormLabel";
 import CircleChecked from "@material-ui/icons/CheckCircleOutline";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
+import * as constant from "../../Const";
+import * as common from "../../common";
+var _ = require("lodash");
+
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
   headerSpace: {
@@ -54,23 +58,301 @@ const useStyles = makeStyles((theme) => ({
 
 function LoginPage(props) {
   const classes = useStyles(props);
-  const [value, setValue] = React.useState("yes");
+  const [value, setValue] = React.useState("banto");
   const [bank, setBank] = React.useState("");
+  const [invitations, setInvitatations] = React.useState([
+    { key: "323", id: "jaylee", percent: 30 },
+    { key: "3234", id: "naun", percent: 30 }
+  ]);
+  let percentage = _.range(0, 26);
+  const maxPortion = 70;
   const context = useGlobal();
   const auth = useAuth();
   const handleChange = (event) => {
     setValue(event.target.value);
-    if (value === "yes") {
-      context.setInvest_accountNumber(null);
-      context.setInvest_bank(null);
-      context.setInvest_depositor(null);
-    }
   };
   const handleSlectChange = (event) => {
     console.log(event.target.value);
-    setBank(event.target.value);
-    context.setInvest_bank(event.target.value);
+    context.setInvest_salesPortion(event.target.value);
   };
+
+  const bantoBody = (
+    <>
+      <p
+        style={{
+          fontStyle: "normal",
+          fontWeight: "200",
+          fontSize: "16px",
+          margin: "16px 0 0 24px"
+        }}
+      >
+        <>
+          기기를 설치할 세일즈 파트너는 아래 설정하시는 이익률을 확인하여 설치할
+          기기를 선택할 수 있습니다{" "}
+        </>
+        <br />
+        {"(이익률은 설치전까지 투자 -> 스테이션 에서 수정할 수 있습니다)"}
+      </p>
+      <p
+        style={{
+          fontStyle: "normal",
+          fontWeight: "200",
+          fontSize: "16px",
+          margin: "16px 0 0 24px"
+        }}
+      >
+        영업이 가맹점에게 설치 요청을 할때 분배되는 수익률 안에서 가맹점의
+        수익을 보장해야합니다
+      </p>
+      <p
+        style={{
+          fontStyle: "normal",
+          fontWeight: "500",
+          fontSize: "16px",
+          margin: "16px 0 0 24px"
+        }}
+      >
+        영업분에게 분배할 수익률
+      </p>
+
+      <div>
+        <FormControl
+          style={{
+            margin: "0 24px",
+            marginTop: "12px",
+            width: "calc(100% - 64px)"
+          }}
+        >
+          <InputLabel
+            shrink={false}
+            style={{
+              paddingLeft: "0px",
+              fontSize: "26px",
+              fontFamily: "Montserrat",
+              fontWeight: "bold",
+              color: "black",
+              opacity: "0.4",
+              boxSizing: "border-box"
+            }}
+            id="demo-simple-select-label"
+          ></InputLabel>
+
+          <Select
+            className={classes.select}
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={context.getInvestInfo.salesPortion}
+            placeholder="Bank"
+            style={{
+              fontSize: "26px",
+              fontFamily: "Montserrat",
+              fontWeight: "bold",
+              boxSizing: "border-box",
+              marginTop: "10px"
+            }}
+            onChange={handleSlectChange}
+            inputProps={{
+              style: {
+                fontSize: "26px",
+                fontFamily: "Montserrat",
+                fontWeight: "bold",
+                boxSizing: "border-box",
+                marginTop: "10px"
+              }
+            }}
+          >
+            {common.percentArray(0, maxPortion).map((value) => {
+              return <MenuItem value={value}>{value} % </MenuItem>;
+            })}
+          </Select>
+        </FormControl>
+
+        <p
+          style={{
+            fontStyle: "normal",
+            fontWeight: "500",
+            fontSize: "16px",
+            margin: "16px 0 0 24px"
+          }}
+        >
+          내 수익 계산기 :{" "}
+          {myPortionCalculater(maxPortion, context.getInvestInfo.salesPortion)}%
+        </p>
+      </div>
+    </>
+  );
+  function myPortionCalculater(maxPortion, salesPortion) {
+    return maxPortion - salesPortion;
+  }
+  const ownSalesBody = (
+    <>
+      <p
+        style={{
+          fontStyle: "normal",
+          fontWeight: "200",
+          fontSize: "16px",
+          margin: "16px 0 0 24px"
+        }}
+      >
+        <>초대할 영업자 및 가맹점 아이디</>
+        <br />
+        {"아이디는 내정보 -> 내 아이디에서 확인 할 수 있습니다"}
+      </p>
+      <p
+        style={{
+          fontStyle: "normal",
+          fontWeight: "500",
+          fontSize: "16px",
+          margin: "16px 0 0 24px"
+        }}
+      >
+        영업자 아이디
+      </p>
+      {invitations.map((value) => (
+        <>
+          {" "}
+          <TextField
+            variant="outlined"
+            id="standard-full-width"
+            // label="Phone Number"
+            className={classes.textField}
+            placeholder="추가할 세일즈님 & 가맹 점주님 ID"
+            // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
+            value={value.id}
+            onChange={(e) => {
+              const invis = [...invitations];
+              const varaibleToUpdate = invis.find(
+                (variable) => variable.key === value.key
+              );
+              console.log(varaibleToUpdate);
+              console.log(varaibleToUpdate[value]);
+              varaibleToUpdate.id = e.target.value;
+              setInvitatations(invis);
+            }}
+            style={{
+              margin: "0 24px",
+              marginTop: "12px",
+              width: "calc(100% - 64px)"
+            }}
+            InputLabelProps={{
+              style: {}
+            }}
+            inputProps={{
+              style: {
+                paddingLeft: "0px",
+                fontSize: "26px",
+                fontFamily: "Montserrat",
+                fontWeight: "bold",
+
+                boxSizing: "border-box",
+                marginTop: "10px"
+              }
+            }}
+          />{" "}
+          <FormControl
+            style={{
+              margin: "0 24px",
+              marginTop: "12px",
+              width: "calc(100% - 64px)"
+            }}
+          >
+            <InputLabel
+              shrink={false}
+              style={{
+                paddingLeft: "0px",
+                fontSize: "26px",
+                fontFamily: "Montserrat",
+                fontWeight: "bold",
+                color: "black",
+                opacity: "0.4",
+                boxSizing: "border-box"
+              }}
+              id="demo-simple-select-label"
+            ></InputLabel>
+
+            <Select
+              className={classes.select}
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={value.percent}
+              placeholder="Bank"
+              style={{
+                fontSize: "26px",
+                fontFamily: "Montserrat",
+                fontWeight: "bold",
+                boxSizing: "border-box",
+                marginTop: "10px"
+              }}
+              onChange={(e) => {
+                const invis = [...invitations];
+                const varaibleToUpdate = invis.find(
+                  (variable) => variable.key === value.key
+                );
+
+                varaibleToUpdate.percent = e.target.value;
+                setInvitatations(invis);
+              }}
+              inputProps={{
+                style: {
+                  fontSize: "26px",
+                  fontFamily: "Montserrat",
+                  fontWeight: "bold",
+                  boxSizing: "border-box",
+                  marginTop: "10px"
+                }
+              }}
+            >
+              {common.percentArray(0, maxPortion).map((value) => {
+                return <MenuItem value={value}>{value} % </MenuItem>;
+              })}
+            </Select>
+          </FormControl>
+          <Button
+            onClick={() => {
+              const invis = [...invitations].filter(
+                (variable) => variable.key !== value.key
+              );
+              setInvitatations(invis);
+            }}
+          >
+            지우기
+          </Button>
+        </>
+      ))}
+      <Button
+        onClick={() => {
+          setInvitatations([
+            ...invitations,
+            {
+              key: common.uuidv4(),
+              id: "",
+              percent: 0
+            }
+          ]);
+        }}
+      >
+        더하기
+      </Button>
+    </>
+  );
+
+  const yetSalesBody = (
+    <>
+      <p
+        style={{
+          fontStyle: "normal",
+          fontWeight: "200",
+          fontSize: "16px",
+          margin: "16px 0 0 24px"
+        }}
+      >
+        <>세일즈 방법 설정은 구매후</>
+        <br />
+        {"(이익률은 설치전까지 투자 -> 스테이션 에서 수정할 수 있습니다)"}
+      </p>
+    </>
+  );
+
   const textFieldsBody = (
     <>
       <p
@@ -243,7 +525,7 @@ function LoginPage(props) {
         id="standard-full-width"
         // label="Phone Number"
         className={classes.textField}
-        placeholder="Bank Account"
+        placeholder="추가할 세일즈 & 가맹점 ID"
         // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
         value={context.getInvestInfo.accountNumber}
         onChange={(e) => {
@@ -310,52 +592,17 @@ function LoginPage(props) {
                     margin: "16px 0 0 24px"
                   }}
                 >
-                  입금자명이{" "}
-                  <span
-                    style={{
-                      textDecoration: "underline"
-                    }}
-                  >
-                    {auth.userExtraInfo.name && auth.userExtraInfo.name}
-                  </span>
-                  입니다
+                  반토 파트너스 영업망을 통해 영업을 설치하시겠습니까
                 </p>
                 <p
                   style={{
                     fontStyle: "normal",
-                    fontWeight: "500",
+                    fontWeight: "300",
                     fontSize: "16px",
                     margin: "16px 0 0 24px"
                   }}
                 >
-                  입금 은행은{" "}
-                  <span
-                    style={{
-                      textDecoration: "underline"
-                    }}
-                  >
-                    {auth.userExtraInfo.bank && auth.userExtraInfo.bank}
-                  </span>
-                  입니다
-                </p>
-                <p
-                  style={{
-                    fontStyle: "normal",
-                    fontWeight: "500",
-                    fontSize: "16px",
-                    margin: "16px 0 0 24px"
-                  }}
-                >
-                  계좌번호는
-                  <span
-                    style={{
-                      textDecoration: "underline"
-                    }}
-                  >
-                    {auth.userExtraInfo.accountNumber &&
-                      auth.userExtraInfo.accountNumber}
-                  </span>
-                  입니다
+                  *파트너스에 가입한 영업자, 가맹점에 의해 자동으로 설치됩니다
                 </p>
               </div>
               <div style={{ marginLeft: "8px" }}>
@@ -371,7 +618,7 @@ function LoginPage(props) {
                     onChange={handleChange}
                   >
                     <FormControlLabel
-                      value="yes"
+                      value={constant.salesDecision.banto}
                       control={
                         <Radio
                           icon={<CircleUnchecked />}
@@ -386,10 +633,10 @@ function LoginPage(props) {
                           }}
                         />
                       }
-                      label="Yes"
+                      label="네. 반토 파트너스를 통해 설치하겠습니다"
                     />
                     <FormControlLabel
-                      value="no"
+                      value={constant.salesDecision.ownSales}
                       control={
                         <Radio
                           icon={<CircleUnchecked />}
@@ -404,12 +651,34 @@ function LoginPage(props) {
                           }}
                         />
                       }
-                      label="No"
+                      label="아니오. 자체영업(본인포함)을 통해 설치하겠습니다"
+                    />
+                    <FormControlLabel
+                      value={constant.salesDecision.yet}
+                      control={
+                        <Radio
+                          icon={<CircleUnchecked />}
+                          checkedIcon={<CircleCheckedFilled />}
+                          style={{
+                            color: "black",
+                            "&$checked": {
+                              color: "black"
+                            },
+
+                            checked: {}
+                          }}
+                        />
+                      }
+                      label="나중에 설정하겠습니다"
                     />
                   </RadioGroup>
                 </FormControl>
               </div>
-              {value === "no" && textFieldsBody}
+              {value === constant.salesDecision.banto
+                ? bantoBody
+                : value === constant.salesDecision.ownSales
+                ? ownSalesBody
+                : yetSalesBody}
 
               <div
                 style={{
@@ -420,21 +689,20 @@ function LoginPage(props) {
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    if (value === "yes") {
-                      context.setInvest_bank(auth.userExtraInfo.bank);
-                      context.setInvest_accountNumber(
-                        auth.userExtraInfo.accountNumber
-                      );
-                      context.setInvest_depositor(auth.userExtraInfo.name);
-                    } else if (
-                      !!!context.getInvestInfo.bank ||
-                      !!!context.getInvestInfo.accountNumber ||
-                      !!!context.getInvestInfo.depositor
-                    ) {
-                      alert("빈칸이 있습니다");
-                      return;
+                    if (value === constant.salesDecision.banto) {
+                      context.setInvest_method(constant.salesDecision.banto);
+                    } else if (value === constant.salesDecision.ownSales) {
+                      context.setInvest_method(constant.salesDecision.ownSales);
+                      context.setInvest_salesPortion(0);
+                      context.setInvest_ownSalesMangers(invitations);
                     }
-                    props.history.push("/investor/method");
+                    // 설정안함
+                    else {
+                      context.setInvest_method(constant.salesDecision.yet);
+                      context.setInvest_salesPortion(0);
+                    }
+
+                    props.history.push("/investor/final");
                   }}
                   style={{
                     width: "64px",

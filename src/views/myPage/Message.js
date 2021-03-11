@@ -13,9 +13,19 @@ import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
-import CircleChecked from "@material-ui/icons/CheckCircleOutline";
-import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
-import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Axios from "axios";
+import InfiniteScroll from "react-infinite-scroll-component";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import queryString from "query-string";
+import * as common from "../../../src/common";
+import * as constant from "../../Const";
+const firebase = require("firebase");
+var db = firebase.firestore();
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
   headerSpace: {
@@ -30,21 +40,32 @@ const useStyles = makeStyles((theme) => ({
       border: "none"
     }
   }
+  // table: {
+  //   minWidth: 650
+  // }
 }));
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
-function LoginPage(props) {
+function LoginPage({ props, location }) {
   const classes = useStyles(props);
+  const data = [];
+  const todayTimestamp = common.getTimeStamp();
   const [state, setState] = React.useState({
     checkedA: true,
     checkedB: true,
     checkedF: true,
     checkedG: true
   });
+  const [apiData, setData] = React.useState(null);
+  const [earning, setEarning] = React.useState(0);
+  const [calender, setCalender] = React.useState(null);
   const context = useGlobal();
   const auth = useAuth();
-  const handleChange = (event) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
-  };
+  function createData(name, calories, fat, carbs, protein) {
+    return { name, calories, fat, carbs, protein };
+  }
   const BlackCheckbox = withStyles({
     root: {
       color: "black",
@@ -56,215 +77,108 @@ function LoginPage(props) {
       color: "black"
     }
   })((props) => <Checkbox color="default" {...props} />);
-  const data = [
-    {
-      title: "매장명",
-      contentText: context.getStoreInfo.storeName,
-      link: "/store/apply/address",
-      bUsing: true
-    },
-    {
-      title: "가맹점주님 연락처",
-      contentText: context.getStoreInfo.storeOwnerPhoneNumber,
-      link: "/store/apply/contact",
-      bUsing: true
-    },
-    {
-      title: "매장 연락처",
-      contentText: context.getStoreInfo.storePhoneNumber,
-      link: "/store/apply/contact",
-      bUsing: true
-    },
-    {
-      title: "매장주소",
-      contentText:
-        context.getStoreInfo.storeMainAddress +
-        " " +
-        context.getStoreInfo.storeRestAddress,
-      link: "/store/apply/address",
-      bUsing: true
-    },
-    {
-      title: "영업자",
-      contentText:
-        `수익률: ${context.getStoreInfo.salesPortion}% ` +
-        `연락처: ${context.getStoreInfo.salesContact}`,
-      link: "/store/apply/portion",
-      bUsing: context.getStoreInfo.bSales ? true : false
-    },
-    {
-      title: "투자자",
-      contentText:
-        `수익률: ${context.getStoreInfo.investorPortion}% ` +
-        `연락처: ${context.getStoreInfo.investorContact}`,
-      link: "/store/apply/addinvestor",
-      bUsing: context.getStoreInfo.bInvestor ? true : false
-    },
 
-    {
-      title: "구매여부",
-      contentText: context.getStoreInfo.bBuying ? "Yes" : "No",
-      link: "/store/apply/Address",
-      bUsing: true
-    },
-    {
-      title: "내 수익률",
-      contentText: "10%",
-      link: "/store/apply/Address",
-      bUsing: true
-    }
-  ];
+  React.useEffect(() => {
+    (async () => {
+      const result = await common.fetchMessages(auth.user.email);
+      if (result.code !== 200) {
+        alert(result.message);
+        return;
+      }
+      setData(result.data);
+    })();
+  }, []);
+
+  // 여기부터
 
   return (
     <>
-      <Slide
-        direction="left"
-        in={true}
-        timeout={{ enter: "0.15s", exit: "5s" }}
-        mountOnEnter
-        unmountOnExit
-      >
-        <div>
-          <header>
-            <NavBar title="추가정보 확인" backLink="/store/apply/addinvestor" />
-          </header>
-
-          <main>
-            <section className={classes.section}>
-              {data.map((value) => {
-                return (
-                  value.bUsing && (
-                    <div>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirextion: "rows",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          margin: "16px 0 0 24px"
-                        }}
-                      >
-                        <p
-                          style={{
-                            fontStyle: "normal",
-                            fontWeight: "500",
-                            fontSize: "16px",
-                            color: "#000A12",
-                            opacity: "0.4"
-                          }}
-                        >
-                          {value.title}
-                        </p>
-
-                        <Link
-                          style={{
-                            textDecoration: "underline",
-                            fontFamily: "Noto Sans CJK KR",
-                            fontStyle: "normal",
-                            fontWeight: "500",
-                            fontSize: "12px",
-                            marginRight: "24px"
-                          }}
-                        >
-                          수정
-                        </Link>
-                      </div>
-                      <p
-                        style={{
-                          fontFamily: "Montserrat",
-                          fontStyle: "normal",
-                          fontWeight: "bold",
-                          fontSize: "24px",
-                          margin: "16px 0 60px 24px",
-                          color: "#000A12"
-                        }}
-                      >
-                        {value.contentText}
-                      </p>
-                    </div>
-                  )
-                );
-              })}
-            </section>
-            <section>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column"
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "rows",
-                    alignItems: "center",
-                    justifyContent: "space-between"
-                  }}
-                >
-                  <FormControlLabel
-                    style={{ marginLeft: "14px" }}
-                    control={
-                      <BlackCheckbox
-                        checked={state.checkedA}
-                        onChange={handleChange}
-                        name="checkedA"
-                        icon={<CircleUnchecked />}
-                        checkedIcon={<CircleCheckedFilled />}
-                      />
-                    }
-                    label={
-                      <span
-                        style={{
-                          fontStyle: "normal",
-                          fontWeight: "normal",
-                          fontSize: "14px",
-                          lineHeight: "21px"
-                        }}
-                      >
-                        2020년 하반기 정책사항에 동의 합니다
-                      </span>
-                    }
-                  />
-                  <p style={{ textAlign: "right" }}>
-                    <Link
-                      style={{
-                        marginRight: "24px",
-                        textDecoration: "underline"
-                      }}
-                    >
-                      약관확인
-                    </Link>
-                  </p>
-                </div>
-
-                <Button
-                  variant="outlined"
-                  onClick={() => {
-                    auth.createStoreApplication();
-                    props.history.push("/store/apply/done");
-                  }}
-                  style={{
-                    width: "calc(100% - 64px)",
-                    height: "64px",
-                    margin: "24px 32px",
-                    borderRadius: "15px",
-                    backgroundColor: "#000A12",
-                    border: "2px solid #000A12",
-                    fontFamily: "Noto Sans CJK KR",
-                    fontStyle: "normal",
-                    fontWeight: "500",
-                    fontSize: "18px",
-                    color: "white"
-                  }}
-                >
-                  가입완료
-                </Button>
-              </div>
-            </section>
-          </main>
-          <footer></footer>
+      <div style={{ height: "100%" }}>
+        <header
+          style={{
+            backgroundColor: "#E5E5E5",
+            top: "0px",
+            position: "sticky",
+            position: "-webkit-sticky",
+            zIndex: "99999"
+          }}
+        >
+          <NavBar title="알림" backLink="/main" />
+        </header>
+        <div style={{ padding: "8px 16px" }}>
+          최근 30일 동안의 알림만 보관되며, 이후 자동 삭제 됩니다
         </div>
-      </Slide>
+
+        {/* </div> */}
+        <InfiniteScroll
+          dataLength={apiData && apiData.length}
+          hasMore={false}
+          loader={<h5 style={{ fontSize: "20px", zIndex: "2" }}>Loading...</h5>}
+        >
+          <TableContainer component={Paper}>
+            <Table className={classes.table} aria-label="simple table">
+              <TableBody>
+                {apiData &&
+                  // apiData.data.userId &&
+                  apiData.map((i, index) => {
+                    return (
+                      <TableRow key={index} style={{ height: "90px" }}>
+                        <TableCell
+                          style={{ height: "60px", verticalAlign: "top" }}
+                          align="left"
+                        >
+                          <div
+                            style={{ display: "flex", flexDirection: "rows" }}
+                          >
+                            <p
+                              style={{
+                                fontSize: "13px",
+                                color: "#263238"
+                              }}
+                            >
+                              {common.getMonthDayForm(i.receivedDate)}
+                            </p>
+                            {i.isRead ? (
+                              <div
+                                style={{
+                                  backgroundColor: "red",
+                                  width: "5px",
+                                  height: "5px"
+                                }}
+                              ></div>
+                            ) : (
+                              ""
+                            )}
+                          </div>
+                          <p
+                            style={{
+                              fontFamily: "Montserrat",
+                              fontStyle: "normal",
+                              fontWeight: "500",
+                              fontSize: "18px",
+                              marginTop: "8px"
+                            }}
+                          >
+                            {i.content}
+                          </p>
+                          <p
+                            style={{
+                              fontSize: "13px",
+                              color: "#263238"
+                            }}
+                          >
+                            {common.timeForToday(i.receivedDate)}
+                          </p>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </InfiniteScroll>
+      </div>
+      <div></div>
     </>
   );
 }

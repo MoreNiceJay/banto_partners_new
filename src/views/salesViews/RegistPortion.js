@@ -10,6 +10,8 @@ import { FormButton } from "../../components/FormButton.js";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import { useGlobal } from "../../globalContext";
+import { useAuth } from "../../AuthContext";
+
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import NativeSelect from "@material-ui/core/NativeSelect";
@@ -84,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 function RegistPortion(props) {
   const context = useGlobal();
-
+  const auth = useAuth();
   const classes = useStyles(props);
 
   const [modalStyle] = React.useState(getModalStyle);
@@ -94,10 +96,25 @@ function RegistPortion(props) {
   const handleOpen = () => {
     setOpen(true);
   };
-
   React.useEffect(() => {
-    setPortion(context.salesInfo.storePortion);
+    (async () => {
+      console.log(auth.user.email && auth.user.email);
+    })();
+    (async () => {
+      setPortion(context.salesInfo.storePortion);
+      context.setSales_Salesmanager(auth.user.email);
+    })();
   }, []);
+
+  const calcSalesPortion = (storePortion) => {
+    if (storePortion === 0) {
+      return 20;
+    } else if (0 < storePortion && storePortion <= 20) {
+      return 20 - storePortion;
+    } else if (storePortion > 20) {
+      return 0;
+    }
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -114,17 +131,6 @@ function RegistPortion(props) {
         <Button
           variant="outlined"
           size="large"
-          className={classes.modalNextTimeButton}
-          onClick={() => {
-            context.setSales_StorePortion(portion);
-            props.history.push("/sales/regist/add-investor");
-          }}
-        >
-          다음에
-        </Button>
-        <Button
-          variant="outlined"
-          size="large"
           color="primary"
           className={classes.modalBuyButton}
           onClick={() => {
@@ -133,7 +139,7 @@ function RegistPortion(props) {
             props.history.push("/sales/regist/add-investor");
           }}
         >
-          구매하기
+          네 이해했습니다
         </Button>
       </div>
     </div>
@@ -151,7 +157,11 @@ function RegistPortion(props) {
     };
   }
   const handleChange = (event) => {
-    setPortion(event.target.value);
+    let storePortion = event.target.value;
+    setPortion(Number(storePortion));
+    //TODO 세일즈 포션 계산 하고 세일즈 포션 컨텍스트
+    let salesPortion = calcSalesPortion(storePortion);
+    context.setSales_salesPortion(salesPortion);
   };
   function mySubmitHandler() {
     handleOpen();
@@ -161,13 +171,11 @@ function RegistPortion(props) {
 
   return (
     <>
-      {portion}
-      {context.salesInfo.storePortion}
       <header>
         <NavBar title="" backLink="/sales/regist/address" />
         <HeaderInfo
           title={"등록" + "\u00A0" + "\u00A0" + "\u00A0" + "3/3"}
-          description="가맹점을 등록합니다"
+          description="가맹점에게 수익을 나눌시, 가맹점 계약 체결시 본사에서 검수 후 반토 스테이션을 보내드립니다"
         />
       </header>
       <main>
@@ -205,7 +213,7 @@ function RegistPortion(props) {
                 </Select>
               </FormControl>
               <span className={classes.portionSelectDescription}>
-                영업님이 얻는 수익은 -%입니다
+                영업님이 얻는 수익은 {context.salesInfo.salesPortion}%입니다
               </span>
             </div>
             <button
