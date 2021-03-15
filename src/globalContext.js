@@ -36,6 +36,7 @@ export function GlobalProvider({ children }) {
   const [invest, setInvest] = React.useState({
     applicationId: "",
     status: "WAITING",
+    stationId: "",
     salesMethod: "",
     salesPortion: 0,
     salesManager: "",
@@ -69,6 +70,7 @@ export function GlobalProvider({ children }) {
     storePhoneNumber: "",
     storeOwner: "",
     storePortion: 0,
+    storeBonusPortion: 0,
     salesManager: "",
     salesPortion: 0,
     buyer: "",
@@ -91,6 +93,7 @@ export function GlobalProvider({ children }) {
     storePhoneNumber: "",
     storeOwner: "",
     storePortion: 0,
+    storeBonusPortion: 0,
     salesManager: "",
     salesPortion: 0,
     buyer: "",
@@ -262,14 +265,14 @@ export function GlobalProvider({ children }) {
   }
   async function setInvest_preSalesIds(a) {
     await setInvest((prevState) => {
-      return { ...prevState, preSalesIds: [...prevState.preSalesIds, a] };
+      return { ...prevState, preSalesIds: a };
     });
   }
   async function setInvest_preSalesManagers(a) {
     await setInvest((prevState) => {
       return {
         ...prevState,
-        preSalesManagers: [...prevState.preSalesManagers, a]
+        preSalesManagers: a
       };
     });
   }
@@ -366,6 +369,11 @@ export function GlobalProvider({ children }) {
       return { ...prevState, storePortion: a };
     });
   }
+  async function setStore_storeBonusPortion(a) {
+    await setStore((prevState) => {
+      return { ...prevState, storeBonusPortion: a };
+    });
+  }
 
   async function setStore_salesManager(a) {
     await setStore((prevState) => {
@@ -377,6 +385,7 @@ export function GlobalProvider({ children }) {
       return { ...prevState, salesPortion: a };
     });
   }
+
   async function setStore_buyer(a) {
     await setStore((prevState) => {
       return { ...prevState, buyer: a };
@@ -445,6 +454,11 @@ export function GlobalProvider({ children }) {
       return { ...prevState, storePortion: a };
     });
   }
+  async function setSales_storeBonusPortion(a) {
+    await setSalesRegisterationInfo((prevState) => {
+      return { ...prevState, storeBonusPortion: a };
+    });
+  }
 
   async function setSales_salesManager(a) {
     await setSalesRegisterationInfo((prevState) => {
@@ -456,6 +470,7 @@ export function GlobalProvider({ children }) {
       return { ...prevState, salesPortion: a };
     });
   }
+
   async function setSales_buyer(a) {
     await setSalesRegisterationInfo((prevState) => {
       return { ...prevState, buyer: a };
@@ -469,7 +484,7 @@ export function GlobalProvider({ children }) {
   }
   async function setSales_stationId(a) {
     await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, stationId: [...prevState.stationId, a] };
+      return { ...prevState, stationId: a };
     });
   }
   async function setSales_storePhoto(a) {
@@ -536,6 +551,7 @@ export function GlobalProvider({ children }) {
           setSales_storePortion,
           setSales_salesManager,
           setSales_salesPortion,
+          setSales_storeBonusPortion,
           setSales_buyer,
           setSales_buyerPortion,
           setSales_stationId,
@@ -553,6 +569,7 @@ export function GlobalProvider({ children }) {
           setStore_storePortion,
           setStore_salesManager,
           setStore_salesPortion,
+          setStore_storeBonusPortion,
           setStore_buyer,
           setStore_buyerPortion,
           setStore_stationId,

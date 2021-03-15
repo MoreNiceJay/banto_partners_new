@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import firebase from "./firebaseConfig";
 import moment from "moment";
-var db = firebase.firestore();
 import * as common from "./common";
+import * as constant from "./Const";
+
+import { _ } from "lodash";
+var db = firebase.firestore();
+
 export const AuthContext = React.createContext();
 export function useAuth() {
   return React.useContext(AuthContext);
@@ -28,6 +32,9 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
+      if (!user) {
+        setPending(false);
+      }
       setUser(user);
     });
   }, []);
@@ -130,7 +137,6 @@ export const AuthProvider = ({ children }) => {
     let user = firebase.auth().currentUser;
     if (!user) {
       return { code: 400, message: "로그인이 필요합니다" };
-      return;
     }
 
     var postData = {
@@ -146,6 +152,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await userRef.doc(user.email).update(postData);
     } catch (e) {
+      alert(e);
       return { code: 400, msg: "시스템 에러, 다시시도해 주세요" };
     }
     return { code: 200 };
@@ -242,31 +249,36 @@ export const AuthProvider = ({ children }) => {
         reject({ code: 400, message: "로그인이 필요합니다" });
         return;
       }
-      if (role === "BUYER") {
+      if (role === constant.role.buyer) {
         let today = String(new Date());
         application.applicationId = uuidv4();
-        application.updated = today;
-        application.status = "WAITING";
-        application.role = role;
+        application.createdBy = today;
         db.collection("BuyerApplications")
-          .doc(`${role}_${today}_${user.email}`)
+          .doc(`${application.buyer}_${today}`)
           .set(application);
         resolve({ code: 200 });
         return;
       }
-
-      let today = String(new Date());
-      application.applicationId = uuidv4();
-      application.updated = today;
-      application.status = "WAITING";
-      application.role = role;
-      userRef
-        .doc(user.email)
-        .collection("Applications")
-        .doc(`${role}_${today}_${application.storeName}`)
-        .set(application);
-      resolve({ code: 200 });
-      return;
+      if (role === constant.role.sales) {
+        let today = String(new Date());
+        application.applicationId = uuidv4();
+        application.createdBy = today;
+        db.collection("SalesApplications")
+          .doc(`${application.storeName}_${today}`)
+          .set(application);
+        resolve({ code: 200 });
+        return;
+      }
+      if (role === constant.role.store) {
+        let today = String(new Date());
+        application.applicationId = uuidv4();
+        application.createdBy = today;
+        db.collection("StoreApplications")
+          .doc(`${application.storeName}_${today}`)
+          .set(application);
+        resolve({ code: 200 });
+        return;
+      }
     });
   };
   const fetchStations = async (userId) => {

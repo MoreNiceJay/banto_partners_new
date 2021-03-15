@@ -32,6 +32,21 @@ const useStyles = makeStyles((theme) => ({
     color: "#6f6f6f",
     paddingLeft: "10px"
   },
+  contact: { padding: "55px 0 0 25px" },
+
+  contactPersonTextField: { marginTop: "10px", width: "calc(100% - 25px)" },
+  nextButton: {
+    fontSize: "25px",
+    fontWeight: "700",
+    borderRadius: "0",
+    border: "none",
+    marginTop: "40px",
+    position: "absolute",
+    padding: "0 25px",
+    right: "0px",
+    display: "block",
+    margin: "0 auto"
+  },
   portionSelect: { marginTop: "10px", width: "calc(100% - 25px)" },
   portionSelectInputLabel: { marginTop: "10px", width: "calc(100% - 25px)" },
   portionSelectDescription: {
@@ -94,25 +109,36 @@ function RegistPortion(props) {
   const [portion, setPortion] = React.useState(0);
 
   const handleOpen = () => {
+    if (portion === 0) {
+      context.setSales_storeBonusPortion(0);
+      context.setSales_storePortion(0);
+    } else if (0 < portion && portion <= 10) {
+      context.setSales_storeBonusPortion(portion);
+      context.setSales_storePortion(0);
+    } else if (portion > 10) {
+      context.setSales_storeBonusPortion(10);
+      context.setSales_storePortion(portion - 10);
+    }
+    context.setSales_salesPortion(calcSalesPortion(portion));
     setOpen(true);
   };
   React.useEffect(() => {
-    (async () => {
-      console.log(auth.user.email && auth.user.email);
-    })();
-    (async () => {
-      setPortion(context.salesInfo.storePortion);
-      context.setSales_Salesmanager(auth.user.email);
-    })();
+    (async () => {})();
   }, []);
 
   const calcSalesPortion = (storePortion) => {
+    const copySalesInfo = context.salesInfo.salesPortion;
+
     if (storePortion === 0) {
-      return 20;
-    } else if (0 < storePortion && storePortion <= 20) {
-      return 20 - storePortion;
-    } else if (storePortion > 20) {
-      return 0;
+      // context.setSales_storeBonusPortion(0);
+      return copySalesInfo;
+    } else if (0 < storePortion && storePortion <= 10) {
+      // context.setSales_storeBonusPortion(storePortion);
+      return copySalesInfo;
+    } else if (storePortion > 10) {
+      // context.setSales_storeBonusPortion(10);
+      console.log(storePortion);
+      return copySalesInfo + bonus - storePortion;
     }
   };
 
@@ -134,9 +160,7 @@ function RegistPortion(props) {
           color="primary"
           className={classes.modalBuyButton}
           onClick={() => {
-            context.setSales_StorePortion(portion);
-
-            props.history.push("/sales/regist/add-investor");
+            props.history.push("/sales/regist/final");
           }}
         >
           네 이해했습니다
@@ -157,17 +181,18 @@ function RegistPortion(props) {
     };
   }
   const handleChange = (event) => {
-    let storePortion = event.target.value;
-    setPortion(Number(storePortion));
+    let storePortion = Number(event.target.value);
+    console.log(storePortion);
+    setPortion(storePortion);
     //TODO 세일즈 포션 계산 하고 세일즈 포션 컨텍스트
-    let salesPortion = calcSalesPortion(storePortion);
-    context.setSales_salesPortion(salesPortion);
   };
   function mySubmitHandler() {
     handleOpen();
     return;
   }
-  let percentage = _.range(0, 26);
+  const copySalesPortion = context.salesInfo.salesPortion;
+  const bonus = 10;
+  let percentage = _.range(0, copySalesPortion + bonus + 1);
 
   return (
     <>
@@ -206,16 +231,40 @@ function RegistPortion(props) {
                   }}
                 >
                   <option aria-label="None" value="" />
-                  {percentage.length &&
-                    percentage.map((value) => {
-                      return <option value={value}>{value} %</option>;
-                    })}
+                  {percentage.map((value) => {
+                    return <option value={value}>{value} %</option>;
+                  })}
                 </Select>
               </FormControl>
               <span className={classes.portionSelectDescription}>
-                영업님이 얻는 수익은 {context.salesInfo.salesPortion}%입니다
+                영업님이 얻는 수익은 {calcSalesPortion(portion)}%입니다
               </span>
             </div>
+            <div className={classes.contact}>
+              <div className={classes.contactPerson}>
+                <div className={classes.contactTexts}>
+                  <span className={classes.contactPersonTitle}>
+                    가맹점주님 연락처
+                  </span>
+                  <span className={classes.contactPersonDescription}>
+                    예) 0104567890
+                  </span>
+                </div>
+                <TextField
+                  className={classes.contactPersonTextField}
+                  id="outlined-basic"
+                  inputProps={{ inputMode: "numeric", maxLength: 11 }}
+                  label="*필수"
+                  variant="outlined"
+                  value={context.salesInfo.storeOwner}
+                  // autoFocus
+                  onChange={(e) => {
+                    context.setSales_storeOwner(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+
             <button
               className={classes.nextButton}
               type="button"

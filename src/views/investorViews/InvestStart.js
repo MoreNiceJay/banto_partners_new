@@ -126,13 +126,14 @@ function InvestStart(props) {
                   onChange={(e) => {
                     const value = Number(e.target.value);
                     setTotalPrice(value * 329000);
+                    console.log("토탈프라이스");
                     if (value > 0) {
                       setButtonDisabled(false);
                     } else if (value === 0) {
                       setButtonDisabled(true);
                     }
-                    context.setInvest_stationAmount(value);
-                    context.setInvest_totalPrice(totalPrice);
+                    context.setInvest_amount(value);
+                    context.setInvest_totalPrice(value * 329000);
                   }}
                 />
               </div>
@@ -189,6 +190,8 @@ function InvestStart(props) {
                     }
 
                     context.setInvest_totalPrice(totalPrice);
+                    console.log(context.getInvestInfo);
+
                     props.history.push("/investor/depositor");
                   }}
                   disabled={buttonDisabled}

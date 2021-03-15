@@ -46,10 +46,10 @@ function RegistContact(props) {
       window.alert("가맹점주님의 연락처는 필수 입니다");
       return;
     }
-    context.setSales_StoreOwnerPhonenumber(storeOwnerContact);
-    context.setSales_StorePhoneNumber(storeOwnerContact);
+    context.setSales_storeOwnerPhoneNumber(storeOwnerContact);
+    context.setSales_storePhoneNumber(storeOwnerContact);
 
-    props.history.push("/sales/regist/portion");
+    props.history.push("/sales/regist/add-investor");
   }
   function onChangeStoreOwnerPhoneNumber(e) {
     setStoreOwnerContact(e.target.value);

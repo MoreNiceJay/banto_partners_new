@@ -61,8 +61,7 @@ function LoginPage(props) {
   const [value, setValue] = React.useState("banto");
   const [bank, setBank] = React.useState("");
   const [invitations, setInvitatations] = React.useState([
-    { key: "323", id: "jaylee", percent: 30 },
-    { key: "3234", id: "naun", percent: 30 }
+    { key: "1111", id: "", portion: 0 }
   ]);
   let percentage = _.range(0, 26);
   const maxPortion = 70;
@@ -70,6 +69,10 @@ function LoginPage(props) {
   const auth = useAuth();
   const handleChange = (event) => {
     setValue(event.target.value);
+
+    context.setInvest_salesMethod(event.target.value);
+
+    console.log(context.getInvestInfo);
   };
   const handleSlectChange = (event) => {
     console.log(event.target.value);
@@ -225,7 +228,6 @@ function LoginPage(props) {
                 (variable) => variable.key === value.key
               );
               console.log(varaibleToUpdate);
-              console.log(varaibleToUpdate[value]);
               varaibleToUpdate.id = e.target.value;
               setInvitatations(invis);
             }}
@@ -274,7 +276,7 @@ function LoginPage(props) {
               className={classes.select}
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={value.percent}
+              value={value.portion}
               placeholder="Bank"
               style={{
                 fontSize: "26px",
@@ -289,7 +291,7 @@ function LoginPage(props) {
                   (variable) => variable.key === value.key
                 );
 
-                varaibleToUpdate.percent = e.target.value;
+                varaibleToUpdate.portion = e.target.value;
                 setInvitatations(invis);
               }}
               inputProps={{
@@ -326,7 +328,7 @@ function LoginPage(props) {
             {
               key: common.uuidv4(),
               id: "",
-              percent: 0
+              portion: 0
             }
           ]);
         }}
@@ -350,207 +352,6 @@ function LoginPage(props) {
         <br />
         {"(이익률은 설치전까지 투자 -> 스테이션 에서 수정할 수 있습니다)"}
       </p>
-    </>
-  );
-
-  const textFieldsBody = (
-    <>
-      <p
-        style={{
-          fontStyle: "normal",
-          fontWeight: "500",
-          fontSize: "16px",
-          margin: "16px 0 0 24px"
-        }}
-      >
-        입금자명
-      </p>
-
-      <TextField
-        variant="outlined"
-        id="standard-full-width"
-        // label="Phone Number"
-        className={classes.textField}
-        placeholder="Name"
-        // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-        value={context.getInvestInfo.depositor}
-        onChange={(e) => {
-          context.setInvest_depositor(e.target.value);
-        }}
-        style={{
-          margin: "0 24px",
-          marginTop: "12px",
-          width: "calc(100% - 64px)"
-        }}
-        InputLabelProps={{
-          style: {}
-        }}
-        inputProps={{
-          style: {
-            paddingLeft: "0px",
-            fontSize: "26px",
-            fontFamily: "Montserrat",
-            fontWeight: "bold",
-
-            boxSizing: "border-box",
-            marginTop: "10px"
-          }
-        }}
-      />
-      <p
-        style={{
-          fontStyle: "normal",
-          fontWeight: "500",
-          fontSize: "16px",
-          margin: "16px 0 0 24px"
-        }}
-      >
-        은행
-      </p>
-
-      <div>
-        <FormControl
-          style={{
-            margin: "0 24px",
-            marginTop: "12px",
-            width: "calc(100% - 64px)"
-          }}
-        >
-          <InputLabel
-            shrink={false}
-            style={{
-              paddingLeft: "0px",
-              fontSize: "26px",
-              fontFamily: "Montserrat",
-              fontWeight: "bold",
-              color: "black",
-              opacity: "0.4",
-              boxSizing: "border-box"
-            }}
-            id="demo-simple-select-label"
-          ></InputLabel>
-
-          <Select
-            className={classes.select}
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={context.getInvestInfo.bank}
-            placeholder="Bank"
-            style={{
-              fontSize: "26px",
-              fontFamily: "Montserrat",
-              fontWeight: "bold",
-              boxSizing: "border-box",
-              marginTop: "10px"
-            }}
-            onChange={handleSlectChange}
-            inputProps={{
-              style: {
-                fontSize: "26px",
-                fontFamily: "Montserrat",
-                fontWeight: "bold",
-                boxSizing: "border-box",
-                marginTop: "10px"
-              }
-            }}
-          >
-            <MenuItem value={"경남은행"}>경남은행</MenuItem>
-            <MenuItem value={"광주은행"}>광주은행</MenuItem>
-            <MenuItem value={"국민은행"}>국민은행</MenuItem>
-            <MenuItem value={"기업은행"}>기업은행</MenuItem>
-            <MenuItem value={"농협"}>농협</MenuItem>
-            <MenuItem value={"지역농협"}>지역농협</MenuItem>
-            <MenuItem value={"대구은행"}>대구은행</MenuItem>
-            <MenuItem value={"부산은행"}>부산은행</MenuItem>
-            <MenuItem value={"도이치은행"}>도이치은행</MenuItem>
-            <MenuItem value={"산업은행"}>산업은행</MenuItem>
-            <MenuItem value={"상호저축은행"}>상호저축은행</MenuItem>
-            <MenuItem value={"새마을금고"}>새마을금고</MenuItem>
-            <MenuItem value={"수협"}>수협</MenuItem>
-            <MenuItem value={"신한은행"}>신한은행</MenuItem>
-            <MenuItem value={"신협"}>신협</MenuItem>
-            <MenuItem value={"씨티은행"}>씨티은행</MenuItem>
-            <MenuItem value={"외한은행"}>외한은행</MenuItem>
-            <MenuItem value={"우리은행"}>우리은행</MenuItem>
-            <MenuItem value={"우체국"}>우체국</MenuItem>
-            <MenuItem value={"전북은행"}>전북은행</MenuItem>
-            <MenuItem value={"제주은행"}>제주은행</MenuItem>
-            <MenuItem value={"카카오뱅크"}>카카오뱅크</MenuItem>
-            <MenuItem value={"하나은행"}>하나은행</MenuItem>
-            <MenuItem value={"케이뱅크"}>케이뱅크</MenuItem>
-            <MenuItem value={"SC은행"}>SC은행</MenuItem>
-            <MenuItem value={"HSBC은행"}>HSBC은행</MenuItem>
-            <MenuItem value={"교보증권"}>교보증권</MenuItem>
-            <MenuItem value={"대신증권"}>대신증권</MenuItem>
-            <MenuItem value={"대우증권"}>대우증권</MenuItem>
-            <MenuItem value={"동부증권"}>동부증권</MenuItem>
-            <MenuItem value={"메리츠종합금융증권"}>메리츠종합금융증권</MenuItem>
-            <MenuItem value={"미래에셋증권"}>미래에셋증권</MenuItem>
-            <MenuItem value={"부국증권"}>부국증권</MenuItem>
-            <MenuItem value={"삼성증권"}>삼성증권</MenuItem>
-            <MenuItem value={"신영증권"}>신영증권</MenuItem>
-            <MenuItem value={"신한금융투자"}>신한금융투자</MenuItem>
-            <MenuItem value={"아이엠투자증권"}>아이엠투자증권</MenuItem>
-            <MenuItem value={"우리투자증권"}>우리투자증권</MenuItem>
-            <MenuItem value={"유안타증권"}>유안타증권</MenuItem>
-            <MenuItem value={"유진투자증권"}>유진투자증권</MenuItem>
-            <MenuItem value={"이트레이드증권"}>이트레이드증권</MenuItem>
-            <MenuItem value={"키움증권"}>키움증권</MenuItem>
-            <MenuItem value={"하나대투증권"}>하나대투증권</MenuItem>
-            <MenuItem value={"하이투자증권"}>하이투자증권</MenuItem>
-            <MenuItem value={"한국투자증권"}>한국투자증권</MenuItem>
-            <MenuItem value={"한화투자증권"}>한화투자증권</MenuItem>
-            <MenuItem value={"현대증권"}>현대증권</MenuItem>
-            <MenuItem value={"HMC투자증권"}>HMC투자증권</MenuItem>
-            <MenuItem value={"LIG투자증권"}>LIG투자증권</MenuItem>
-            <MenuItem value={"NH농협증권"}>NH농협증권</MenuItem>
-            <MenuItem value={"SK증권"}>SK증권</MenuItem>
-            <MenuItem value={"산림조합"}>산림조합</MenuItem>
-          </Select>
-        </FormControl>
-      </div>
-      <p
-        style={{
-          fontStyle: "normal",
-          fontWeight: "500",
-          fontSize: "16px",
-          margin: "16px 0 0 24px"
-        }}
-      >
-        계좌번호
-      </p>
-
-      <TextField
-        variant="outlined"
-        id="standard-full-width"
-        // label="Phone Number"
-        className={classes.textField}
-        placeholder="추가할 세일즈 & 가맹점 ID"
-        // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-        value={context.getInvestInfo.accountNumber}
-        onChange={(e) => {
-          context.setInvest_accountNumber(e.target.value);
-        }}
-        style={{
-          margin: "0 24px",
-          marginTop: "12px",
-          width: "calc(100% - 64px)"
-        }}
-        InputLabelProps={{
-          style: {}
-        }}
-        inputProps={{
-          style: {
-            paddingLeft: "0px",
-            fontSize: "26px",
-            fontFamily: "Montserrat",
-            fontWeight: "bold",
-
-            boxSizing: "border-box",
-            marginTop: "10px"
-          }
-        }}
-      />
     </>
   );
 
@@ -618,7 +419,7 @@ function LoginPage(props) {
                     onChange={handleChange}
                   >
                     <FormControlLabel
-                      value={constant.salesDecision.banto}
+                      value={constant.salesMethod.banto}
                       control={
                         <Radio
                           icon={<CircleUnchecked />}
@@ -636,7 +437,7 @@ function LoginPage(props) {
                       label="네. 반토 파트너스를 통해 설치하겠습니다"
                     />
                     <FormControlLabel
-                      value={constant.salesDecision.ownSales}
+                      value={constant.salesMethod.ownSales}
                       control={
                         <Radio
                           icon={<CircleUnchecked />}
@@ -654,7 +455,7 @@ function LoginPage(props) {
                       label="아니오. 자체영업(본인포함)을 통해 설치하겠습니다"
                     />
                     <FormControlLabel
-                      value={constant.salesDecision.yet}
+                      value={constant.salesMethod.yet}
                       control={
                         <Radio
                           icon={<CircleUnchecked />}
@@ -674,9 +475,9 @@ function LoginPage(props) {
                   </RadioGroup>
                 </FormControl>
               </div>
-              {value === constant.salesDecision.banto
+              {value === constant.salesMethod.banto
                 ? bantoBody
-                : value === constant.salesDecision.ownSales
+                : value === constant.salesMethod.ownSales
                 ? ownSalesBody
                 : yetSalesBody}
 
@@ -689,19 +490,27 @@ function LoginPage(props) {
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    if (value === constant.salesDecision.banto) {
-                      context.setInvest_method(constant.salesDecision.banto);
-                    } else if (value === constant.salesDecision.ownSales) {
-                      context.setInvest_method(constant.salesDecision.ownSales);
+                    if (value === constant.salesMethod.banto) {
+                      context.setInvest_salesMethod(constant.salesMethod.banto);
+                      context.setInvest_preSalesIds([]);
+                      context.setInvest_preSalesManagers([]);
+                    } else if (value === constant.salesMethod.ownSales) {
+                      context.setInvest_salesMethod(
+                        constant.salesMethod.ownSales
+                      );
                       context.setInvest_salesPortion(0);
-                      context.setInvest_ownSalesMangers(invitations);
+                      const managersId = invitations.map((value) => value.id);
+                      context.setInvest_preSalesIds(managersId);
+                      context.setInvest_preSalesManagers(invitations);
                     }
                     // 설정안함
                     else {
-                      context.setInvest_method(constant.salesDecision.yet);
+                      context.setInvest_salesMethod(constant.salesMethod.yet);
                       context.setInvest_salesPortion(0);
                     }
-
+                    console.log(context.getInvestInfo);
+                    context.setInvest_buyer(auth.userExtraInfo.id);
+                    context.setInvest_buyerPortion(70);
                     props.history.push("/investor/final");
                   }}
                   style={{

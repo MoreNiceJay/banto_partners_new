@@ -9,7 +9,7 @@ import MTextField from "@material-ui/core/TextField";
 import { FormButton } from "../../components/FormButton.js";
 import { useGlobal } from "../../globalContext";
 import Modal from "@material-ui/core/Modal";
-
+import moment from "moment";
 const useStyles = makeStyles((theme) => ({
   addressContainer: {
     display: "flex",
@@ -70,6 +70,7 @@ function RegistAddress(props) {
     setStoreName(e.target.value);
   };
   const onChangeRestAddress = (e) => {
+    console.log(e.target.value);
     setRestAddress(e.target.value);
   };
   const handleOpen = () => {
@@ -134,14 +135,15 @@ function RegistAddress(props) {
           </div>
           <FormButton
             onClick={() => {
+              console.log(storeName, mainAddress, restAddress);
               if (!storeName || !mainAddress || !restAddress) {
                 alert("정보를 기입해주세요");
                 return;
               }
 
-              context.setSales_StoreName(storeName);
-              context.setSales_StoreMainAddress(mainAddress);
-              context.setSales_StoreRestAddress(restAddress);
+              context.setSales_storeName(storeName);
+              context.setSales_storeMainAddress(mainAddress);
+              context.setSales_storeRestAddress(restAddress);
               props.history.push("/sales/regist/contact");
             }}
             title="다음"

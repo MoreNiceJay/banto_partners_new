@@ -19,6 +19,7 @@ import * as common from "../../common";
 import Slide from "@material-ui/core/Slide";
 import { useGlobal } from "../../globalContext";
 import { useAuth } from "../../AuthContext";
+import * as constant from "../../Const";
 const useStyles = makeStyles((theme) => ({
   card: { backgroundColor: "black", margin: "12px 16px", borderRadius: "15px" },
   description: {
@@ -62,6 +63,8 @@ function InvestFinal(props) {
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
+  console.log(context.getInvestInfo);
+
   const [state, setState] = React.useState({
     checkedA: true,
     checkedB: true,
@@ -178,7 +181,7 @@ function InvestFinal(props) {
                       textAlign: "left"
                     }}
                   >
-                    {context.getInvestInfo.accountNumber}
+                    {context.getInvestInfo.bankAccount}
                   </p>
                   <p
                     style={{
@@ -206,7 +209,7 @@ function InvestFinal(props) {
                   >
                     {numberWithCommas(context.getInvestInfo.totalPrice) +
                       " 원 / "}{" "}
-                    {`${context.getInvestInfo.stationAmount}대`}
+                    {`${context.getInvestInfo.amount}대`}
                   </p>
                 </div>
               </Paper>
@@ -234,7 +237,7 @@ function InvestFinal(props) {
                       <li>
                         <p className={classes.bankInfoDescription}>영업 방법</p>
                         <p className={classes.bankInfoInfo}>
-                          {context.getInvestInfo.method}
+                          {context.getInvestInfo.salesMethod}
                         </p>
                       </li>
                       <li>
@@ -242,7 +245,7 @@ function InvestFinal(props) {
                           영업자 & 가맹점주님 ID
                         </p>
                         <p className={classes.bankInfoInfo}>
-                          {context.getInvestInfo.ownSalesMangers.id}
+                          {context.getInvestInfo.preSalesIds}
                         </p>
                       </li>
                     </ul>
@@ -311,7 +314,7 @@ function InvestFinal(props) {
                   }}
                   onClick={async () => {
                     await auth.updateApplication(
-                      "BUYER",
+                      constant.role.buyer,
                       context.getInvestInfo
                     );
                     props.history.push("/investor/done");

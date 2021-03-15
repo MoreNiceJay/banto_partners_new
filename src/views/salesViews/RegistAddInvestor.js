@@ -71,17 +71,15 @@ function RegistAddInvestor(props) {
   const [helperText, setHelperText] = React.useState("Choose wisely");
   const [investorContact, setInvestorContact] = React.useState("");
   const [investorPortion, setInvestorPortion] = React.useState(0);
-  const [bInvestor, setBInvestor] = React.useState("noBuyer");
+  const [bInvestor, setBInvestor] = React.useState("banto");
   const context = useGlobal();
   const auth = useAuth();
   const [ownBuyer, setOwnBuyer] = React.useState({ stationId: "" });
   const [partnersStations, setPartnersStations] = React.useState(null);
   const [ownSalesStations, setownSalesStations] = React.useState(null);
+  const [myStations, setMyStations] = React.useState(null);
 
-  const [ownStation, setOwnStation] = React.useState({
-    stationId: "",
-    buyerPortion: 0
-  });
+  const [ownStation, setOwnStation] = React.useState(null);
   const [otherStation, setOtherStation] = React.useState(null);
   const [otherBuyer, setOtherBuyer] = React.useState({
     stationId: "",
@@ -89,6 +87,15 @@ function RegistAddInvestor(props) {
   });
 
   React.useEffect(() => {
+    (async () => {
+      const result = await common.fetchOwnSalesStations(auth.userExtraInfo.id);
+      // await common.insertStationExample();
+      if (result.code !== 200) {
+        alert(result.msg);
+        return;
+      }
+      setownSalesStations(result.data);
+    })();
     (async () => {
       const result = await common.fetchPartnerStations();
       // await common.insertStationExample();
@@ -98,7 +105,17 @@ function RegistAddInvestor(props) {
       }
       setPartnersStations(result.data);
     })();
-  }, [bInvestor]);
+    (async () => {
+      const result = await common.fetchUserStations(auth.userExtraInfo.id);
+      // await common.insertStationExample();
+      if (result.code !== 200) {
+        alert(result.msg);
+        return;
+      }
+      setMyStations(result.data);
+    })();
+  }, []);
+
   React.useEffect(() => {
     (async () => {
       const result = await common.fetchOwnSalesStations(auth.userExtraInfo.id);
@@ -117,53 +134,10 @@ function RegistAddInvestor(props) {
 
     setHelperText(" ");
     setError(false);
-    if (buyerStatus === "noBuyer") {
-      context.setStore_buyerStatus("otherBuyer");
-      //todo 서버에서 가져오기 스테이션 아이디로 가져오기
-      context.setStore_buyer("");
-      //todo 서버에서 가져오기
-      context.setStore_buyerPortion(0);
-      //todo 서버에서 있는지 없는지 확인하기
-      context.setStore_stationId("");
-    } else if (buyerStatus === "otherBuyer") {
-      context.setStore_buyerStatus("otherBuyer");
-      //todo 서버에서 가져오기 스테이션 아이디로 가져오기
-      context.setStore_buyer(auth.user.email);
-      //todo 서버에서 가져오기
-      context.setStore_buyerPortion(0);
-      //todo 서버에서 있는지 없는지 확인하기
-      context.setStore_stationId("");
-    } else if (buyerStatus === "ownBuyer") {
-      context.setStore_buyerStatus("otherBuyer");
-      //todo 서버에서 가져오기 스테이션 아이디로 가져오기
-      context.setStore_buyer(auth.user.email);
-      //todo 서버에서 가져오기
-      context.setStore_buyerPortion(0);
-      //todo 서버에서 있는지 없는지 확인하기
-      context.setStore_stationId("");
-    }
-  };
-
-  const onChangeInvestorContact = (event) => {
-    setInvestorContact(event.target.value);
-    let stationId = event.target.value;
-    setOtherBuyer((prev) => {
-      return { ...prev, stationId: stationId };
-    });
-  };
-
-  const onChangeInvestorPortion = (event) => {
-    setInvestorPortion(event.target.value);
-    let portion = event.target.value;
-    setOtherBuyer((prev) => {
-      return { ...prev, portion: portion };
-    });
   };
 
   const handleChange = (event) => {
-    console.log("오운?", event.target.value);
-    let json = JSON.parse(event.target.value);
-    console.log("오운?2", json);
+    console.log(event.target.value);
     setOwnStation(event.target.value);
   };
   const handleSubmit = (event) => {
@@ -208,15 +182,18 @@ function RegistAddInvestor(props) {
                   id: "outlined-age-native-simple"
                 }}
               >
-                {!auth.userStations.length ? (
-                  <option value={"0"}>등록된 스테이션 없음</option>
+                {!partnersStations ? (
+                  <option value={"0"}>
+                    현재 모든 스테이션이 등록되었습니다
+                  </option>
                 ) : (
                   partnersStations &&
                   partnersStations.map((value) => {
                     return (
                       <>
                         <option value={JSON.stringify(value)}>
-                          {value.stationId}, {value.buyerPortion} %
+                          {value.buyer}님의 스테이션 : 영업인 할당 수익률
+                          {value.salesPortion}%
                         </option>
                       </>
                     );
@@ -265,7 +242,7 @@ function RegistAddInvestor(props) {
                   id: "outlined-age-native-simple"
                 }}
               >
-                {!auth.userStations.length ? (
+                {!ownSalesStations ? (
                   <option value={"0"}>등록된 스테이션 없음</option>
                 ) : (
                   ownSalesStations &&
@@ -273,7 +250,13 @@ function RegistAddInvestor(props) {
                     return (
                       <>
                         <option value={JSON.stringify(value)}>
-                          {value.stationId}, {value.buyerPortion} %
+                          {value.stationId},
+                          {
+                            value.preSalesManagers.find(
+                              (e) => e.id === auth.userExtraInfo.id
+                            ).portion
+                          }
+                          %
                         </option>
                       </>
                     );
@@ -320,10 +303,10 @@ function RegistAddInvestor(props) {
                   id: "outlined-age-native-simple"
                 }}
               >
-                {!auth.userStations.length ? (
+                {!myStations ? (
                   <option value={"0"}>등록된 스테이션 없음</option>
                 ) : (
-                  auth.userStations.map((value) => {
+                  myStations.map((value) => {
                     return (
                       <>
                         <option value={JSON.stringify(value)}>
@@ -366,17 +349,17 @@ function RegistAddInvestor(props) {
               onChange={handleRadioChange}
             >
               <FormControlLabel
-                value="noBuyer"
+                value="banto"
                 control={
                   <Radio
                     classes={{ root: classes.radio, checked: classes.checked }}
                   />
                 }
                 label="반토 파트너스 프로그램을 통해 무료로 신청하겠습니다"
-                checked={bInvestor === "noBuyer"}
+                checked={bInvestor === "banto"}
               />
               <FormControlLabel
-                value="ownBuyer"
+                value="mine"
                 control={
                   <Radio
                     classes={{ root: classes.radio, checked: classes.checked }}
@@ -385,7 +368,7 @@ function RegistAddInvestor(props) {
                 label="네. 구매한 스테이션이 있습니다"
               />
               <FormControlLabel
-                value="otherBuyer"
+                value="ownSales"
                 control={
                   <Radio
                     classes={{ root: classes.radio, checked: classes.checked }}
@@ -405,9 +388,9 @@ function RegistAddInvestor(props) {
             </Button> */}
           </FormControl>
         </div>
-        {bInvestor === "noBuyer"
+        {bInvestor === "banto"
           ? bantoBody
-          : bInvestor === "otherBuyer"
+          : bInvestor === "ownSales"
           ? ownSalesBody
           : ownBody}
 
@@ -417,65 +400,39 @@ function RegistAddInvestor(props) {
           variant="outlined"
           type="submit"
           style={{ marginBottom: "40px" }}
-          onClick={async () => {
-            context.setStore_buyerStatus("");
-            context.setStore_buyer("");
-            context.setStore_buyerPortion(0);
-            context.setStore_stationId("");
-
-            if (bInvestor === "otherBuyer") {
+          onClick={() => {
+            console.log("비인베스터", bInvestor);
+            const choosedStation = JSON.parse(ownStation);
+            if (!!!choosedStation) {
+              alert("스테이션을 선택해주세요");
+              return;
+            }
+            if (bInvestor === "ownSales") {
               // TODO 여기서 otherBuyer.stationId 스테이션 아이디로 가져오기
-              const bIsAvailable = await context.isAvailable(
-                otherBuyer.stationId
-              );
-              if (bIsAvailable.code !== 200) {
-                alert(bIsAvailable.msg);
-                return;
-              }
-              if (bIsAvailable.data === null) {
-                alert("등록 불가한 스테이션입니다.");
-                return;
-              }
-              const buyerId = await context.getBuyerId(otherBuyer.stationId);
-              if (buyerId.code !== 200) {
-                alert(bIsAvailable.msg);
-                return;
-              }
-              if (buyerId.data === null) {
-                alert("등록 불가한 스테이션입니다.");
-                return;
-              }
-              console.log("버이어아이디", buyerId.data.buyer);
-              context.setSales_BInvestor(true);
-              context.setStore_buyer();
-
-              context.setStore_buyerStatus("otherBuyer");
-              //todo 서버에서 가져오기 스테이션 아이디로 가져오기
-              context.setStore_buyer(buyerId.data.buyer);
-              //todo 텍스트 필드에서 가져오기
-              context.setStore_buyerPortion(buyerId.data.buyerPortion);
-              //todo 서버에서 있는지 없는지 확인하기
-              context.setStore_stationId(otherBuyer.stationId);
+              context.setSales_salesManager(auth.userExtraInfo.id);
+              const salesPortion = choosedStation.preSalesManagers.find(
+                (e) => e.id === auth.userExtraInfo.id
+              ).portion;
+              context.setSales_salesPortion(salesPortion);
+              context.setSales_stationId(choosedStation.stationId);
+              context.setSales_buyer(choosedStation.buyer);
+              context.setSales_buyerPortion(choosedStation.buyerPortion);
 
               //TODO 바이어 포션 비율 함수
-            } else if (bInvestor === "noBuyer") {
-              context.setStore_buyer("banto");
-              context.setStore_buyerStatus("noBuyer");
-              let bantoPortion =
-                context.salesInfo.salesPortion + context.salesInfo.storePortion;
-              context.setStore_buyerPortion(bantoPortion);
-            } else if (bInvestor === "ownBuyer") {
-              console.log("오운 스테이션", ownStation);
-              let ownObject = JSON.parse(ownStation);
-              context.setStore_buyerStatus("ownBuyer");
-              //todo 서버에서 가져오기 스테이션 아이디로 가져오기
-              context.setStore_buyer(auth.user.email);
-              //todo 서버에서 가져오기
-              context.setStore_buyerPortion(ownObject.buyerPortion);
-              //todo 서버에서 있는지 없는지 확인하기
-              context.setStore_stationId(ownObject.stationId);
+            } else if (bInvestor === "banto") {
+              context.setSales_salesManager(auth.userExtraInfo.id);
+              context.setSales_salesPortion(choosedStation.salesPortion);
+              context.setSales_stationId(choosedStation.stationId);
+              context.setSales_buyer(choosedStation.buyer);
+              context.setSales_buyerPortion(choosedStation.buyerPortion);
+            } else if (bInvestor === "mine") {
+              context.setSales_salesManager(auth.userExtraInfo.id);
+              context.setSales_salesPortion(choosedStation.buyerPortion);
+              context.setSales_stationId(choosedStation.stationId);
+              context.setSales_buyer(choosedStation.buyer);
+              context.setSales_buyerPortion(choosedStation.buyerPortion);
             }
-            props.history.push("/sales/regist/final");
+            props.history.push("/sales/regist/portion");
           }}
         >
           다음

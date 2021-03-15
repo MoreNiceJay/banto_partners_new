@@ -75,13 +75,8 @@ function RegistFinal(props) {
     checkedF: true,
     checkedG: true
   });
-  React.useEffect(() => {
-    (async () => {
-      //TODO 여기에서 스테이션 주인 정보 받아오기 stationId로
-      //TODO setBuyer
-      console.log("유저", auth.user, auth.user.email && auth.user.email);
-    })();
-  }, []);
+
+  console.log("ㅍㅏ이널 세일즈 인포: ", context.salesInfo);
   function mySubmitHandler() {}
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
@@ -111,26 +106,24 @@ function RegistFinal(props) {
       data: context.salesInfo.storePhoneNumber,
       link: "/sales/regist/contact"
     },
+    {
+      title: "영업님 수익",
+      data: `${context.salesInfo.salesPortion}%`,
+      link: "/sales/regist/portion"
+    },
 
     {
-      title: "가맹점 수익",
-      data: context.salesInfo.storePortion + "%",
+      title: "가맹점 수익 (가맹점 ID)",
+      data:
+        context.salesInfo.storePortion +
+        context.salesInfo.storeBonusPortion +
+        "%",
       link: "/sales/regist/portion"
     },
+
     {
-      title: "영업인 (수익률)",
-      data: `${auth.user.email}(${context.salesInfo.salesPortion}%)`,
-      link: "/sales/regist/portion"
-    },
-    {
-      title: "스테이션 보유자(스테이션 ID)(수익률%)",
-      data: `${
-        context.salesInfo.buyerStatus === "noOwner"
-          ? "반토 무료 스테이션 신청"
-          : context.salesInfo.buyerStatus === "ownBuyer"
-          ? `${auth.user.email} (${context.salesInfo.stationId}) (${context.salesInfo.buyerPortion}%)`
-          : `${context.salesInfo.buyer} (${context.salesInfo.stationId}) (${context.salesInfo.buyerPortion}%)`
-      }`,
+      title: "스테이션ID",
+      data: context.salesInfo.stationId,
       link: "/sales/regist/portion"
     }
   ];
@@ -267,8 +260,9 @@ function RegistFinal(props) {
               variant="outlined"
               onClick={async () => {
                 try {
+                  //ㅅㅡ테이션 나갔는지 마지막 체크
                   const result = await auth.updateApplication(
-                    constant.roles.sales,
+                    constant.role.sales,
                     context.salesInfo
                   );
 

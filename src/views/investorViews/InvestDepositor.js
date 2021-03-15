@@ -60,17 +60,22 @@ function LoginPage(props) {
   const auth = useAuth();
   const handleChange = (event) => {
     setValue(event.target.value);
-    if (value === "yes") {
-      context.setInvest_accountNumber(null);
-      context.setInvest_bank(null);
-      context.setInvest_depositor(null);
+    if (event.target.value === "yes") {
+      context.setInvest_bank(auth.userExtraInfo.bank);
+      context.setInvest_bankAccount(auth.userExtraInfo.accountNumber);
+      context.setInvest_depositor(auth.userExtraInfo.depositor);
     }
   };
   const handleSlectChange = (event) => {
     console.log(event.target.value);
-    setBank(event.target.value);
+    console.log(context.getInvestInfo);
     context.setInvest_bank(event.target.value);
   };
+  React.useEffect(() => {
+    context.setInvest_bank(auth.userExtraInfo.bank);
+    context.setInvest_bankAccount(auth.userExtraInfo.accountNumber);
+    context.setInvest_depositor(auth.userExtraInfo.depositor);
+  }, []);
   const textFieldsBody = (
     <>
       <p
@@ -245,9 +250,9 @@ function LoginPage(props) {
         className={classes.textField}
         placeholder="Bank Account"
         // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-        value={context.getInvestInfo.accountNumber}
+        value={context.getInvestInfo.bankAccount}
         onChange={(e) => {
-          context.setInvest_accountNumber(e.target.value);
+          context.setInvest_bankAccount(e.target.value);
         }}
         style={{
           margin: "0 24px",
@@ -422,18 +427,13 @@ function LoginPage(props) {
                   onClick={() => {
                     if (value === "yes") {
                       context.setInvest_bank(auth.userExtraInfo.bank);
-                      context.setInvest_accountNumber(
+                      context.setInvest_bankAccount(
                         auth.userExtraInfo.accountNumber
                       );
                       context.setInvest_depositor(auth.userExtraInfo.name);
-                    } else if (
-                      !!!context.getInvestInfo.bank ||
-                      !!!context.getInvestInfo.accountNumber ||
-                      !!!context.getInvestInfo.depositor
-                    ) {
-                      alert("빈칸이 있습니다");
-                      return;
                     }
+                    console.log(context.getInvestInfo);
+
                     props.history.push("/investor/method");
                   }}
                   style={{

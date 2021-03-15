@@ -82,8 +82,9 @@ export async function fetchPartnerStations() {
     const stationRef = db.collection("Stations");
 
     const querySnapshot = await stationRef
-      .where("method", "==", "banto")
+      .where("salesMethod", "==", "banto")
       .where("bReserved", "==", false)
+      .where("stationId", "!=", "")
       .get();
 
     querySnapshot.forEach(function (doc) {
@@ -96,16 +97,46 @@ export async function fetchPartnerStations() {
     return { code: 200, data: dataArray };
   } catch (e) {
     console.log("에러", e);
+
+    alert(e);
+
     return { code: 400, msg: "시스템에러, 다시시도해 주세요" };
   }
 }
+export async function fetchUserStations(userId) {
+  try {
+    let dataArray = [];
+    const stationRef = db.collection("Stations");
+
+    const querySnapshot = await stationRef
+      .where("buyer", "==", userId)
+      .where("bReserved", "==", false)
+      .where("stationId", "!=", "")
+      .get();
+
+    querySnapshot.forEach(function (doc) {
+      if (doc.exists) {
+        dataArray.push(doc.data());
+      }
+    });
+
+    return { code: 200, data: dataArray };
+  } catch (e) {
+    console.log("에러", e);
+
+    alert(e);
+
+    return { code: 400, msg: "시스템에러, 다시시도해 주세요" };
+  }
+}
+//TODO Sales 마지막에 아직 스테이션이 남아있는지 체크
 export async function fetchOwnSalesStations(id) {
   try {
     let dataArray = [];
     const stationRef = db.collection("Stations");
-    console.log("아이디", id);
     const querySnapshot = await stationRef
-      .where("preSales", "array-contains", id)
+      .where("salesMethod", "==", "ownSales")
+      .where("preSalesIds", "array-contains", id)
       .where("bReserved", "==", false)
       .get();
 

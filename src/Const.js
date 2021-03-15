@@ -1,7 +1,7 @@
 // message
 export const messageCategory = Object.freeze({ info: "INFO" });
 
-export const roles = Object.freeze({
+export const role = Object.freeze({
   sales: "SALES",
   buyer: "BUYER",
   store: "STORE"
@@ -18,7 +18,7 @@ export const buyerStatus = Object.freeze({
   otherBuyer: "otherBuyer",
   ownBuyer: "ownBuyer"
 });
-export const salesDecision = Object.freeze({
+export const salesMethod = Object.freeze({
   banto: "banto",
   ownSales: "ownSales",
   yet: "yet"
