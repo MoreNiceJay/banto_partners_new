@@ -194,23 +194,23 @@ function LoginPage(props) {
               >
                 <Button
                   variant="outlined"
-                  onClick={() => {
+                  onClick={async () => {
                     setLoding(true);
+                    try {
+                      const result = await auth.singInWithEmail(
+                        email,
+                        password
+                      );
+                      console.log(result, "result");
+                      setLoding(false);
+                      props.history.push("/main");
+                    } catch (error) {
+                      console.log(error, "에러");
+                      window.alert(error);
+                      setLoding(false);
 
-                    auth
-                      .singInWithEmail(email, password)
-                      .then((user) => {
-                        console.log("로그인");
-
-                        console.log("유저오니", user);
-                        setLoding(false);
-                        props.history.push("/main");
-                      })
-                      .catch((error) => {
-                        setLoding(false);
-
-                        window.alert(error.message);
-                      });
+                      return;
+                    }
                   }}
                   style={{
                     width: "calc(100% - 64px)",

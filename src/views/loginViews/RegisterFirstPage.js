@@ -109,9 +109,13 @@ function LoginPage(props) {
       "recaptcha-container",
       {
         size: "invisible",
-        callback: function (response) {}
+        callback: function (response) {},
+        "expired-callback": () => {}
       }
     );
+    window.recaptchaVerifier.render().then(function (widgetId) {
+      window.recaptchaWidgetId = widgetId;
+    });
   }, []);
 
   return (
@@ -302,41 +306,24 @@ function LoginPage(props) {
                   disabled={
                     !(!!certNum && !!context.getRegisterInfo.phoneNumber)
                   }
-                  onClick={() => {
-                    window.confirmationResult
-                      .confirm(certNum)
-                      .then(function (result) {
-                        // User signed in successfully.
-                        var user = result.user;
-                        // ...
-                        return Promise.resolve();
-                      })
-                      .then(function () {
-                        var user = firebase.auth().currentUser;
+                  onClick={async () => {
+                    try {
+                      console.log(
+                        "1",
+                        await window.confirmationResult.confirm(certNum)
+                      );
 
-                        user.delete().then(function () {
-                          props.history.push("/login/register/second");
-                        });
-                      })
-                      .catch(function (error) {
-                        window.alert(error.message);
-                      });
+                      console.log(
+                        "2",
+                        await firebase.auth().currentUser.delete()
+                      );
+                      await firebase.auth().signOut();
+                      props.history.push("/login/register/second");
+                    } catch (e) {
+                      console.log(e);
+                      alert(e);
+                    }
                   }}
-                  //     return Promise.resolve();
-                  //   })
-                  //   .then(function () {
-                  //     var user = firebase.auth().currentUser;
-
-                  //     user.delete().then(function () {
-                  //       console.log("확인되었습니다");
-                  //     });
-                  //   })
-                  //   .catch((error) => {
-                  //     console.log(error.message);
-                  //     console.log(error.code);
-                  //     window.alert(error.message);
-                  //   });
-
                   text="NEXT"
                 />
               </div>

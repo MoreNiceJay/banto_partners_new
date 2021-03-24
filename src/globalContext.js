@@ -30,7 +30,11 @@ export function GlobalProvider({ children }) {
     accountHolder: "",
     id: "",
     point: 0,
+    bPrivacyInfoAgreed: false,
+    bProfitable: false,
     bBusinessLicense: false,
+    businessNumber: "",
+    identification: "",
     businessLicenseImg: ""
   });
   const [invest, setInvest] = React.useState({
@@ -46,6 +50,7 @@ export function GlobalProvider({ children }) {
     buyerPortion: 0,
     storeOwner: "",
     storePortion: "",
+    storeBonusPortion: "",
     amount: 0,
     totalPrice: 0,
     bReserved: false,
@@ -55,13 +60,18 @@ export function GlobalProvider({ children }) {
     createdBy: "",
     confirmedBy: "",
     installedBy: "",
-    franchiseId: "",
+    franchiseDoc: "",
     bIsOn: false,
+    bNeedToSend: false,
+    bNeedToRetrieve: false,
+    retrievingAskedBy: "",
+    registeredBy: "",
     lastUpdated: ""
   });
 
   const [store, setStore] = React.useState({
     applicationId: "",
+    stationDoc: "",
     status: "WAITING",
     storeName: "",
     storeMainAddress: "",
@@ -85,6 +95,8 @@ export function GlobalProvider({ children }) {
 
   const [salesRegisterationInfo, setSalesRegisterationInfo] = React.useState({
     applicationId: "",
+    stationDoc: "",
+
     status: "WAITING",
     storeName: "",
     storeMainAddress: "",
@@ -102,6 +114,7 @@ export function GlobalProvider({ children }) {
     storePhoto: [],
     naverStoreUrl: "",
     createdBy: "",
+
     confirmedBy: "",
     contractYear: 0
   });
@@ -221,6 +234,13 @@ export function GlobalProvider({ children }) {
   async function setRegister_bank(a) {
     await setRegister((prevState) => {
       return { ...prevState, bank: a };
+    });
+  }
+
+  async function setRegister_id(a) {
+    await setRegister((prevState) => {
+      console.log("에이다", a);
+      return { ...prevState, id: a };
     });
   }
 
@@ -399,7 +419,7 @@ export function GlobalProvider({ children }) {
   }
   async function setStore_stationId(a) {
     await setStore((prevState) => {
-      return { ...prevState, stationId: [...prevState.stationId, a] };
+      return { ...prevState, stationId: a };
     });
   }
   async function setStore_storePhoto(a) {
@@ -415,6 +435,11 @@ export function GlobalProvider({ children }) {
   async function setStore_contractYear(a) {
     await setStore((prevState) => {
       return { ...prevState, contractYear: a };
+    });
+  }
+  async function setStore_stationDoc(a) {
+    await setStore((prevState) => {
+      return { ...prevState, stationDoc: a };
     });
   }
 
@@ -502,6 +527,11 @@ export function GlobalProvider({ children }) {
       return { ...prevState, contractYear: a };
     });
   }
+  async function setSales_stationDoc(a) {
+    await setSalesRegisterationInfo((prevState) => {
+      return { ...prevState, stationDoc: a };
+    });
+  }
 
   return (
     <>
@@ -519,6 +549,7 @@ export function GlobalProvider({ children }) {
           setRegister_name,
           setRegister_birthdate,
           setRegister_bank,
+          setRegister_id,
           setRegister_accountNumber,
           setRegister_accountHolder,
           setRegister_bBusinessLicense,
@@ -558,6 +589,7 @@ export function GlobalProvider({ children }) {
           setSales_storePhoto,
           setSales_naverStoreUrl,
           setSales_contractYear,
+          setSales_stationDoc,
           // Store
           getStoreInfo: store,
           setStore_storeName,
@@ -575,7 +607,8 @@ export function GlobalProvider({ children }) {
           setStore_stationId,
           setStore_storePhoto,
           setStore_naverStoreUrl,
-          setStore_contractYear
+          setStore_contractYear,
+          setStore_stationDoc
         }}
       >
         {/* <ThemeUpdateContext.Provider value={{ userNinfo, getUserNinfo }}> */}

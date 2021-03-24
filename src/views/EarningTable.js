@@ -45,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
   // }
 }));
 function numberWithCommas(x) {
+  if (!x) {
+    return;
+  }
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
@@ -52,6 +55,7 @@ function LoginPage({ props, location }) {
   const classes = useStyles(props);
   const data = [];
   const todayTimestamp = common.getTimeStamp();
+  const userStatus = React.useState;
   const [state, setState] = React.useState({
     checkedA: true,
     checkedB: true,
@@ -72,6 +76,7 @@ function LoginPage({ props, location }) {
   function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
   }
+  const query = queryString.parse(location.search);
 
   const BlackCheckbox = withStyles({
     root: {
@@ -136,6 +141,8 @@ function LoginPage({ props, location }) {
   };
   const fetchData = async () => {
     Axios.post("https://partners.mulli.world/users/earningData", {
+      userId: auth.userExtraInfo.id,
+      role: query.role,
       stations: ["T1219071903", "T1219071904"],
       yearMonth: calender,
       cursor: apiData.cursor
@@ -153,6 +160,8 @@ function LoginPage({ props, location }) {
   };
   const fetchRevenue = async () => {
     Axios.post("https://partners.mulli.world/users/monthlyRevenue", {
+      userId: auth.userExtraInfo.id,
+      role: query.role,
       stations: ["T1219071903", "T1219071904"],
       yearMonth: calender
     }).then((a) => {

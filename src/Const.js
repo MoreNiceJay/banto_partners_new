@@ -6,6 +6,13 @@ export const role = Object.freeze({
   buyer: "BUYER",
   store: "STORE"
 });
+export const dbCollection = Object.freeze({
+  station: "Stations",
+  franchise: "Franchises",
+  buyerApplication: "BuyerApplications",
+  salesApplication: "SalesApplications",
+  storeApplication: "StoreApplications"
+});
 
 export const applicationStatus = Object.freeze({
   approve: "APPROVE",

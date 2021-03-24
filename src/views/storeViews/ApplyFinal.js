@@ -79,7 +79,7 @@ function RegistFinal(props) {
     (async () => {
       //TODO 여기에서 스테이션 주인 정보 받아오기 stationId로
       //TODO setBuyer
-      console.log("유저", auth.user, auth.user.email && auth.user.email);
+      console.log("컨텍스트", context.getStoreInfo);
     })();
   }, []);
   function mySubmitHandler() {}
@@ -116,23 +116,12 @@ function RegistFinal(props) {
       title: "가맹점 수익",
       data: context.getStoreInfo.storePortion + "%",
       link: "/sales/regist/portion"
-    },
-    {
-      title: "영업인 (수익률)",
-      data: `${auth.user.email}(${context.getStoreInfo.salesPortion}%)`,
-      link: "/sales/regist/portion"
-    },
-    {
-      title: "스테이션 보유자(스테이션 ID)(수익률%)",
-      data: `${
-        context.getStoreInfo.buyerStatus === "noOwner"
-          ? "반토 무료 스테이션 신청"
-          : context.getStoreInfo.buyerStatus === "ownBuyer"
-          ? `${auth.user.email} (${context.getStoreInfo.stationId}) (${context.getStoreInfo.buyerPortion}%)`
-          : `${context.getStoreInfo.buyer} (${context.getStoreInfo.stationId}) (${context.getStoreInfo.buyerPortion}%)`
-      }`,
-      link: "/sales/regist/portion"
     }
+    // {
+    //   title: "영업인 (수익률)",
+    //   data: `${auth.user.email}(${context.getStoreInfo.salesPortion}%)`,
+    //   link: "/sales/regist/portion"
+    // },
   ];
   const BlackCheckbox = withStyles({
     root: {
@@ -268,7 +257,7 @@ function RegistFinal(props) {
               onClick={async () => {
                 try {
                   const result = await auth.updateApplication(
-                    constant.roles.store,
+                    constant.role.store,
                     context.getStoreInfo
                   );
 

@@ -154,10 +154,6 @@ function LoginPage(props) {
                   variant="outlined"
                   onClick={() => {
                     const user = firebase.auth().currentUser;
-                    if (!user) {
-                      alert("시스템 에러 다시로그인 해주세요");
-                      return;
-                    }
                     if (user.emailVerified) {
                       props.history.push("/login/register/fourth");
                     } else {

@@ -124,11 +124,12 @@ function LoginPage(props) {
                 <SquareButton
                   variant="outlined"
                   disabled={!!!context.getRegisterInfo.email}
-                  onClick={() => {
+                  onClick={async () => {
                     if (!validateEmail(context.getRegisterInfo.email)) {
                       window.alert("이메일 형식을 확인해 주세요");
                       return;
                     }
+
                     props.history.push("/login/register/third");
                   }}
                   text="NEXT"

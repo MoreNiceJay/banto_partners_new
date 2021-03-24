@@ -32,6 +32,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
+      console.log("유저인포체인지드", user);
       if (!user) {
         setPending(false);
       }
@@ -42,6 +43,14 @@ export const AuthProvider = ({ children }) => {
     const fetchUserInfo = async () => {
       const fetchUserStatus = async () => {
         try {
+          if (!user.email) {
+            return { code: 200, data: null };
+          }
+          if (!user) {
+            console.log(user, "user1");
+
+            return { code: 200, data: null };
+          }
           const userRef = db.collection("Users").doc(user.email);
           const doc = await userRef.get();
           let otherInfo = {};
@@ -73,7 +82,7 @@ export const AuthProvider = ({ children }) => {
         return;
       }
       const userInfo = await fetchUserStatus();
-
+      console.log(userInfo, "유저인포");
       if (userInfo.code !== 200) {
         console.log(userInfo.msg);
         return;
@@ -98,20 +107,18 @@ export const AuthProvider = ({ children }) => {
   }
 
   const signOut = async () => {
-    firebase
-      .auth()
-      .signOut()
-      .then(function () {
-        // Sign-out successful.
-        fetchUserStatus();
+    try {
+      await firebase.auth().signOut();
+      // Sign-out successful.
+      await fetchUserStatus();
 
-        // delete all context info
-        return { code: 200 };
-      })
-      .catch(function (error) {
-        // An error happened
-        return { code: 400, msg: "시스템 에러 고객센터에 문의해주세요" };
-      });
+      // delete all context info
+      return { code: 200 };
+      // An error happened
+    } catch (e) {
+      console.log(e);
+      return { code: 400, msg: "시스템 에러 고객센터에 문의해주세요" };
+    }
   };
 
   // 디비 관련 함수 (유저가 아님 TODO: 나중에 옮기기)
@@ -125,32 +132,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   //디비 관련 함수 끝
-  const updateExtraProfiles = async ({
-    name,
-    birthdate,
-    bank,
-    accountNumber,
-    accountHolder,
-    bBusinessLicense,
-    businessLicenseImg
-  }) => {
+  const updateExtraProfiles = async (data) => {
     let user = firebase.auth().currentUser;
     if (!user) {
       return { code: 400, message: "로그인이 필요합니다" };
     }
 
     var postData = {
-      bExtraInfoUpdated: true,
-      name,
-      birthdate,
-      bank,
-      accountNumber,
-      accountHolder,
-      bBusinessLicense,
-      businessLicenseImg
+      data
     };
     try {
-      await userRef.doc(user.email).update(postData);
+      await userRef.doc(user.email).set(postData);
     } catch (e) {
       alert(e);
       return { code: 400, msg: "시스템 에러, 다시시도해 주세요" };
@@ -206,6 +198,7 @@ export const AuthProvider = ({ children }) => {
       let value = await firebase
         .auth()
         .signInWithEmailAndPassword(email, password);
+      return { code: 200 };
       console.log(value);
     } catch (error) {
       // Handle Errors here.
@@ -213,6 +206,7 @@ export const AuthProvider = ({ children }) => {
       var errorMessage = error.message;
       // window.alert(errorMessage);
       // ...
+      return { code: 400, msg: errorCode };
       console.log("1", errorCode);
       console.log("2", errorMessage);
     }
@@ -220,15 +214,29 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUserStatus = async () => {
     try {
+      console.log(user, "user");
+      if (!user.email) {
+        return { code: 200, data: null };
+      }
+      if (!user) {
+        console.log(user, "user1");
+
+        return { code: 200, data: null };
+      }
+      console.log(user, "user2");
+
       const userRef = db.collection("Users").doc(user.email);
       const doc = await userRef.get();
       let otherInfo = {};
       if (doc.exists) {
         otherInfo = doc.data();
+      } else {
+        return { code: 400, msg: "시스템 오류 다시 시도해주세요" };
       }
       return { code: 200, data: otherInfo };
     } catch (e) {
       console.log("5", e);
+      return { code: 400, msg: "시스템 오류 다시 시도해주세요" };
     }
   };
 
@@ -242,44 +250,87 @@ export const AuthProvider = ({ children }) => {
     }
   };
   const updateApplication = async (role, application) => {
-    return new Promise((resolve, reject) => {
-      let user = firebase.auth().currentUser;
+    let user = firebase.auth().currentUser;
 
-      if (!user) {
-        reject({ code: 400, message: "로그인이 필요합니다" });
-        return;
-      }
+    if (!user) {
+      return { code: 400, msg: "로그인이 필요합니다" };
+    }
+    try {
       if (role === constant.role.buyer) {
         let today = String(new Date());
         application.applicationId = uuidv4();
         application.createdBy = today;
-        db.collection("BuyerApplications")
+        await db
+          .collection("BuyerApplications")
           .doc(`${application.buyer}_${today}`)
           .set(application);
-        resolve({ code: 200 });
-        return;
+        return { code: 200 };
       }
       if (role === constant.role.sales) {
+        //나갔는지 확인
+        const stationQs = await db
+          .collection(constant.dbCollection.station)
+          .doc(application.stationDoc)
+          .get();
+
+        if (!stationQs.exists) {
+          return { code: 400, msg: "스테이션이 삭제되었습니다" };
+        }
+        if (stationQs.bReserved) {
+          return { code: 400, msg: "스테이션이 이미 예약되었습니다" };
+        }
+
         let today = String(new Date());
         application.applicationId = uuidv4();
         application.createdBy = today;
-        db.collection("SalesApplications")
+        await db
+          .collection("SalesApplications")
           .doc(`${application.storeName}_${today}`)
           .set(application);
-        resolve({ code: 200 });
-        return;
+
+        await db
+          .collection(constant.dbCollection.station)
+          .doc(application.stationDoc)
+          .update({ bReserved: true });
+        return { code: 200 };
       }
       if (role === constant.role.store) {
+        console.log(application.stationDoc, "application.stationDoc");
+        if (application.stationDoc !== "") {
+          const stationQs = await db
+            .collection(constant.dbCollection.station)
+            .doc(application.stationDoc)
+            .get();
+
+          if (!stationQs.exists) {
+            return { code: 400, msg: "스테이션이 삭제되었습니다" };
+          }
+          if (stationQs.bReserved) {
+            return { code: 400, msg: "스테이션이 이미 예약되었습니다" };
+          }
+        }
+
         let today = String(new Date());
         application.applicationId = uuidv4();
         application.createdBy = today;
-        db.collection("StoreApplications")
+        if (application.stationDoc !== "") {
+          await db
+            .collection(constant.dbCollection.station)
+            .doc(application.stationDoc)
+            .update({ bReserved: true });
+        }
+
+        await db
+          .collection("StoreApplications")
           .doc(`${application.storeName}_${today}`)
           .set(application);
-        resolve({ code: 200 });
-        return;
+
+        return { code: 200 };
       }
-    });
+    } catch (e) {
+      console.log(e);
+      return { code: 400, msg: e };
+    }
   };
   const fetchStations = async (userId) => {
     try {

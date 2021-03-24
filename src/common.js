@@ -65,7 +65,7 @@ export async function fetchMessages(userId) {
     querySnapshot.forEach(function (doc) {
       if (doc.exists) {
         console.log(doc.data());
-        dataArray.push(doc.data());
+        dataArray.push({ id: doc.id, data: doc.data() });
       }
     });
 
@@ -90,7 +90,7 @@ export async function fetchPartnerStations() {
     querySnapshot.forEach(function (doc) {
       if (doc.exists) {
         console.log(doc.data());
-        dataArray.push(doc.data());
+        dataArray.push({ id: doc.id, data: doc.data() });
       }
     });
 
@@ -116,7 +116,7 @@ export async function fetchUserStations(userId) {
 
     querySnapshot.forEach(function (doc) {
       if (doc.exists) {
-        dataArray.push(doc.data());
+        dataArray.push({ id: doc.id, data: doc.data() });
       }
     });
 
@@ -138,12 +138,14 @@ export async function fetchOwnSalesStations(id) {
       .where("salesMethod", "==", "ownSales")
       .where("preSalesIds", "array-contains", id)
       .where("bReserved", "==", false)
+      .where("stationId", "!=", "")
+
       .get();
 
     querySnapshot.forEach(function (doc) {
       if (doc.exists) {
         console.log(doc.data());
-        dataArray.push(doc.data());
+        dataArray.push({ id: doc.id, data: doc.data() });
       }
     });
 

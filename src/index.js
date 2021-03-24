@@ -41,6 +41,7 @@ import LoginForgotPassword from "./views/loginViews/LoginForgotPassword.js";
 import RegisterFirstPage from "./views/loginViews/RegisterFirstPage.js";
 import RegisterSecondPage from "./views/loginViews/RegisterSecondPage.js";
 import RegisterThirdPage from "./views/loginViews/RegisterThirdPage.js";
+
 import RegisterFourthPage from "./views/loginViews/RegisterFourthPage.js";
 import RegisterFinalPage from "./views/loginViews/RegisterFinalPage.js";
 import RegisterFifthPage from "./views/loginViews/RegisterFifthPage.js";

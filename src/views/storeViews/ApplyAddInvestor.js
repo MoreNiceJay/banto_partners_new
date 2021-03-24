@@ -29,7 +29,7 @@ import Select from "@material-ui/core/Select";
 import InputBase from "@material-ui/core/InputBase";
 import PortionTextField from "../../components/PortionTextField.js";
 import InputLabel from "@material-ui/core/InputLabel";
-
+import * as common from "../../common";
 var _ = require("lodash");
 
 const useStyles = makeStyles((theme) => ({
@@ -175,6 +175,7 @@ const BootstrapInput = withStyles((theme) => ({
 
 function LoginPage(props) {
   const classes = useStyles(props);
+  const defaultStorePortion = 20;
   const [ownStation, setOwnStation] = React.useState({
     stationId: "",
     buyerPortion: 0
@@ -187,40 +188,41 @@ function LoginPage(props) {
     stationId: "",
     buyerPortion: 0
   });
-  const [bInvestor, setBInvestor] = React.useState("noBuyer");
-  const handleRadioChange = (event) => {
-    console.log(event.target.value);
-    setBInvestor(event.target.value);
 
+  const [ownSalesStations, setownSalesStations] = React.useState(null);
+  const [myStations, setMyStations] = React.useState(null);
+
+  const [bInvestor, setBInvestor] = React.useState("banto");
+  const handleRadioChange = (event) => {
     // TODO 여기 바꾸기 setStore로
     let buyerStatus = event.target.value;
     setBInvestor(event.target.value);
 
-    if (buyerStatus === "noBuyer") {
-      context.setStore_buyerStatus("otherBuyer");
-      //todo 서버에서 가져오기 스테이션 아이디로 가져오기
-      context.setStore_buyer("");
-      //todo 서버에서 가져오기
-      context.setStore_buyerPortion(0);
-      //todo 서버에서 있는지 없는지 확인하기
-      context.setStore_stationId("");
-    } else if (buyerStatus === "otherBuyer") {
-      context.setStore_buyerStatus("otherBuyer");
-      //todo 서버에서 가져오기 스테이션 아이디로 가져오기
-      context.setStore_buyer(auth.user.email);
-      //todo 서버에서 가져오기
-      context.setStore_buyerPortion(0);
-      //todo 서버에서 있는지 없는지 확인하기
-      context.setStore_stationId("");
-    } else if (buyerStatus === "ownBuyer") {
-      context.setStore_buyerStatus("otherBuyer");
-      //todo 서버에서 가져오기 스테이션 아이디로 가져오기
-      context.setStore_buyer(auth.user.email);
-      //todo 서버에서 가져오기
-      context.setStore_buyerPortion(0);
-      //todo 서버에서 있는지 없는지 확인하기
-      context.setStore_stationId("");
-    }
+    // if (buyerStatus === "banto") {
+    //   context.setStore_buyerStatus("ownSales");
+    //   //todo 서버에서 가져오기 스테이션 아이디로 가져오기
+    //   context.setStore_buyer("");
+    //   //todo 서버에서 가져오기
+    //   context.setStore_buyerPortion(0);
+    //   //todo 서버에서 있는지 없는지 확인하기
+    //   context.setStore_stationId("");
+    // } else if (buyerStatus === "ownSales") {
+    //   context.setStore_buyerStatus("ownSales");
+    //   //todo 서버에서 가져오기 스테이션 아이디로 가져오기
+    //   context.setStore_buyer(auth.user.email);
+    //   //todo 서버에서 가져오기
+    //   context.setStore_buyerPortion(0);
+    //   //todo 서버에서 있는지 없는지 확인하기
+    //   context.setStore_stationId("");
+    // } else if (buyerStatus === "mine") {
+    //   context.setStore_buyerStatus("ownSales");
+    //   //todo 서버에서 가져오기 스테이션 아이디로 가져오기
+    //   context.setStore_buyer(auth.user.email);
+    //   //todo 서버에서 가져오기
+    //   context.setStore_buyerPortion(0);
+    //   //todo 서버에서 있는지 없는지 확인하기
+    //   context.setStore_stationId("");
+    // }
   };
 
   const onChangeInvestorContact = (event) => {
@@ -239,9 +241,7 @@ function LoginPage(props) {
     });
   };
   const handleChange = (event) => {
-    console.log("오운?", event.target.value);
     let json = JSON.parse(event.target.value);
-    console.log("오운?2", json);
     setOwnStation(event.target.value);
   };
   const context = useGlobal();
@@ -250,6 +250,27 @@ function LoginPage(props) {
 
   React.useEffect(() => {
     setOwnBuyer(auth.userStations[0]);
+  }, []);
+  React.useEffect(() => {
+    (async () => {
+      const result = await common.fetchOwnSalesStations(auth.userExtraInfo.id);
+      // await common.insertStationExample();
+      if (result.code !== 200) {
+        alert(result.msg);
+        return;
+      }
+      setownSalesStations(result.data);
+    })();
+
+    (async () => {
+      const result = await common.fetchUserStations(auth.userExtraInfo.id);
+      // await common.insertStationExample();
+      if (result.code !== 200) {
+        alert(result.msg);
+        return;
+      }
+      setMyStations(result.data);
+    })();
   }, []);
 
   const ownBody = (
@@ -283,14 +304,16 @@ function LoginPage(props) {
                   id: "outlined-age-native-simple"
                 }}
               >
-                {!auth.userStations.length ? (
+                <option value={"0"}>스테이션을 선택해주세요</option>
+
+                {!myStations ? (
                   <option value={"0"}>등록된 스테이션 없음</option>
                 ) : (
-                  auth.userStations.map((value) => {
+                  myStations.map((value) => {
                     return (
                       <>
                         <option value={JSON.stringify(value)}>
-                          {value.stationId}, {value.buyerPortion} %
+                          {value.data.stationId}, {value.data.buyerPortion} %
                         </option>
                       </>
                     );
@@ -306,28 +329,54 @@ function LoginPage(props) {
 
   const otherBody = (
     <>
-      <div style={{ marginTop: "40px" }}>
-        <InputTitle text="투자자의 전화번호" />
-        <PTextField
-          placeholder="Phone Number"
-          value={context.getStoreInfo.investorContact}
-          onChange={(e) => {
-            context.setStore_buyer(e.target.value);
-          }}
-        />
-      </div>
-      <div style={{ marginTop: "60px" }}>
-        <InputTitle text="약속된 수익률" />
+      {/* <hr style={{ borderStyle: "dotted", marginBottom: "20px" }} /> */}
+      <div className={classes.contact}>
+        <div className={classes.contactPerson}>
+          <div className={classes.contactTexts}>
+            <span className={classes.contactPersonTitle}>내 스테이션</span>
+            <span className={classes.contactPersonDescription}></span>
+          </div>
+          <div style={{ width: "100%" }}>
+            <FormControl
+              variant="outlined"
+              style={{ width: "calc(100% - 40px)", marginTop: "24px" }}
+              className={classes.formControl}
+            >
+              <InputLabel
+                className={classes.portionSelectInputLabel}
+                htmlFor="outlined-age-native-simple"
+              >
+                선택
+              </InputLabel>
+              <Select
+                native
+                value={ownStation}
+                className={classes.portionSelect}
+                onChange={handleChange}
+                label="비율"
+                inputProps={{
+                  id: "outlined-age-native-simple"
+                }}
+              >
+                <option value={"0"}>스테이션을 선택해주세요</option>
 
-        <PortionTextField
-          className={classes.textLabelInput}
-          id="standard-full-width"
-          // label="0"
-          placeholder="%"
-          // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-          value={otherBuyer.portion}
-          o12nChange={onChangeInvestorPortion}
-        />
+                {!ownSalesStations ? (
+                  <option value={"0"}>등록된 스테이션 없음</option>
+                ) : (
+                  ownSalesStations.map((value) => {
+                    return (
+                      <>
+                        <option value={JSON.stringify(value)}>
+                          {value.data.stationId}, {value.data.buyerPortion} %
+                        </option>
+                      </>
+                    );
+                  })
+                )}
+              </Select>
+            </FormControl>
+          </div>
+        </div>
       </div>
     </>
   );
@@ -363,7 +412,7 @@ function LoginPage(props) {
                     onChange={handleRadioChange}
                   >
                     <FormControlLabel
-                      value="noBuyer"
+                      value="banto"
                       control={
                         <Radio
                           icon={<CircleUnchecked />}
@@ -378,10 +427,11 @@ function LoginPage(props) {
                         />
                       }
                       label="아니오. 반토 본사를 통해 무료로 신청하겠습니다"
-                      checked={bInvestor === "noBuyer"}
+                      checked={bInvestor === "banto"}
                     />
+                    <span>수익의 20%를 매달 정산받습니다</span>
                     <FormControlLabel
-                      value="ownBuyer"
+                      value="mine"
                       control={
                         <Radio
                           icon={<CircleUnchecked />}
@@ -398,7 +448,7 @@ function LoginPage(props) {
                       label="네. 구매한 스테이션이 있습니다"
                     />
                     <FormControlLabel
-                      value="otherBuyer"
+                      value="ownSales"
                       control={
                         <Radio
                           icon={<CircleUnchecked />}
@@ -418,9 +468,9 @@ function LoginPage(props) {
                   </RadioGroup>
                 </FormControl>
               </div>
-              {bInvestor === "noBuyer"
+              {bInvestor === "banto"
                 ? ""
-                : bInvestor === "otherBuyer"
+                : bInvestor === "ownSales"
                 ? otherBody
                 : ownBody}
               <div
@@ -432,70 +482,42 @@ function LoginPage(props) {
                 <Button
                   variant="outlined"
                   onClick={async () => {
-                    // props.history.push("/store/apply/final");
-
-                    //todo요기 바꾸기
-                    context.setStore_buyerStatus("");
-                    context.setStore_buyer("");
-                    context.setStore_buyerPortion(0);
-                    context.setStore_stationId("");
-                    props.history.push("/store/apply/final");
-
-                    if (bInvestor === "otherBuyer") {
-                      // TODO 여기서 otherBuyer.stationId 스테이션 아이디로 가져오기
-
-                      const bIsAvailable = await context.isAvailable(
-                        otherBuyer.stationId
+                    if (bInvestor === "ownSales") {
+                      const choosedStation = JSON.parse(ownStation);
+                      const salesPortion = choosedStation.data.preSalesManagers.find(
+                        (e) => e.id === auth.userExtraInfo.id
+                      ).portion;
+                      context.setStore_storeOwner(auth.userExtraInfo.id);
+                      context.setStore_stationDoc(choosedStation.id);
+                      context.setStore_stationId(choosedStation.data.stationId);
+                      context.setStore_buyer(choosedStation.data.buyer);
+                      context.setStore_buyerPortion(
+                        choosedStation.data.buyerPortion
                       );
-                      if (bIsAvailable.code !== 200) {
-                        alert(bIsAvailable.msg);
-                        return;
-                      }
-                      if (bIsAvailable.data === null) {
-                        alert("등록 불가한 스테이션입니다.");
-                        return;
-                      }
-                      const buyerId = await context.getBuyerId(
-                        otherBuyer.stationId
+                      context.setStore_storePortion(salesPortion);
+                    } else if (bInvestor === "banto") {
+                      //todo 바꿔야할꺼
+                      context.setStore_stationId("");
+                      context.setStore_stationDoc("");
+
+                      context.setStore_buyer("");
+                      context.setStore_buyerPortion(0);
+                      context.setStore_storePortion(defaultStorePortion);
+                      context.setStore_storeOwner(auth.userExtraInfo.id);
+                    } else if (bInvestor === "mine") {
+                      const choosedStation = JSON.parse(ownStation);
+                      context.setSales_salesPortion(
+                        choosedStation.data.buyerPortion
                       );
-                      if (buyerId.code !== 200) {
-                        alert(bIsAvailable.msg);
-                        return;
-                      }
-                      if (buyerId.data === null) {
-                        alert("등록 불가한 스테이션입니다.");
-                        return;
-                      }
-                      console.log("버이어아이디", buyerId.data.buyer);
-
-                      context.setStore_buyerStatus("otherBuyer");
-                      //todo 서버에서 가져오기 스테이션 아이디로 가져오기
-                      context.setStore_buyer(buyerId.data.buyer);
-                      //todo 텍스트 필드에서 가져오기
-                      context.setStore_buyerPortion(buyerId.data.buyerPortion);
-                      //todo 서버에서 있는지 없는지 확인하기
-                      context.setStore_stationId(otherBuyer.stationId);
-
-                      //TODO 바이어 포션 비율 함수
-                    } else if (bInvestor === "noBuyer") {
-                      context.setStore_buyer("banto");
-                      context.setStore_buyerStatus("noBuyer");
-                      let bantoPortion =
-                        context.salesInfo.salesPortion +
-                        context.salesInfo.storePortion;
-                      context.setStore_buyerPortion(bantoPortion);
-                    } else if (bInvestor === "ownBuyer") {
-                      console.log("오운 스테이션", ownStation);
-                      let ownObject = JSON.parse(ownStation);
-                      context.setStore_buyerStatus("ownBuyer");
-                      //todo 서버에서 가져오기 스테이션 아이디로 가져오기
-                      context.setStore_buyer(auth.user.email);
-                      //todo 서버에서 가져오기
-                      context.setStore_buyerPortion(ownObject.buyerPortion);
-                      //todo 서버에서 있는지 없는지 확인하기
-                      context.setStore_stationId(ownObject.stationId);
-                      props.history.push("/store/apply/final");
+                      context.setStore_storeOwner(auth.userExtraInfo.id);
+                      context.setStore_stationDoc(choosedStation.id);
+                      context.setStore_stationId(choosedStation.data.stationId);
+                      context.setStore_buyer(choosedStation.data.buyer);
+                      context.setStore_buyerPortion(
+                        choosedStation.data.buyerPortion
+                      );
                     }
+                    props.history.push("/store/apply/final");
                   }}
                   style={{
                     width: "64px",

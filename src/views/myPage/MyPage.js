@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
 
 function LoginPage(props) {
   const classes = useStyles(props);
-  console.log(auth);
+
   const [state, setState] = React.useState({
     checkedA: true,
     checkedB: true,
@@ -105,6 +105,10 @@ function LoginPage(props) {
       link: "/mypage/settings"
     }
   ];
+  if (!auth.user) {
+    props.history.push("/main");
+    return;
+  }
   const MyPageHeader = () => (
     <div className={classes.headerContainer}>
       <div className={classes.emailContainer}>

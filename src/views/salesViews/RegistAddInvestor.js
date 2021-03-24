@@ -69,22 +69,15 @@ function RegistAddInvestor(props) {
   function mySubmitHandler() {}
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState("Choose wisely");
-  const [investorContact, setInvestorContact] = React.useState("");
-  const [investorPortion, setInvestorPortion] = React.useState(0);
+
   const [bInvestor, setBInvestor] = React.useState("banto");
   const context = useGlobal();
   const auth = useAuth();
-  const [ownBuyer, setOwnBuyer] = React.useState({ stationId: "" });
   const [partnersStations, setPartnersStations] = React.useState(null);
   const [ownSalesStations, setownSalesStations] = React.useState(null);
   const [myStations, setMyStations] = React.useState(null);
 
   const [ownStation, setOwnStation] = React.useState(null);
-  const [otherStation, setOtherStation] = React.useState(null);
-  const [otherBuyer, setOtherBuyer] = React.useState({
-    stationId: "",
-    buyerPortion: 0
-  });
 
   React.useEffect(() => {
     (async () => {
@@ -94,6 +87,7 @@ function RegistAddInvestor(props) {
         alert(result.msg);
         return;
       }
+      console.log(result.data, "리저트데이터");
       setownSalesStations(result.data);
     })();
     (async () => {
@@ -143,9 +137,6 @@ function RegistAddInvestor(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
   };
-  React.useEffect(() => {
-    setOwnBuyer(auth.userStations[0]);
-  }, []);
 
   const bantoBody = (
     <>
@@ -182,6 +173,8 @@ function RegistAddInvestor(props) {
                   id: "outlined-age-native-simple"
                 }}
               >
+                <option value={"0"}>스테이션을 선택해주세요</option>
+
                 {!partnersStations ? (
                   <option value={"0"}>
                     현재 모든 스테이션이 등록되었습니다
@@ -192,8 +185,9 @@ function RegistAddInvestor(props) {
                     return (
                       <>
                         <option value={JSON.stringify(value)}>
-                          {value.buyer}님의 스테이션 : 영업인 할당 수익률
-                          {value.salesPortion}%
+                          {console.log(value, "벨류")}
+                          {value.data.buyer}님의 스테이션 : 영업인 할당 수익률
+                          {value.data.salesPortion}%
                         </option>
                       </>
                     );
@@ -242,6 +236,8 @@ function RegistAddInvestor(props) {
                   id: "outlined-age-native-simple"
                 }}
               >
+                <option value={"0"}>스테이션을 선택해주세요</option>
+
                 {!ownSalesStations ? (
                   <option value={"0"}>등록된 스테이션 없음</option>
                 ) : (
@@ -250,9 +246,9 @@ function RegistAddInvestor(props) {
                     return (
                       <>
                         <option value={JSON.stringify(value)}>
-                          {value.stationId},
+                          {value.data.stationId},
                           {
-                            value.preSalesManagers.find(
+                            value.data.preSalesManagers.find(
                               (e) => e.id === auth.userExtraInfo.id
                             ).portion
                           }
@@ -303,6 +299,8 @@ function RegistAddInvestor(props) {
                   id: "outlined-age-native-simple"
                 }}
               >
+                <option value={"0"}>스테이션을 선택해주세요</option>
+
                 {!myStations ? (
                   <option value={"0"}>등록된 스테이션 없음</option>
                 ) : (
@@ -310,7 +308,7 @@ function RegistAddInvestor(props) {
                     return (
                       <>
                         <option value={JSON.stringify(value)}>
-                          {value.stationId}, {value.buyerPortion} %
+                          {value.data.stationId}, {value.data.buyerPortion} %
                         </option>
                       </>
                     );
@@ -406,31 +404,38 @@ function RegistAddInvestor(props) {
             if (!!!choosedStation) {
               alert("스테이션을 선택해주세요");
               return;
+              console.log("추스드", choosedStation);
             }
             if (bInvestor === "ownSales") {
               // TODO 여기서 otherBuyer.stationId 스테이션 아이디로 가져오기
               context.setSales_salesManager(auth.userExtraInfo.id);
-              const salesPortion = choosedStation.preSalesManagers.find(
+              context.setSales_stationDoc(choosedStation.id);
+
+              const salesPortion = choosedStation.data.preSalesManagers.find(
                 (e) => e.id === auth.userExtraInfo.id
               ).portion;
               context.setSales_salesPortion(salesPortion);
-              context.setSales_stationId(choosedStation.stationId);
-              context.setSales_buyer(choosedStation.buyer);
-              context.setSales_buyerPortion(choosedStation.buyerPortion);
+              context.setSales_stationId(choosedStation.data.stationId);
+              context.setSales_buyer(choosedStation.data.buyer);
+              context.setSales_buyerPortion(choosedStation.data.buyerPortion);
 
               //TODO 바이어 포션 비율 함수
             } else if (bInvestor === "banto") {
               context.setSales_salesManager(auth.userExtraInfo.id);
-              context.setSales_salesPortion(choosedStation.salesPortion);
-              context.setSales_stationId(choosedStation.stationId);
-              context.setSales_buyer(choosedStation.buyer);
-              context.setSales_buyerPortion(choosedStation.buyerPortion);
+              context.setSales_stationDoc(choosedStation.id);
+
+              context.setSales_salesPortion(choosedStation.data.salesPortion);
+              context.setSales_stationId(choosedStation.data.stationId);
+              context.setSales_buyer(choosedStation.data.buyer);
+              context.setSales_buyerPortion(choosedStation.data.buyerPortion);
             } else if (bInvestor === "mine") {
               context.setSales_salesManager(auth.userExtraInfo.id);
-              context.setSales_salesPortion(choosedStation.buyerPortion);
-              context.setSales_stationId(choosedStation.stationId);
-              context.setSales_buyer(choosedStation.buyer);
-              context.setSales_buyerPortion(choosedStation.buyerPortion);
+              context.setSales_stationDoc(choosedStation.id);
+
+              context.setSales_salesPortion(choosedStation.data.buyerPortion);
+              context.setSales_stationId(choosedStation.data.stationId);
+              context.setSales_buyer(choosedStation.data.buyer);
+              context.setSales_buyerPortion(choosedStation.data.buyerPortion);
             }
             props.history.push("/sales/regist/portion");
           }}

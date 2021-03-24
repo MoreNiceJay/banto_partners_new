@@ -11,7 +11,11 @@ import Slide from "@material-ui/core/Slide";
 import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import { useAuth } from "../../AuthContext";
-
+import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
+import CircleChecked from "@material-ui/icons/CheckCircleOutline";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import * as common from "../../common";
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
   headerSpace: {
@@ -34,6 +38,27 @@ function LoginPage(props) {
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const auth = useAuth();
   const context = useGlobal();
+  const [state, setState] = React.useState({
+    checkedA: false,
+    checkedB: false,
+    checkedF: false,
+    checkedG: false
+  });
+  const handleChange = (event) => {
+    setState({ ...state, [event.target.name]: event.target.checked });
+  };
+  const BlackCheckbox = withStyles({
+    root: {
+      color: "black",
+      "&$checked": {
+        color: "black"
+      }
+    },
+    checked: {
+      color: "black"
+    }
+  })((props) => <Checkbox color="default" {...props} />);
+
   return (
     <>
       <Slide
@@ -164,6 +189,98 @@ function LoginPage(props) {
                 //   }
                 // }}
               />
+
+              <div style={{ marginTop: "40px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "rows",
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                  }}
+                >
+                  <FormControlLabel
+                    style={{ marginLeft: "12px" }}
+                    control={
+                      <BlackCheckbox
+                        checked={state.checkedA}
+                        onChange={handleChange}
+                        name="checkedA"
+                        icon={<CircleUnchecked />}
+                        checkedIcon={<CircleChecked />}
+                      />
+                    }
+                    label={
+                      <span
+                        style={{
+                          fontStyle: "normal",
+                          fontWeight: "normal",
+                          fontSize: "14px",
+                          lineHeight: "21px"
+                        }}
+                      >
+                        2020년 하반기 정책사항에 동의 합니다
+                      </span>
+                    }
+                  />
+                  <p style={{}}>
+                    <Link
+                      style={{
+                        marginRight: "32px",
+                        textDecoration: "underline"
+                      }}
+                    >
+                      {" "}
+                      약관확인
+                    </Link>
+                  </p>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "rows",
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                  }}
+                >
+                  <FormControlLabel
+                    style={{ marginLeft: "12px" }}
+                    control={
+                      <BlackCheckbox
+                        checked={state.checkedA}
+                        onChange={handleChange}
+                        name="checkedA"
+                        icon={<CircleUnchecked />}
+                        checkedIcon={<CircleChecked />}
+                      />
+                    }
+                    label={
+                      <span
+                        style={{
+                          fontStyle: "normal",
+                          fontWeight: "normal",
+                          fontSize: "14px",
+                          lineHeight: "21px"
+                        }}
+                      >
+                        2020년 하반기 정책사항에 동의 합니다
+                      </span>
+                    }
+                  />
+                  <p style={{}}>
+                    <Link
+                      style={{
+                        marginRight: "32px",
+                        textDecoration: "underline"
+                      }}
+                    >
+                      {" "}
+                      약관확인
+                    </Link>
+                  </p>
+                </div>
+              </div>
+
               <div
                 style={{
                   display: "flex",
@@ -172,33 +289,33 @@ function LoginPage(props) {
               >
                 <Button
                   variant="outlined"
-                  onClick={() => {
+                  onClick={async () => {
                     if (confirmPassword !== password) {
                       alert("비밀번호와 확인비밀번호가 같지 않습니다");
                       return;
                     }
 
-                    auth
-                      .singUpWithEmail(
+                    await context.setRegister_id(common.shuffle(8));
+
+                    try {
+                      await auth.singUpWithEmail(
                         context.getRegisterInfo.email,
                         confirmPassword
-                      )
-                      .then((doc) => {
-                        console.log("닥", doc);
-                        doc.set({
-                          phoneNumber: context.getRegisterInfo.phoneNumber
-                        });
-                        return Promise.resolve();
-                      })
+                      );
+                      const result = await auth.updateExtraProfiles(
+                        context.getRegisterInfo
+                      );
 
-                      .then(() => {
-                        props.history.push("/login/register/fourth");
-                      })
-                      .catch((error) => {
-                        var errorCode = error.code;
-                        var errorMessage = error.message;
-                        window.alert(errorMessage);
-                      });
+                      if (result.code !== 200) {
+                        alert(result.msg);
+                      }
+                    } catch (error) {
+                      var errorCode = error.code;
+                      var errorMessage = error.message;
+                      window.alert(errorMessage);
+                      return;
+                    }
+                    props.history.push("/login/register/fourth");
                   }}
                   style={{
                     width: "64px",
