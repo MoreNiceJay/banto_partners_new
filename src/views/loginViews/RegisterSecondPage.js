@@ -85,7 +85,7 @@ function LoginPage(props) {
                   // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
                   value={context.getRegisterInfo.email}
                   onChange={(e) => {
-                    context.setRegister_email(e.target.value);
+                    context.setRegister_email(e.target.value.toLowerCase());
                   }}
                   style={{
                     margin: "0 24px",

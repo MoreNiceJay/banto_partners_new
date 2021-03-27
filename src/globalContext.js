@@ -3,7 +3,9 @@ import firebase from "./firebaseConfig";
 import moment from "moment";
 import { ThemeConsumer } from "styled-components";
 import { reject } from "lodash";
+import * as constant from "./Const";
 var db = firebase.firestore();
+
 const GlobalContext = React.createContext();
 export function useGlobal() {
   return React.useContext(GlobalContext);
@@ -142,10 +144,20 @@ export function GlobalProvider({ children }) {
   async function fetchApplications(userId, role) {
     try {
       const dataArray = [];
+      let applicaitonDB;
+      if (role === "buyer") {
+        applicaitonDB = constant.dbCollection.buyerApplication;
+      } else if (role === "salesManager") {
+        applicaitonDB = constant.dbCollection.salesApplication;
+      } else if (role === "storeOwner") {
+        applicaitonDB = constant.dbCollection.storeApplication;
+      } else {
+        alert("다시 시도해 주세요");
+        return;
+      }
       const applicationRef = db
-        .collection("Users")
-        .doc(userId)
-        .collection("Applications");
+        .collection(applicaitonDB)
+        .where(role, "==", userId);
 
       const querySnapshot = await applicationRef.get();
 
@@ -215,7 +227,8 @@ export function GlobalProvider({ children }) {
   }
   async function setRegister_email(a) {
     await setRegister((prevState) => {
-      return { ...prevState, email: a };
+      const lowercaseA = a.toLowerCase();
+      return { ...prevState, email: lowercaseA };
     });
   }
 

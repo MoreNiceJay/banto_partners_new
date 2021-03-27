@@ -22,6 +22,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import qs from "qs";
+import queryString from "query-string";
 
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
@@ -47,6 +48,8 @@ function numberWithCommas(x) {
 
 function LoginPage(props) {
   const classes = useStyles(props);
+  const query = queryString.parse(props.location.search);
+
   const [data, setsData] = React.useState({
     data: [],
     pageNumber: 1,
@@ -74,13 +77,18 @@ function LoginPage(props) {
 
   React.useEffect(() => {
     const fetchApplicationDataAsync = async () => {
-      const result = await context.fetchApplications(auth.user.email, "");
+      const result = await context.fetchApplications(
+        auth.userExtraInfo.id,
+        query.role
+      );
 
       if (result.code !== 200) {
-        // alert(result.msg);
+        alert(result.msg);
+        return;
       }
       if (!result.data) {
-        // alert("No applications");
+        alert("No applications");
+        return;
       }
       console.log("1", result.data);
       let dataAdded = result.data && result.data;

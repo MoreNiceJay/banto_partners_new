@@ -3,6 +3,7 @@ import firebase from "./firebaseConfig";
 import moment from "moment";
 import * as constant from "./Const";
 import { last } from "lodash";
+import axios from "axios";
 let db = firebase.firestore();
 let user = firebase.auth().currentUser;
 var _ = require("lodash");
@@ -179,9 +180,7 @@ export async function deleteApplication(applicationId) {
 export async function fetchStations(userId, role) {
   try {
     const dataArray = [];
-    const stationnRef = db
-      .collection("Stations")
-      .where("salesManager", "==", userId);
+    const stationnRef = db.collection("Stations").where(role, "==", userId);
 
     const querySnapshot = await stationnRef.get();
 
@@ -406,3 +405,24 @@ export function shuffle(count) {
   }
   return result;
 }
+
+export const mailEarningData = async (email, userId, role, yearMonth) => {
+  try {
+    const result = await axios.post(
+      constant.urls.domain + "/users/mailEarningData",
+      {
+        email,
+        userId,
+        role,
+        yearMonth
+      }
+    );
+    if (result.data.code !== 200) {
+      return { code: 400, msg: result.data.msg };
+    }
+    return { code: 200 };
+  } catch (error) {
+    console.log(error);
+    return { code: 400, msg: error };
+  }
+};

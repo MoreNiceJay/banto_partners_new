@@ -60,27 +60,27 @@ const tutorialSteps = [
   {
     label: "San Francisco – Oakland Bay Bridge, United States",
     imgPath:
-      "https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60"
+      "https://firebasestorage.googleapis.com/v0/b/banto-partners.appspot.com/o/Group%20720.png?alt=media&token=e7b92440-5a0a-4bbc-bed4-27d27769f872"
   },
   {
     label: "Bird",
     imgPath:
-      "https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60"
+      "https://firebasestorage.googleapis.com/v0/b/banto-partners.appspot.com/o/Group%20721.png?alt=media&token=f4cfadbb-dc6d-43ea-b751-1c17e91c67d8"
   },
   {
     label: "Bali, Indonesia",
     imgPath:
-      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250&q=80"
+      "https://firebasestorage.googleapis.com/v0/b/banto-partners.appspot.com/o/Group%20722.png?alt=media&token=82311124-cfd5-4cde-9cf2-4c759eafee6e"
   },
   {
     label: "NeONBRAND Digital Marketing, Las Vegas, United States",
     imgPath:
-      "https://images.unsplash.com/photo-1518732714860-b62714ce0c59?auto=format&fit=crop&w=400&h=250&q=60"
+      "https://firebasestorage.googleapis.com/v0/b/banto-partners.appspot.com/o/Group%20723.png?alt=media&token=75b6c26b-222e-476a-9ecd-cb0d2fe645a7"
   },
   {
     label: "Goč, Serbia",
     imgPath:
-      "https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60"
+      "https://firebasestorage.googleapis.com/v0/b/banto-partners.appspot.com/o/Group%20724.png?alt=media&token=07a518e9-3cef-48e3-8e56-ace383391248"
   }
 ];
 

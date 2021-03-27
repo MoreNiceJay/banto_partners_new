@@ -16,6 +16,8 @@ import CircleChecked from "@material-ui/icons/CheckCircleOutline";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import * as common from "../../common";
+import firebase from "../../firebaseConfig";
+
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
   headerSpace: {
@@ -44,6 +46,10 @@ function LoginPage(props) {
     checkedF: false,
     checkedG: false
   });
+  React.useEffect(() => {
+    context.setRegister_id(common.shuffle(8));
+  }, []);
+
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
@@ -294,9 +300,15 @@ function LoginPage(props) {
                       alert("비밀번호와 확인비밀번호가 같지 않습니다");
                       return;
                     }
-
-                    await context.setRegister_id(common.shuffle(8));
-
+                    context.setRegister_id(common.shuffle(8));
+                    if (
+                      !!!context.getRegisterInfo.id ||
+                      !!!context.getRegisterInfo.email ||
+                      !!!context.getRegisterInfo.phoneNumber
+                    ) {
+                      alert("다시 입력해주세요");
+                      return;
+                    }
                     try {
                       await auth.singUpWithEmail(
                         context.getRegisterInfo.email,

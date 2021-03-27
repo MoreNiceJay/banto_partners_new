@@ -33,8 +33,28 @@ function LoginPage(props) {
   const classes = useStyles(props);
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
+  const [emailVerified, setEmailVerified] = React.useState(false);
+
   const auth = useAuth();
   const context = useGlobal();
+  React.useEffect(() => {
+    if (auth.user.emailVerified) {
+      setEmailVerified(true);
+    } else {
+      setEmailVerified(false);
+    }
+  }, [auth.user]);
+  // firebase.auth().onAuthStateChanged((user) => {
+  //   if (!user) {
+  //     return;
+  //   } else {
+  //     if (user.emailVerified) {
+  //       setEmailVerified(true);
+  //     } else {
+  //       setEmailVerified(false);
+  //     }
+  //   }
+  // });
   React.useEffect(() => {
     var actionCodeSettings = {
       url: "https://75qiy.csb.app",
@@ -143,6 +163,8 @@ function LoginPage(props) {
                 >
                   인증메일 다시보내기
                 </Button>
+                {console.log(auth.user)}
+                <p>{emailVerified ? "인증완료" : "인증필요"}</p>
               </div>
               <div
                 style={{

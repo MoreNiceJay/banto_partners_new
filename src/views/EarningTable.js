@@ -140,14 +140,18 @@ function LoginPage({ props, location }) {
     return;
   };
   const fetchData = async () => {
+    console.log(auth.userExtraInfo.id, query.role, calender);
     Axios.post("https://partners.mulli.world/users/earningData", {
       userId: auth.userExtraInfo.id,
       role: query.role,
-      stations: ["T1219071903", "T1219071904"],
       yearMonth: calender,
       cursor: apiData.cursor
     }).then((a) => {
-      console.log();
+      console.log("a", a.data);
+      if (a.data.code !== 200) {
+        alert(a.data.msg);
+        return;
+      }
       let dataAdded = a.data.data.earningData;
       setData({
         data: [...apiData.data, ...dataAdded],
@@ -158,28 +162,23 @@ function LoginPage({ props, location }) {
       });
     });
   };
+
   const fetchRevenue = async () => {
     Axios.post("https://partners.mulli.world/users/monthlyRevenue", {
       userId: auth.userExtraInfo.id,
       role: query.role,
-      stations: ["T1219071903", "T1219071904"],
       yearMonth: calender
     }).then((a) => {
-      console.log();
+      console.log(a.data.data.earnings, "data");
       let dataAdded = a.data.data.earning;
       setEarning(dataAdded);
     });
   };
   React.useEffect(() => {
-    console.log("cursor in apiData1", apiData.cursor);
-
     (async () => {
       await fetchData();
       await fetchRevenue();
     })();
-    console.log("cursor in fetchData2", apiData.cursor);
-
-    console.log("에이피아이", apiData);
   }, [calender]);
 
   return (
@@ -244,8 +243,42 @@ function LoginPage({ props, location }) {
                   marginTop: "16px"
                 }}
               >
-                {numberWithCommas(earning && earning) + " 원"}
+                {(!!!earning ? "0" : numberWithCommas(earning)) + " 원"}
               </p>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "self-end",
+                  width: "100%",
+                  backgroundColor: "blue"
+                }}
+              >
+                <Button
+                  style={{
+                    color: "white",
+                    textAlign: "right",
+                    alignSelf: "flex-end"
+                  }}
+                  onClick={async () => {
+                    const result = await common.mailEarningData(
+                      auth.userExtraInfo.email,
+                      auth.userExtraInfo.id,
+                      query.role,
+                      calender
+                    );
+                    if (result.code !== 200) {
+                      alert(result.msg);
+                      return;
+                    }
+                    alert(
+                      `${auth.userExtraInfo.email}로 수익정보 데이터(${calender})를 보냈습니다`
+                    );
+                    return;
+                  }}
+                >
+                  정산내역 Excel 내보내기
+                </Button>
+              </div>
             </div>
           </Paper>
         </div>
@@ -297,7 +330,6 @@ function LoginPage({ props, location }) {
                 {apiData.data &&
                   // apiData.data.userId &&
                   apiData.data.map((i, index) => {
-                    console.log(i.storeName);
                     return (
                       <TableRow key={index} style={{ height: "90px" }}>
                         <TableCell

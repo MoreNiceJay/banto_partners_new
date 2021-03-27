@@ -82,20 +82,24 @@ export const AuthProvider = ({ children }) => {
         return;
       }
       const userInfo = await fetchUserStatus();
-      console.log(userInfo, "유저인포");
+      console.log(userInfo.data, "유저인포");
       if (userInfo.code !== 200) {
         console.log(userInfo.msg);
         return;
       }
-      console.log("엑스트라인포", userInfo.data);
-      setUserExtraInfo(userInfo.data);
-      const userStations = await fetchStations(user.email);
-      if (userStations.code !== 200) {
-        console.log(userStations.msg);
-        return;
+      console.log("엑스트라인포", userInfo);
+      if (userInfo.data === null) {
+        setUserExtraInfo(null);
+      } else {
+        setUserExtraInfo(userInfo.data.data);
       }
-      console.log(userStations.data);
-      setUserStations(userStations.data);
+      // const userStations = await fetchStations(user.email);
+      // if (userStations.code !== 200) {
+      //   console.log(userStations.msg);
+      //   return;
+      // }
+      // console.log(userStations.data);
+      // setUserStations(userStations.data);
       setPending(false);
     };
 
@@ -179,7 +183,7 @@ export const AuthProvider = ({ children }) => {
         .auth()
         .createUserWithEmailAndPassword(email, password)
         .then(() => {
-          setUserExtraInfo();
+          setUserExtraInfo(null);
           userRef.doc(email).set({
             bExtraInfoUpdated: false,
             id: common.shuffle(7)

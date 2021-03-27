@@ -28,18 +28,18 @@ function SalesMenu(props) {
     {
       titleBold: "수익",
       titleRegular: "확인",
-      link: "/table/earning?role=store"
+      link: "/table/earning?role=storeOwner"
     },
 
     {
       titleBold: "스테이션",
       titleRegular: " 정보",
-      link: "/table/station?role=store"
+      link: "/table/station?role=storeOwner"
     },
     {
       titleBold: "신청서",
       titleRegular: "상태",
-      link: "/table/application?role=store"
+      link: "/table/application?role=storeOwner"
     }
   ];
   return (

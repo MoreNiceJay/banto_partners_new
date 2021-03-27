@@ -26,18 +26,18 @@ function SalesMenu(props) {
     {
       titleBold: "수익",
       titleRegular: "확인",
-      link: "/table/earning?role=sales"
+      link: "/table/earning?role=salesManager"
     },
 
     {
       titleBold: "스테이션",
       titleRegular: " 정보",
-      link: "/table/station?role=sales"
+      link: "/table/station?role=salesManager"
     },
     {
       titleBold: "신청서",
       titleRegular: "상태",
-      link: "/table/application?role=sales"
+      link: "/table/application?role=salesManager"
     }
   ];
   return (
