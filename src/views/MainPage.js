@@ -164,101 +164,151 @@ function MainPage(props) {
         unmountOnExit
       >
         <div> */}
+      <div style={{ height: "100vh", width: "100%", backgroundColor: "white" }}>
+        <header>
+          <div className={classes.emptySpace}></div>
+        </header>
+        <main>
+          <LogoHeader />
+          <section className={classes.section}>
+            <p
+              className={classes.descriptionSpan}
+              style={{ marginLeft: "30px", marginBottom: "10px" }}
+            >
+              {/* 이벤트 */}
+            </p>
 
-      <header>
-        <div className={classes.emptySpace}></div>
-      </header>
-      <main>
-        <LogoHeader />
-        <section className={classes.section}>
-          <p
-            className={classes.descriptionSpan}
-            style={{ marginLeft: "30px", marginBottom: "10px" }}
-          >
-            {/* 이벤트 */}
-          </p>
-
-          {/* <div className={classes.root}> */}
-          <AutoPlaySwipeableViews
-            axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-            index={activeStep}
-            onChangeIndex={handleStepChange}
-            enableMouseEvents
-          >
-            {tutorialSteps.map((step, index) => (
-              <div key={step.label}>
-                {Math.abs(activeStep - index) <= 2 ? (
-                  <img
-                    className={classes.img}
-                    src={step.imgPath}
-                    alt={step.label}
-                    style={{ width: "90%" }}
-                  />
-                ) : null}
-              </div>
-            ))}
-          </AutoPlaySwipeableViews>
-          <div
-            id="hello"
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              alignText: "center"
-            }}
-          >
-            <MobileStepper
+            {/* <div className={classes.root}> */}
+            <AutoPlaySwipeableViews
+              axis={theme.direction === "rtl" ? "x-reverse" : "x"}
+              index={activeStep}
+              onChangeIndex={handleStepChange}
+              enableMouseEvents
+            >
+              {tutorialSteps.map((step, index) => (
+                <div key={step.label}>
+                  {Math.abs(activeStep - index) <= 2 ? (
+                    <img
+                      className={classes.img}
+                      src={step.imgPath}
+                      alt={step.label}
+                      style={{ width: "90%" }}
+                    />
+                  ) : null}
+                </div>
+              ))}
+            </AutoPlaySwipeableViews>
+            <div
+              id="hello"
               style={{
-                background: "none",
-                width: "100%",
-                padding: "0px",
-                margin: "0 auto",
-                marginTop: "10px"
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                alignText: "center"
               }}
-              variant="dots"
-              steps={6}
-              position="static"
-              activeStep={activeStep}
-              className={classes.root}
-              nextButton={
-                <Button
-                  size="small"
-                  onClick={handleNext}
-                  disabled={activeStep === 5}
-                >
-                  {/* Next */}
-                  {/* {theme.direction === "rtl" ? (
+            >
+              <MobileStepper
+                style={{
+                  background: "none",
+                  width: "100%",
+                  padding: "0px",
+                  margin: "0 auto",
+                  marginTop: "10px"
+                }}
+                variant="dots"
+                steps={6}
+                position="static"
+                activeStep={activeStep}
+                className={classes.root}
+                nextButton={
+                  <Button
+                    size="small"
+                    onClick={handleNext}
+                    disabled={activeStep === 5}
+                  >
+                    {/* Next */}
+                    {/* {theme.direction === "rtl" ? (
                         <KeyboardArrowLeft />
                       ) : (
                         <KeyboardArrowRight />
                       )} */}
-                </Button>
-              }
-              backButton={
-                <Button
-                  size="small"
-                  onClick={handleBack}
-                  disabled={activeStep === 0}
-                >
-                  {/* {theme.direction === "rtl" ? (
+                  </Button>
+                }
+                backButton={
+                  <Button
+                    size="small"
+                    onClick={handleBack}
+                    disabled={activeStep === 0}
+                  >
+                    {/* {theme.direction === "rtl" ? (
                         <KeyboardArrowRight />
                       ) : (
                         <KeyboardArrowLeft />
                       )} */}
-                  {/* Back */}
-                </Button>
-              }
-            />
-            {/* </div> */}
-          </div>
-        </section>
-        <section className={classes.section}>
-          <Link to="/battery-service-roll" style={{ color: "black" }}>
-            <h1 className={classes.titleLink} style={{ marginLeft: "24px" }}>
-              보조배터리 대여서비스
-            </h1>
-          </Link>
-          {/* {auth.user && (
+                    {/* Back */}
+                  </Button>
+                }
+              />
+              {/* </div> */}
+            </div>
+          </section>
+          <section className={classes.section}>
+            <div
+              style={{
+                border: "1px solid white",
+                borderRadius: "16px",
+                marginLeft: "16px",
+                marginRight: "18px",
+                height: "84px",
+                backgroundColor: "white"
+                // boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)"
+                // backgroundColor: "#eeeeee",
+              }}
+            >
+              <Link
+                to="/battery-service-roll"
+                style={{
+                  color: "black",
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center"
+                }}
+              >
+                <div>
+                  <h1
+                    className={classes.titleLink}
+                    style={{ marginLeft: "24px" }}
+                  >
+                    보조배터리 대여서비스
+                  </h1>
+                  <p
+                    style={{
+                      marginLeft: "24px",
+                      paddingTop: "12px",
+                      color: "#c4c4c4"
+                    }}
+                  >
+                    반토스테이션을 설치해 수익창출
+                  </p>
+                </div>
+                <div>
+                  <img
+                    src={require("../assets/img/go.png")}
+                    style={{
+                      width: "32px",
+                      height: "32px",
+                      marginLeft: "auto",
+                      marginRight: "24px"
+                    }}
+                    alt="goButton"
+                  />
+                </div>
+              </Link>
+            </div>
+            {/* {auth.user && (
             <Link
               onClick={() => {
                 auth.signOut();
@@ -268,11 +318,12 @@ function MainPage(props) {
               로그아웃
             </Link>
           )} */}
-        </section>
-      </main>
-      <footer></footer>
-      {/* </div>
+          </section>
+        </main>
+        <footer></footer>
+        {/* </div>
       </Slide> */}
+      </div>
     </>
   );
 }
