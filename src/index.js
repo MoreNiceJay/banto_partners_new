@@ -72,6 +72,8 @@ import CustomerCenter from "./views/myPage/settings/CustomerCenter.js";
 import Notice from "./views/myPage/settings/Notice.js";
 import Policies from "./views/myPage/settings/Policies.js";
 import PhoneAuth from "./views/myPage/settings/PhoneAuth.js";
+import InfoEdit from "./views/myPage/infoEdit/InfoEdit";
+
 const rootElement = document.getElementById("root");
 
 ReactDOM.render(
@@ -267,6 +269,8 @@ ReactDOM.render(
                 path="/mypage/userinfo/phoneauth"
                 component={PhoneAuth}
               />
+              {/* infoEdit */}
+              <Route exact path="/mypage/userinfo/edit" component={InfoEdit} />
             </Switch>
           </React.StrictMode>
         </AnimatePresence>

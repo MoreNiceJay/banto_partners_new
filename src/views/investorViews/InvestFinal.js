@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/styles";
 import { withStyles } from "@material-ui/core/styles";
 
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
@@ -18,8 +18,10 @@ import { Link } from "react-router-dom";
 import * as common from "../../common";
 import Slide from "@material-ui/core/Slide";
 import { useGlobal } from "../../globalContext";
+import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
 import * as constant from "../../Const";
+
 const useStyles = makeStyles((theme) => ({
   card: { backgroundColor: "black", margin: "12px 16px", borderRadius: "15px" },
   description: {
@@ -97,8 +99,22 @@ function InvestFinal(props) {
         unmountOnExit
       >
         <div>
+          {!auth.userExtraInfo && (
+            <>
+              <Alert
+                type="info"
+                title="체험하기"
+                description="현재 체험히기를 이용중입니다"
+                actionDescription="로그인"
+                link="/login/login"
+                onClick={() => {
+                  props.history.push("/login/login");
+                }}
+              ></Alert>
+            </>
+          )}
           <header>
-            <NavBar title="투자하기" backLink="/investor/depositor" />
+            <NavBar title="투자하기" backLink="/investor/method" />
           </header>
 
           <main>
@@ -313,6 +329,18 @@ function InvestFinal(props) {
                     backgroundColor: "black"
                   }}
                   onClick={async () => {
+                    if (!auth.userExtraInfo) {
+                      if (
+                        window.confirm(
+                          "로그인이 필요합니다. 지금 로그인 해보세요"
+                        )
+                      ) {
+                        props.history.push("/login/login");
+                        return;
+                      }
+                      return;
+                    }
+
                     await auth.updateApplication(
                       constant.role.buyer,
                       context.getInvestInfo

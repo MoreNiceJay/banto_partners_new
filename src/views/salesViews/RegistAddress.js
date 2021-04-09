@@ -3,11 +3,13 @@ import { makeStyles } from "@material-ui/styles";
 import DaumPostcode from "react-daum-postcode";
 import Button from "@material-ui/core/Button";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import { TextField } from "../../components/TextField.js";
 import MTextField from "@material-ui/core/TextField";
 import { FormButton } from "../../components/FormButton.js";
 import { useGlobal } from "../../globalContext";
+import Alert from "../../components/Alert";
+import { useAuth } from "../../AuthContext";
 import Modal from "@material-ui/core/Modal";
 import moment from "moment";
 const useStyles = makeStyles((theme) => ({
@@ -26,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 function RegistAddress(props) {
   const context = useGlobal();
+  const auth = useAuth();
 
   const classes = useStyles(props);
   const [modalStyle] = React.useState(getModalStyle);
@@ -97,8 +100,22 @@ function RegistAddress(props) {
 
   return (
     <>
+      {!auth.userExtraInfo && (
+        <>
+          <Alert
+            type="info"
+            title="체험하기"
+            description="현재 체험히기를 이용중입니다"
+            actionDescription="로그인"
+            link="/login/login"
+            onClick={() => {
+              props.history.push("/login/login");
+            }}
+          ></Alert>
+        </>
+      )}
       <header>
-        <NavBar title="" backLink="/sales/regist/contact" />
+        <NavBar title="" backLink="/salesmenu" />
         <HeaderInfo
           title={"등록" + "\u00A0" + "\u00A0" + "\u00A0" + "1/3"}
           description="가맹점을 등록합니다"

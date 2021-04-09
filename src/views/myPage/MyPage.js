@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
@@ -18,6 +18,8 @@ import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import { MenuList } from "../../components/MenuList.js";
 import { BlackBackgroundLgButton } from "../../components/BlackBackgroundLgButton.js";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import Divider from "../../components/Divider.js";
 
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
@@ -37,8 +39,7 @@ const useStyles = makeStyles((theme) => ({
   header: {
     backgroundColor: "#E5E5E5",
     width: "100%",
-    height: "30%",
-    borderBottom: "1px solid black",
+
     display: "flex",
     alignItems: "center"
   },
@@ -47,19 +48,33 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignContent: "center",
     justifyContent: "space-around",
-    width: "100%",
-    height: "50%"
+    width: "100%"
   },
   emailContainer: {
     width: "100%",
     alignContent: "center",
     textAlign: "center"
   },
-  emailSpan: { textAlign: "center", width: "100%", alignSelf: "center" },
+  emailSpan: {
+    textAlign: "center",
+    width: "100%",
+    alignSelf: "center",
+    color: "#cbcbcb",
+    marginTop: "8px"
+  },
   useInfoEditButton: {
     alignSelf: "center",
     backgroundColor: "#E0E0E0",
     width: "108px"
+  },
+  myInfoLink: {
+    fontSize: "14px",
+    color: "#6f6f6f",
+    padding: "10px",
+    marginRight: "16px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   }
 }));
 
@@ -77,6 +92,7 @@ function LoginPage(props) {
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
+  console.log(auth.userExtraInfo, "아이디");
   const BlackCheckbox = withStyles({
     root: {
       color: "black",
@@ -89,11 +105,6 @@ function LoginPage(props) {
     }
   })((props) => <Checkbox color="default" {...props} />);
   const data = [
-    {
-      titleBold: "정산 계좌정보",
-      titleRegular: "",
-      link: "/mypage/deposit"
-    },
     {
       titleBold: "알림",
       titleRegular: "",
@@ -109,22 +120,113 @@ function LoginPage(props) {
     props.history.push("/main");
     return;
   }
-  const MyPageHeader = () => (
-    <div className={classes.headerContainer}>
-      <div className={classes.emailContainer}>
-        <span className={classes.emailSpan}>
-          {auth.user.email && auth.user.email}
+  const LogoHeader = () => (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "rows",
+        justifyContent: "space-between",
+        alignItems: "center",
+        backgroundColor: "white"
+      }}
+    >
+      <img
+        src={require("../../assets/img/splash.png")}
+        style={{ width: "167px", height: "auto", marginLeft: "24px" }}
+        alt="logo"
+      />
+
+      <Link to="#">
+        <span className={classes.myInfoLink}>
+          {!!auth.user ? (
+            <Link
+              // to="/mypage"
+              onClick={() => {
+                if (window.confirm("로그아웃 하시겠습니까")) {
+                  auth.signOut();
+                }
+                props.history.push("/main");
+              }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#838383"
+              }}
+            >
+              로그아웃
+              <ChevronRightIcon />
+            </Link>
+          ) : (
+            <Link to="/login/login">
+              로그인
+              <ChevronRightIcon />
+            </Link>
+          )}
         </span>
-      </div>
-      <Button
-        className={classes.useInfoEditButton}
-        onClick={() => {
-          props.history.push("/mypage/userinfo");
+      </Link>
+    </div>
+  );
+  const MyPageHeader = () => (
+    <>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "rows",
+          justifyContent: "space-between",
+          width: "100%",
+          alignItems: "center",
+          backgroundColor: "white",
+          height: "120px"
         }}
       >
-        회원 정보 수정
-      </Button>
-    </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-around",
+            marginLeft: "24px"
+          }}
+        >
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              fontSize: "26px",
+              fontWeight: "bold",
+              marginTop: "4px"
+            }}
+          >
+            {" "}
+            <span
+              style={{ fontSize: "24px", fontWeight: "bold", marginTop: "4px" }}
+            >
+              ID:
+            </span>
+            {auth.userExtraInfo ? auth.userExtraInfo.id : "로그인이 필요합니다"}
+          </span>
+          <span className={classes.emailSpan}>
+            {auth.user ? auth.user.email : "로그인이 필요합니다"}
+          </span>
+        </div>
+        <Link
+          style={{
+            fontSize: "14px",
+            marginRight: "24px",
+            color: "#838383",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: "light"
+          }}
+          onClick={() => {
+            props.history.push("/mypage/userinfo");
+          }}
+        >
+          회원정보 수정 <ChevronRightIcon />
+        </Link>
+      </div>
+    </>
   );
 
   return (
@@ -137,27 +239,21 @@ function LoginPage(props) {
         unmountOnExit
       >
         <div className={classes.container}>
+          <LogoHeader />
+          <Divider />
+
           <header className={classes.header}>
             <MyPageHeader></MyPageHeader>
           </header>
+          <Divider />
 
           <main>
             <section className={classes.section}>
-              <MenuList style={{ paddingTop: "140px" }} menuList={data} />
+              <MenuList
+                style={{ paddingTop: "40px", backgroundColor: "white" }}
+                menuList={data}
+              />
             </section>
-            <BlackBackgroundLgButton
-              title="로그아웃"
-              onClick={async () => {
-                if (window.confirm("로그아웃 하시겠습니까")) {
-                  const result = await auth.signOut();
-                  if (result.code !== 200) {
-                    alert(result.msg);
-                    return;
-                  }
-                  props.history.push("/main");
-                }
-              }}
-            ></BlackBackgroundLgButton>
           </main>
           <footer></footer>
         </div>

@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Slide from "@material-ui/core/Slide";
 import { useGlobal } from "../../globalContext";
+import Alert from "../../components/Alert";
+import { useAuth } from "../../AuthContext";
 
 const useStyles = makeStyles((theme) => ({
   amount: {
@@ -48,6 +50,8 @@ function InvestStart(props) {
   const context = useGlobal();
   const [totalPrice, setTotalPrice] = React.useState(0);
   const [buttonDisabled, setButtonDisabled] = React.useState(true);
+  const auth = useAuth();
+
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
@@ -62,6 +66,20 @@ function InvestStart(props) {
         unmountOnExit
       >
         <div>
+          {!auth.userExtraInfo && (
+            <>
+              <Alert
+                type="info"
+                title="체험하기"
+                description="현재 체험히기를 이용중입니다"
+                actionDescription="로그인"
+                link="/login/login"
+                onClick={() => {
+                  props.history.push("/login/login");
+                }}
+              ></Alert>
+            </>
+          )}
           <header>
             <NavBar title="투자하기" backLink="/investormenu" />
           </header>

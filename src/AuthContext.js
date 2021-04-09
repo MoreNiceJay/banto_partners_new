@@ -91,7 +91,7 @@ export const AuthProvider = ({ children }) => {
       if (userInfo.data === null) {
         setUserExtraInfo(null);
       } else {
-        setUserExtraInfo(userInfo.data.data);
+        setUserExtraInfo(userInfo.data);
       }
       // const userStations = await fetchStations(user.email);
       // if (userStations.code !== 200) {
@@ -142,11 +142,23 @@ export const AuthProvider = ({ children }) => {
       return { code: 400, message: "로그인이 필요합니다" };
     }
 
-    var postData = {
-      data
-    };
     try {
-      await userRef.doc(user.email).set(postData);
+      await userRef.doc(user.email).update(data);
+    } catch (e) {
+      alert(e);
+      return { code: 400, msg: "시스템 에러, 다시시도해 주세요" };
+    }
+    return { code: 200 };
+  };
+  //디비 관련 함수 끝
+  const setExtraProfiles = async (data) => {
+    let user = firebase.auth().currentUser;
+    if (!user) {
+      return { code: 400, message: "로그인이 필요합니다" };
+    }
+
+    try {
+      await userRef.doc(user.email).set(data);
     } catch (e) {
       alert(e);
       return { code: 400, msg: "시스템 에러, 다시시도해 주세요" };
@@ -379,6 +391,7 @@ export const AuthProvider = ({ children }) => {
         // setUserExtraInfo,
         updateExtraProfiles,
         updateApplication,
+        setExtraProfiles,
         // 디비 업데이트 함수
         createStoreApplication,
         userStations,

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { HeaderInfo } from "../components/HeaderInfo.js";
-import { NavBar } from "../components/NavBar.js";
+import NavBar from "../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../globalContext";
@@ -23,7 +23,8 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import queryString from "query-string";
 import * as common from "../../src/common";
-
+import Alert from "../components/Alert.js";
+import * as constant from "../Const";
 const firebase = require("firebase");
 var db = firebase.firestore();
 const useStyles = makeStyles((theme) => ({
@@ -140,15 +141,17 @@ function LoginPage({ props, location }) {
     return;
   };
   const fetchData = async () => {
-    console.log(auth.userExtraInfo.id, query.role, calender);
-    Axios.post("https://partners.mulli.world/users/earningData", {
-      userId: auth.userExtraInfo.id,
+    Axios.post(constant.urls.domain + "/users/earningData", {
+      userId:
+        auth.userExtraInfo && auth.userExtraInfo.id
+          ? auth.userExtraInfo.id
+          : constant.exampleUserId,
       role: query.role,
       yearMonth: calender,
       cursor: apiData.cursor
     }).then((a) => {
       console.log("a", a.data);
-      if (a.data.code !== 200) {
+      if (a.data.code !== 200 && a.data.code !== 220) {
         alert(a.data.msg);
         return;
       }
@@ -164,8 +167,11 @@ function LoginPage({ props, location }) {
   };
 
   const fetchRevenue = async () => {
-    Axios.post("https://partners.mulli.world/users/monthlyRevenue", {
-      userId: auth.userExtraInfo.id,
+    Axios.post(constant.urls.domain + "/users/monthlyRevenue", {
+      userId:
+        auth.userExtraInfo && auth.userExtraInfo.id
+          ? auth.userExtraInfo.id
+          : "a1111",
       role: query.role,
       yearMonth: calender
     }).then((a) => {
@@ -183,6 +189,20 @@ function LoginPage({ props, location }) {
 
   return (
     <>
+      {!auth.userExtraInfo && (
+        <>
+          <Alert
+            type="info"
+            title="체험하기"
+            description="현재 체험히기를 이용중입니다"
+            actionDescription="로그인"
+            link="/login/login"
+            onClick={() => {
+              props.history.push("/login/login");
+            }}
+          ></Alert>
+        </>
+      )}
       <div style={{ height: "100%" }}>
         <header
           style={{
@@ -234,7 +254,6 @@ function LoginPage({ props, location }) {
               <p
                 style={{
                   color: "#E5E5E5",
-                  fontFamily: "Montserrat",
                   fontStyle: "normal",
                   fontWeight: "800",
                   fontSize: "28px",
@@ -248,9 +267,9 @@ function LoginPage({ props, location }) {
               <div
                 style={{
                   display: "flex",
-                  alignItems: "self-end",
+                  alignItems: "center",
                   width: "100%",
-                  backgroundColor: "blue"
+                  justifyContent: "flex-end"
                 }}
               >
                 <Button
@@ -260,6 +279,10 @@ function LoginPage({ props, location }) {
                     alignSelf: "flex-end"
                   }}
                   onClick={async () => {
+                    if (!auth.userExtraInfo) {
+                      alert(`"체험하기"에서는 사용할 수 없습니다`);
+                      return;
+                    }
                     const result = await common.mailEarningData(
                       auth.userExtraInfo.email,
                       auth.userExtraInfo.id,
@@ -327,6 +350,27 @@ function LoginPage({ props, location }) {
           <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="simple table">
               <TableBody>
+                {!apiData.data.length && (
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "100px",
+                      textAlign: "center",
+                      alignSelf: "center",
+                      display: "flex"
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: "100%",
+                        textAlign: "center",
+                        alignSelf: "center"
+                      }}
+                    >
+                      데이터가 없습니다
+                    </span>
+                  </div>
+                )}
                 {apiData.data &&
                   // apiData.data.userId &&
                   apiData.data.map((i, index) => {
@@ -335,7 +379,7 @@ function LoginPage({ props, location }) {
                         <TableCell
                           style={{
                             fontSize: "14px",
-                            fontWeight: "bold",
+                            fontWeight: "400",
                             verticalAlign: "top"
                           }}
                           component="th"
@@ -350,18 +394,18 @@ function LoginPage({ props, location }) {
                         >
                           <p
                             style={{
-                              fontWeight: "bold",
-                              fontSize: "16px",
-                              color: "#00838F"
+                              fontWeight: "400",
+                              fontSize: "16px"
+                              // color: "#00838F"
                             }}
                           >
                             {i.storeName}
                           </p>
                           <p
                             style={{
-                              fontWeight: "bold",
-                              fontSize: "16px",
-                              color: "#00838F"
+                              fontWeight: "400",
+                              fontSize: "16px"
+                              // color: "#00838F"
                             }}
                           >
                             ({i.rentalStationId})
@@ -392,7 +436,6 @@ function LoginPage({ props, location }) {
                           </p>
                           <p
                             style={{
-                              fontFamily: "Montserrat",
                               fontStyle: "normal",
                               fontWeight: "800",
                               fontSize: "26px",

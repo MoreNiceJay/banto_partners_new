@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
+import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
@@ -365,8 +366,22 @@ function LoginPage(props) {
         unmountOnExit
       >
         <div>
+          {!auth.userExtraInfo && (
+            <>
+              <Alert
+                type="info"
+                title="체험하기"
+                description="현재 체험히기를 이용중입니다"
+                actionDescription="로그인"
+                link="/login/login"
+                onClick={() => {
+                  props.history.push("/login/login");
+                }}
+              ></Alert>
+            </>
+          )}
           <header>
-            <NavBar title="추가정보 입력" backLink="/investor/invest" />
+            <NavBar title="추가정보 입력" backLink="/investor/depositor" />
           </header>
 
           <main>
@@ -509,8 +524,13 @@ function LoginPage(props) {
                       context.setInvest_salesPortion(0);
                     }
                     console.log(context.getInvestInfo);
-                    context.setInvest_buyer(auth.userExtraInfo.id);
-                    context.setInvest_buyerPortion(70);
+                    if (auth.userExtraInfo) {
+                      context.setInvest_buyer(auth.userExtraInfo.id);
+                      context.setInvest_buyerPortion(70);
+                    } else {
+                      context.setInvest_buyer("example114");
+                      context.setInvest_buyerPortion(70);
+                    }
                     props.history.push("/investor/final");
                   }}
                   style={{

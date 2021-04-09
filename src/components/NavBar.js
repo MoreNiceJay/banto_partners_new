@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/styles";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
+
 const useStyles = makeStyles((theme) => ({
   backButton: {
     padding: "12px 10px 12px 20.75px"
@@ -16,14 +17,18 @@ const useStyles = makeStyles((theme) => ({
   },
   headerTitle: { fontSize: "18px", marginLeft: "-44px", fontWeight: "bold" }
 }));
-export const NavBar = (props) => {
+const NavBar = (props) => {
   const classes = useStyles(props);
   return (
     <>
       <div className={classes.emptySpace} />
       <div className={classes.headerSpace}>
         <Link
-          onClick={() => window.history.back()}
+          onClick={() => {
+            console.log("요기야");
+            props.history.push(props.backLink);
+            return;
+          }}
           className={classes.backButton}
         >
           <img
@@ -38,3 +43,5 @@ export const NavBar = (props) => {
     </>
   );
 };
+
+export default withRouter(NavBar);

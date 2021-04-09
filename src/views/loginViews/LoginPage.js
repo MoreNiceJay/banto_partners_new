@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
@@ -48,11 +48,7 @@ function LoginPage(props) {
       >
         <div style={{ backgroundColor: "#EEEEEE", height: "100vh" }}>
           <header>
-            <div className={classes.emptySpace} />
-            <div className={classes.headerSpace}>
-              <span className={classes.headerTitle}>로그인</span>
-              <span />
-            </div>
+            <NavBar title="로그인" backLink="/main" />
           </header>
 
           <main style={{ backgroundColor: "#EEEEEE" }}>
@@ -201,7 +197,12 @@ function LoginPage(props) {
                         email,
                         password
                       );
-                      console.log(result, "result");
+
+                      if (result.code !== 200) {
+                        setLoding(false);
+                        alert(result.msg);
+                        return;
+                      }
                       setLoding(false);
                       props.history.push("/main");
                     } catch (error) {
@@ -221,7 +222,8 @@ function LoginPage(props) {
                     fontFamily: "Noto Sans CJK KR",
                     fontStyle: "normal",
                     fontWeight: "500",
-                    fontSize: "18px"
+                    fontSize: "18px",
+                    backgroundColor: "white"
                   }}
                 >
                   로그인

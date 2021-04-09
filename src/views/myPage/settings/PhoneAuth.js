@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { NavBar } from "../../../components/NavBar.js";
+import NavBar from "../../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../../globalContext";
@@ -105,7 +105,7 @@ function LoginPage(props) {
             </Alert>
           </Snackbar>
           <header>
-            <NavBar title="휴대전화 번호 인증" backLink="/login/login" />
+            <NavBar title="휴대전화 번호 인증" backLink="/mypage/userinfo" />
           </header>
 
           <main>

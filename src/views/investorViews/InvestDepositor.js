@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
+import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
@@ -72,9 +73,11 @@ function LoginPage(props) {
     context.setInvest_bank(event.target.value);
   };
   React.useEffect(() => {
-    context.setInvest_bank(auth.userExtraInfo.bank);
-    context.setInvest_bankAccount(auth.userExtraInfo.accountNumber);
-    context.setInvest_depositor(auth.userExtraInfo.depositor);
+    if (auth.userExtraInfo) {
+      context.setInvest_bank(auth.userExtraInfo.bank);
+      context.setInvest_bankAccount(auth.userExtraInfo.accountNumber);
+      context.setInvest_depositor(auth.userExtraInfo.depositor);
+    }
   }, []);
   const textFieldsBody = (
     <>
@@ -287,6 +290,20 @@ function LoginPage(props) {
         unmountOnExit
       >
         <div>
+          {!auth.userExtraInfo && (
+            <>
+              <Alert
+                type="info"
+                title="체험하기"
+                description="현재 체험히기를 이용중입니다"
+                actionDescription="로그인"
+                link="/login/login"
+                onClick={() => {
+                  props.history.push("/login/login");
+                }}
+              ></Alert>
+            </>
+          )}
           <header>
             <NavBar title="추가정보 입력" backLink="/investor/invest" />
           </header>
@@ -321,7 +338,7 @@ function LoginPage(props) {
                       textDecoration: "underline"
                     }}
                   >
-                    {auth.userExtraInfo.name && auth.userExtraInfo.name}
+                    {auth.userExtraInfo ? auth.userExtraInfo.name : "홍길동"}
                   </span>
                   입니다
                 </p>
@@ -339,7 +356,7 @@ function LoginPage(props) {
                       textDecoration: "underline"
                     }}
                   >
-                    {auth.userExtraInfo.bank && auth.userExtraInfo.bank}
+                    {auth.userExtraInfo ? auth.userExtraInfo.bank : "반토은행"}
                   </span>
                   입니다
                 </p>
@@ -357,8 +374,9 @@ function LoginPage(props) {
                       textDecoration: "underline"
                     }}
                   >
-                    {auth.userExtraInfo.accountNumber &&
-                      auth.userExtraInfo.accountNumber}
+                    {auth.userExtraInfo
+                      ? auth.userExtraInfo.accountNumber
+                      : "12312312345"}
                   </span>
                   입니다
                 </p>
@@ -426,13 +444,20 @@ function LoginPage(props) {
                   variant="outlined"
                   onClick={() => {
                     if (value === "yes") {
+                      if (!auth.userExtraInfo) {
+                        context.setInvest_bank("반토은행");
+                        context.setInvest_bankAccount("12312312345");
+                        context.setInvest_depositor("홍길동");
+                        props.history.push("/investor/method");
+
+                        return;
+                      }
                       context.setInvest_bank(auth.userExtraInfo.bank);
                       context.setInvest_bankAccount(
                         auth.userExtraInfo.accountNumber
                       );
                       context.setInvest_depositor(auth.userExtraInfo.name);
                     }
-                    console.log(context.getInvestInfo);
 
                     props.history.push("/investor/method");
                   }}

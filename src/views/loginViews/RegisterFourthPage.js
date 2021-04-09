@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
@@ -55,40 +55,39 @@ function LoginPage(props) {
   //     }
   //   }
   // });
-  React.useEffect(() => {
-    var actionCodeSettings = {
-      url: "https://75qiy.csb.app",
-      // iOS: {
-      //   bundleId: "com.example.ios"
-      // },
-      // android: {
-      //   packageName: "com.example.android",
-      //   installApp: false,
-      //   minimumVersion: "12"
-      // },
-      handleCodeInApp: true
-    };
-    console.log(firebase.auth().currentUser, "유저링");
-    if (!firebase.auth().currentUser) {
-      alert("아닛");
-      return;
-    }
-    firebase
-      .auth()
-      .currentUser.sendEmailVerification(actionCodeSettings)
-      .then(function () {
-        // Verification email sent.
-        return;
-      })
-      .catch(function (error) {
-        // Error occurred. Inspect error.code.
-        alert(error.message);
-        console.log(error.code);
-        console.log(error.message);
-        return;
-      }),
-      [];
-  });
+  // React.useEffect(() => {
+  //   var actionCodeSettings = {
+  //     url: "https://75qiy.csb.app",
+  //     // iOS: {
+  //     //   bundleId: "com.example.ios"
+  //     // },
+  //     // android: {
+  //     //   packageName: "com.example.android",
+  //     //   installApp: false,
+  //     //   minimumVersion: "12"
+  //     // },
+  //     handleCodeInApp: true
+  //   };
+  //   if (!firebase.auth().currentUser) {
+  //     alert("아닛");
+  //     return;
+  //   }
+  //   firebase
+  //     .auth()
+  //     .currentUser.sendEmailVerification(actionCodeSettings)
+  //     .then(function () {
+  //       // Verification email sent.
+  //       return;
+  //     })
+  //     .catch(function (error) {
+  //       // Error occurred. Inspect error.code.
+  //       alert(error.message);
+  //       console.log(error.code);
+  //       console.log(error.message);
+  //       return;
+  //     }),
+  //     [];
+  // });
   return (
     <>
       <Slide

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
@@ -236,6 +236,17 @@ function LoginPage(props) {
                   variant="outlined"
                   onClick={async () => {
                     try {
+                      //여기 인자 오브젝트로
+                      const data = {
+                        name,
+                        birthdate,
+                        bank,
+                        accountNumber,
+                        accountHolder,
+                        bBusinessLicense,
+                        businessLicenseImg,
+                        bProfitable: true
+                      };
                       const result = await auth.updateExtraProfiles(
                         name,
                         birthdate,
@@ -243,7 +254,8 @@ function LoginPage(props) {
                         accountNumber,
                         accountHolder,
                         bBusinessLicense,
-                        businessLicenseImg
+                        businessLicenseImg,
+                        true
                       );
 
                       console.log(result);

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { HeaderInfo } from "../../components/HeaderInfo.js";
-import NavBar from "../../components/NavBar.js";
+import { HeaderInfo } from "../../../components/HeaderInfo.js";
+import NavBar from "../../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
-import { useGlobal } from "../../globalContext";
+import { useGlobal } from "../../../globalContext";
+import { useAuth } from "../../../AuthContext";
+
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Slide from "@material-ui/core/Slide";
@@ -51,8 +53,21 @@ function LoginPage(props) {
   const context = useGlobal();
   const handleChange = (event) => {
     setAge(event.target.value);
-    context.setRegister_bank(event.target.value);
+    setBank(event.target.value);
   };
+
+  const auth = useAuth();
+  const [dateBirth, setDateBirth] = React.useState("");
+  const [bank, setBank] = React.useState("");
+  const [accountNumber, setAccountNumber] = React.useState("");
+  const [accountHolder, setAccountHolder] = React.useState("");
+  React.useEffect(() => {
+    setDateBirth(auth.userExtraInfo && auth.userExtraInfo.birthdate);
+    setBank(auth.userExtraInfo && auth.userExtraInfo.bank);
+    setAccountNumber(auth.userExtraInfo && auth.userExtraInfo.accountNumber);
+    setAccountHolder(auth.userExtraInfo && auth.userExtraInfo.accountHolder);
+  }, []);
+  console.log(bank);
 
   return (
     <>
@@ -73,19 +88,6 @@ function LoginPage(props) {
               <div className={classes.amount}>
                 <p
                   style={{
-                    fontFamily: "Montserrat",
-                    fontStyle: "normal",
-                    fontWeight: "500",
-                    fontSize: "14px",
-                    opacity: "0.8",
-                    letterSpacing: "5px",
-                    margin: "16px 0 0 24px"
-                  }}
-                >
-                  2/4
-                </p>
-                <p
-                  style={{
                     fontStyle: "normal",
                     fontWeight: "500",
                     fontSize: "16px",
@@ -103,30 +105,11 @@ function LoginPage(props) {
                       width: "calc(100% - 64px)"
                     }}
                   >
-                    {!!age ? (
-                      <span></span>
-                    ) : (
-                      <InputLabel
-                        shrink={false}
-                        style={{
-                          paddingLeft: "0px",
-                          fontSize: "26px",
-                          fontFamily: "Montserrat",
-                          fontWeight: "bold",
-                          color: "black",
-                          opacity: "0.4",
-                          boxSizing: "border-box"
-                        }}
-                        id="demo-simple-select-label"
-                      >
-                        Bank
-                      </InputLabel>
-                    )}
                     <Select
                       className={classes.select}
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={age}
+                      value={bank}
                       style={{
                         fontSize: "26px",
                         fontFamily: "Montserrat",
@@ -227,9 +210,9 @@ function LoginPage(props) {
                   className={classes.textField}
                   placeholder="Account Number"
                   // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                  value={context.getRegisterInfo.accountNumber}
+                  value={accountNumber}
                   onChange={(e) => {
-                    context.setRegister_accountNumber(e.target.value);
+                    setAccountNumber(e.target.value);
                   }}
                   style={{
                     margin: "0 24px",
@@ -277,9 +260,59 @@ function LoginPage(props) {
                   className={classes.textField}
                   placeholder="Account Holder"
                   // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                  value={context.getRegisterInfo.accountHolder}
+                  value={accountHolder}
                   onChange={(e) => {
-                    context.setRegister_accountHolder(e.target.value);
+                    setAccountHolder(e.target.value);
+                  }}
+                  style={{
+                    margin: "0 24px",
+                    marginTop: "12px",
+                    width: "calc(100% - 64px)"
+                  }}
+                  InputLabelProps={{
+                    style: {}
+                  }}
+                  inputProps={{
+                    style: {
+                      paddingLeft: "0px",
+                      fontSize: "26px",
+                      fontFamily: "Montserrat",
+                      fontWeight: "bold",
+
+                      boxSizing: "border-box",
+                      marginTop: "10px"
+                    }
+                  }}
+                  // FormHelperTextProps={{
+                  //   style: {
+                  //     marginTop: "12px",
+                  //     fontSize: "14px"
+                  //   }
+                  // }}
+                />
+              </div>
+              <div className={classes.amount} style={{ marginTop: "60px" }}>
+                <p
+                  style={{
+                    fontStyle: "normal",
+                    fontWeight: "500",
+                    fontSize: "16px",
+                    margin: "16px 0 0 24px"
+                  }}
+                >
+                  생년월일
+                </p>
+
+                <TextField
+                  variant="outlined"
+                  id="standard-full-width"
+                  // label="Phone Number"
+                  className={classes.textField}
+                  placeholder="890327"
+                  // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
+                  value={dateBirth}
+                  onChange={(e) => {
+                    setDateBirth(e.target.value);
                   }}
                   style={{
                     margin: "0 24px",
@@ -319,14 +352,15 @@ function LoginPage(props) {
                   variant="outlined"
                   onClick={() => {
                     if (
-                      !context.getRegisterInfo.bank &&
-                      !context.getRegisterInfo.accountNumber &&
-                      !context.getRegisterInfo.accountHolder
+                      !accountNumber &&
+                      !dateBirth &&
+                      !accountHolder &&
+                      !bank
                     ) {
                       alert("빈칸없이 입력해 주세요");
                       return;
                     }
-                    if (context.getRegisterInfo.accountNumber.length < 6) {
+                    if (accountNumber.length < 6) {
                       alert("올바른 계좌번호를 입력해 주세요");
                       return;
                     }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { HeaderInfo } from "../components/HeaderInfo.js";
-import { NavBar } from "../components/NavBar.js";
+import NavBar from "../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../globalContext";
@@ -19,6 +19,9 @@ import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import * as common from "../common";
 import qs from "qs";
 import firebase from "../firebaseConfig";
+import Alert from "../components/Alert.js";
+import * as constant from "../Const";
+
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
   headerSpace: {
@@ -37,20 +40,33 @@ const useStyles = makeStyles((theme) => ({
 
 function LoginPage(props) {
   const auth = useAuth();
+  const query = qs.parse(props.location.search, {
+    ignoreQueryPrefix: true // /about?details=true 같은 쿼리 주소의 '?'를 생략해주는 옵션입니다.
+  });
   const [apiData, setApiData] = React.useState(null);
   const [id, setId] = React.useState(null);
+  const applicationId = query.applicationId;
+  const role = query.role;
+  const doc =
+    role === "buyer"
+      ? constant.dbCollection.buyerApplication
+      : role === "salesManager"
+      ? constant.dbCollection.salesApplication
+      : query.role === "storeOwner"
+      ? constant.dbCollection.storeApplication
+      : null;
   React.useEffect(() => {
     (async () => {
-      const query = qs.parse(props.location.search, {
-        ignoreQueryPrefix: true // /about?details=true 같은 쿼리 주소의 '?'를 생략해주는 옵션입니다.
-      });
-      const applicationId = query.applicationId;
+      if (!doc) {
+        alert("오류 : 메인으로 이동 합니다");
+        props.history.push("/main");
+        return;
+      }
+
       setId(applicationId);
       let db = firebase.firestore();
       const applicationRef = db
-        .collection("Users")
-        .doc(auth.user.email)
-        .collection("Applications")
+        .collection(doc)
         .where("applicationId", "==", applicationId);
 
       const querySnapshot = await applicationRef.get();
@@ -117,7 +133,9 @@ function LoginPage(props) {
     },
     {
       title: "영업인 (수익률)",
-      data: `${auth.user.email}(${apiData && apiData.salesPortion}%)`,
+      data: `${
+        auth.userExtraInfo ? auth.userExtraInfo.id : constant.exampleUserId
+      }(${apiData && apiData.salesPortion}%)`,
       link: "/sales/regist/portion"
     },
     {
@@ -147,8 +165,23 @@ function LoginPage(props) {
         unmountOnExit
       >
         <div>
+          {!auth.userExtraInfo && (
+            <>
+              <Alert
+                type="info"
+                title="체험하기"
+                description="현재 체험히기를 이용중입니다"
+                actionDescription="로그인"
+                link="/login/login"
+              ></Alert>
+            </>
+          )}
           <header>
-            <NavBar title="스테이션 정보" backLink="application?role=sales" />
+            <NavBar
+              title="스테이션 정보"
+              backLink={`/table/application?role=storeOwner`}
+              search=" "
+            />
           </header>
 
           <main>

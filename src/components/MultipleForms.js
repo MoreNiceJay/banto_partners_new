@@ -101,12 +101,25 @@ export const MultipleForms = (props) => {
                     <TextField
                       className={classes.infoTextField}
                       id="standard-basic"
-                      variant="outlined"
+                      // variant="outlined"
                       disabled={value.disabled}
                       value={value.contentText}
+                      onChange={(e) => {
+                        console.log(e);
+
+                        // console.log(value.onchange());
+                        // value.onchange(e);
+                      }}
                     />
                     {value.bButton ? (
-                      <Button style={{ color: "blue" }}>수정</Button>
+                      <Button
+                        style={{ color: "#0055b8" }}
+                        onClick={() => {
+                          value.onclick();
+                        }}
+                      >
+                        수정
+                      </Button>
                     ) : (
                       <></>
                     )}

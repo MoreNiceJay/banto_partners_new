@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { HeaderInfo } from "../components/HeaderInfo.js";
-import { NavBar } from "../components/NavBar.js";
+import NavBar from "../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../globalContext";
@@ -23,6 +23,8 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import qs from "qs";
 import queryString from "query-string";
+import Alert from "../components/Alert.js";
+import * as constant from "../Const";
 
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
@@ -76,9 +78,15 @@ function LoginPage(props) {
   console.log("어스", auth.user);
 
   React.useEffect(() => {
+    if (!query.role) {
+      // alert("오류 : 메인으로 돌아갑니다");
+      return;
+    }
     const fetchApplicationDataAsync = async () => {
       const result = await context.fetchApplications(
-        auth.userExtraInfo.id,
+        auth.userExtraInfo && auth.userExtraInfo.id
+          ? auth.userExtraInfo.id
+          : constant.exampleUserId,
         query.role
       );
 
@@ -90,7 +98,6 @@ function LoginPage(props) {
         alert("No applications");
         return;
       }
-      console.log("1", result.data);
       let dataAdded = result.data && result.data;
 
       setData({
@@ -135,6 +142,17 @@ function LoginPage(props) {
 
   return (
     <>
+      {!auth.userExtraInfo && (
+        <>
+          <Alert
+            type="info"
+            title="체험하기"
+            description="현재 체험히기를 이용중입니다"
+            actionDescription="로그인"
+            link="/login/login"
+          ></Alert>
+        </>
+      )}
       <div style={{ height: "100%" }}>
         <header
           style={{
@@ -166,7 +184,7 @@ function LoginPage(props) {
                       style={{ height: "90px" }}
                       onClick={() => {
                         props.history.push(
-                          `/table/applicationdetail?applicationId=${i.applicationId}`
+                          `/table/applicationdetail?applicationId=${i.applicationId}&role=${query.role}`
                         );
                       }}
                     >

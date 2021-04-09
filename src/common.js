@@ -97,7 +97,7 @@ export async function fetchPartnerStations() {
 
     return { code: 200, data: dataArray };
   } catch (e) {
-    console.log("에러", e);
+    console.log("에러1", e);
 
     alert(e);
 
@@ -123,7 +123,7 @@ export async function fetchUserStations(userId) {
 
     return { code: 200, data: dataArray };
   } catch (e) {
-    console.log("에러", e);
+    console.log("에러2", e);
 
     alert(e);
 
@@ -152,7 +152,7 @@ export async function fetchOwnSalesStations(id) {
 
     return { code: 200, data: dataArray };
   } catch (e) {
-    console.log("에러", e);
+    console.log("에러3", e);
     return { code: 400, msg: "시스템에러, 다시시도해 주세요" };
   }
 }
@@ -173,7 +173,7 @@ export async function deleteApplication(applicationId) {
     });
     return { code: 200 };
   } catch (e) {
-    console.log("에러", e);
+    console.log("에러4", e);
     return { code: 400, msg: "시스템에러, 다시시도해 주세요" };
   }
 }
@@ -267,7 +267,7 @@ export async function insertMessageExample() {
     receivedDate: String(new Date()),
     readData: String(new Date()),
     receiver: "jl55359@hanmail.net",
-    role: constant.roles.sales,
+    role: constant.role.sales,
     sender: "jl55359@hanmail.net",
     title: "정보",
     url: "https://naver.com"

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
+import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
@@ -30,6 +31,8 @@ import InputBase from "@material-ui/core/InputBase";
 import PortionTextField from "../../components/PortionTextField.js";
 import InputLabel from "@material-ui/core/InputLabel";
 import * as common from "../../common";
+import * as constant from "../../Const";
+
 var _ = require("lodash");
 
 const useStyles = makeStyles((theme) => ({
@@ -253,7 +256,10 @@ function LoginPage(props) {
   }, []);
   React.useEffect(() => {
     (async () => {
-      const result = await common.fetchOwnSalesStations(auth.userExtraInfo.id);
+      const id = auth.userExtraInfo
+        ? auth.userExtraInfo.id
+        : constant.exampleUserId;
+      const result = await common.fetchOwnSalesStations(id);
       // await common.insertStationExample();
       if (result.code !== 200) {
         alert(result.msg);
@@ -263,7 +269,10 @@ function LoginPage(props) {
     })();
 
     (async () => {
-      const result = await common.fetchUserStations(auth.userExtraInfo.id);
+      const id = auth.userExtraInfo
+        ? auth.userExtraInfo.id
+        : constant.exampleUserId;
+      const result = await common.fetchUserStations(id);
       // await common.insertStationExample();
       if (result.code !== 200) {
         alert(result.msg);
@@ -391,6 +400,20 @@ function LoginPage(props) {
         unmountOnExit
       >
         <div>
+          {!auth.userExtraInfo && (
+            <>
+              <Alert
+                type="info"
+                title="체험하기"
+                description="현재 체험히기를 이용중입니다"
+                actionDescription="로그인"
+                link="/login/login"
+                onClick={() => {
+                  props.history.push("/login/login");
+                }}
+              ></Alert>
+            </>
+          )}
           <header>
             <NavBar title="추가정보 입력" backLink="/store/apply/portion" />
           </header>
@@ -482,12 +505,15 @@ function LoginPage(props) {
                 <Button
                   variant="outlined"
                   onClick={async () => {
+                    const id = auth.userExtraInfo
+                      ? auth.userExtraInfo.id
+                      : constant.exampleUserId;
                     if (bInvestor === "ownSales") {
                       const choosedStation = JSON.parse(ownStation);
                       const salesPortion = choosedStation.data.preSalesManagers.find(
-                        (e) => e.id === auth.userExtraInfo.id
+                        (e) => e.id === id
                       ).portion;
-                      context.setStore_storeOwner(auth.userExtraInfo.id);
+                      context.setStore_storeOwner(id);
                       context.setStore_stationDoc(choosedStation.id);
                       context.setStore_stationId(choosedStation.data.stationId);
                       context.setStore_buyer(choosedStation.data.buyer);
@@ -503,13 +529,13 @@ function LoginPage(props) {
                       context.setStore_buyer("");
                       context.setStore_buyerPortion(0);
                       context.setStore_storePortion(defaultStorePortion);
-                      context.setStore_storeOwner(auth.userExtraInfo.id);
+                      context.setStore_storeOwner(id);
                     } else if (bInvestor === "mine") {
                       const choosedStation = JSON.parse(ownStation);
                       context.setSales_salesPortion(
                         choosedStation.data.buyerPortion
                       );
-                      context.setStore_storeOwner(auth.userExtraInfo.id);
+                      context.setStore_storeOwner(id);
                       context.setStore_stationDoc(choosedStation.id);
                       context.setStore_stationId(choosedStation.data.stationId);
                       context.setStore_buyer(choosedStation.data.buyer);

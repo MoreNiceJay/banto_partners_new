@@ -33,3 +33,5 @@ export const salesMethod = Object.freeze({
 export const urls = Object.freeze({
   domain: "https://partners.mulli.world"
 });
+
+export const exampleUserId = Object.freeze("a1111");

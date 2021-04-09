@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
@@ -11,6 +11,9 @@ import Slide from "@material-ui/core/Slide";
 import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import ProgressText from "../../components/ProgressText.js";
+import Alert from "../../components/Alert";
+import { useAuth } from "../../AuthContext";
+
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
   headerSpace: {
@@ -29,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 function LoginPage(props) {
   const classes = useStyles(props);
+  const auth = useAuth();
 
   return (
     <>
@@ -40,6 +44,20 @@ function LoginPage(props) {
         unmountOnExit
       >
         <div>
+          {!auth.userExtraInfo && (
+            <>
+              <Alert
+                type="info"
+                title="체험하기"
+                description="현재 체험히기를 이용중입니다"
+                actionDescription="로그인"
+                link="/login/login"
+                onClick={() => {
+                  props.history.push("/login/login");
+                }}
+              ></Alert>
+            </>
+          )}
           <header></header>
           <main>
             <section className={classes.section}>

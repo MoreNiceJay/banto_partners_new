@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import Slide from "@material-ui/core/Slide";
 import Modal from "@material-ui/core/Modal";
 
@@ -12,8 +12,11 @@ import InputTitle from "../../components/InputTitle.js";
 import PTextField from "../../components/PTextField.js";
 import SquareButton from "../../components/SquareButton.js";
 import { useGlobal } from "../../globalContext";
+import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
 import * as Yup from "yup";
+import * as constant from "../../Const";
+
 const useStyles = makeStyles((theme) => ({
   contact: { padding: "55px 0 0 25px" },
   contactPerson: { display: "flex", flexDirection: "column" },
@@ -181,8 +184,22 @@ function RegistContact(props) {
         unmountOnExit
       >
         <div>
+          {!auth.userExtraInfo && (
+            <>
+              <Alert
+                type="info"
+                title="체험하기"
+                description="현재 체험히기를 이용중입니다"
+                actionDescription="로그인"
+                link="/login/login"
+                onClick={() => {
+                  props.history.push("/login/login");
+                }}
+              ></Alert>
+            </>
+          )}
           <header>
-            <NavBar title="등록하기" backLink="/storemenu" />
+            <NavBar title="등록하기" backLink="/store/apply/address" />
           </header>
           <main>
             <section>
@@ -205,7 +222,7 @@ function RegistContact(props) {
                         setError1(null);
                       }
 
-                      context.setStore_StoreOwnerPhonenumber(e.target.value);
+                      context.setStore_storeOwnerPhoneNumber(e.target.value);
                     }}
                     helperText={error1}
                   />
@@ -225,7 +242,7 @@ function RegistContact(props) {
                         setError2(null);
                       }
 
-                      context.setStore_StorePhoneNumber(e.target.value);
+                      context.setStore_storePhoneNumber(e.target.value);
                     }}
                     helperText={error2}
                   />

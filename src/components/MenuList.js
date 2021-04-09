@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     boxSizing: "border-box",
     "& p": { padding: "0 0 60px 0", display: "flex", alignItems: "center" }
   },
-  menuListText: { fontSize: "26px", fontWeight: "700", color: "#000A12" },
+  menuListText: { fontSize: "26px", fontWeight: "medium", color: "#000A12" },
   menuListTextRegular: {
     fontSize: "26px",
     fontWeight: "300",

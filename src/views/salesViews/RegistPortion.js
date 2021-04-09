@@ -3,15 +3,15 @@ import { makeStyles } from "@material-ui/styles";
 import Button from "@material-ui/core/Button";
 import Modal from "@material-ui/core/Modal";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import { TextField } from "../../components/TextField.js";
 import MTextField from "@material-ui/core/TextField";
 import { FormButton } from "../../components/FormButton.js";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import { useGlobal } from "../../globalContext";
+import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
-
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import NativeSelect from "@material-ui/core/NativeSelect";
@@ -196,8 +196,22 @@ function RegistPortion(props) {
 
   return (
     <>
+      {!auth.userExtraInfo && (
+        <>
+          <Alert
+            type="info"
+            title="체험하기"
+            description="현재 체험히기를 이용중입니다"
+            actionDescription="로그인"
+            link="/login/login"
+            onClick={() => {
+              props.history.push("/login/login");
+            }}
+          ></Alert>
+        </>
+      )}
       <header>
-        <NavBar title="" backLink="/sales/regist/address" />
+        <NavBar title="" backLink="/sales/regist/add-investor" />
         <HeaderInfo
           title={"등록" + "\u00A0" + "\u00A0" + "\u00A0" + "3/3"}
           description="가맹점에게 수익을 나눌시, 가맹점 계약 체결시 본사에서 검수 후 반토 스테이션을 보내드립니다"

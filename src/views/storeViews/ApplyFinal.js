@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
@@ -12,6 +12,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import { withStyles } from "@material-ui/core/styles";
 import { FormButton } from "../../components/FormButton.js";
 import { useGlobal } from "../../globalContext";
+import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
 import * as constant from "../../Const.js";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
@@ -136,8 +137,20 @@ function RegistFinal(props) {
   })((props) => <Checkbox color="default" {...props} />);
   return (
     <>
-      {console.log(context.getStoreInfo.investor)}
-
+      {!auth.userExtraInfo && (
+        <>
+          <Alert
+            type="info"
+            title="체험하기"
+            description="현재 체험히기를 이용중입니다"
+            actionDescription="로그인"
+            link="/login/login"
+            onClick={() => {
+              props.history.push("/login/login");
+            }}
+          ></Alert>
+        </>
+      )}
       <header>
         <NavBar title="" backLink="/sales/regist/add-investor" />
         <HeaderInfo
@@ -255,6 +268,16 @@ function RegistFinal(props) {
             <Button
               variant="outlined"
               onClick={async () => {
+                if (!auth.userExtraInfo) {
+                  if (
+                    window.confirm("로그인이 필요합니다. 지금 로그인 해보세요")
+                  ) {
+                    props.history.push("/login/login");
+                    return;
+                  }
+                  return;
+                }
+
                 try {
                   const result = await auth.updateApplication(
                     constant.role.store,

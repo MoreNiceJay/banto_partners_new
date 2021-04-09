@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
@@ -314,7 +314,7 @@ function LoginPage(props) {
                         context.getRegisterInfo.email,
                         confirmPassword
                       );
-                      const result = await auth.updateExtraProfiles(
+                      const result = await auth.setExtraProfiles(
                         context.getRegisterInfo
                       );
 

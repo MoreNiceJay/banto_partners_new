@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
 import { useAuth } from "../../AuthContext";
@@ -17,6 +17,8 @@ import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import { BlackBackgroundLgButton } from "../../components/BlackBackgroundLgButton.js";
 import { MultipleForms } from "../../components/MultipleForms.js";
+import Alert from "../../components/Alert.js";
+import Divider from "../../components/Divider.js";
 const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
@@ -66,7 +68,7 @@ function LoginPage(props) {
   const data = [
     {
       title: "이메일",
-      contentText: auth.user.email && auth.user.email,
+      contentText: auth.user && auth.user.email,
       link: "/store/apply/address",
       bUsing: true,
       disabled: true,
@@ -74,11 +76,88 @@ function LoginPage(props) {
     },
     {
       title: "전화번호",
-      contentText: context.getStoreInfo.storeOwnerPhoneNumber,
+      contentText: auth.userExtraInfo.phoneNumber,
       link: "/store/apply/contact",
       bUsing: true,
-      value: auth.user.phoneNumber && auth.user.phoneNumber,
-      bButton: true
+      value: auth.user && auth.user.phoneNumber,
+      bButton: true,
+      disabled: true,
+      onclick: function () {
+        if (!auth.userExtraInfo.bProfitable) {
+          props.history.push("/login/register/fifth");
+          return;
+        }
+        props.history.push("/mypage/userinfo/edit");
+        return;
+      }
+    }
+  ];
+
+  const extraData = [
+    {
+      title: "생년월일",
+      contentText: auth.userExtraInfo && auth.userExtraInfo.birthdate,
+      link: "/mypage/userinfo/edit",
+      bUsing: true,
+      disabled: true,
+      bButton: true,
+      onclick: function () {
+        if (!auth.userExtraInfo.bProfitable) {
+          props.history.push("/login/register/fifth");
+          return;
+        }
+        props.history.push("/mypage/userinfo/edit");
+        return;
+      }
+    },
+    {
+      title: "은행",
+      contentText: auth.userExtraInfo && auth.userExtraInfo.bank,
+      link: "/mypage/userinfo/edit",
+
+      bUsing: true,
+      bButton: true,
+      disabled: true,
+      onclick: function () {
+        if (!auth.userExtraInfo.bProfitable) {
+          props.history.push("/login/register/fifth");
+          return;
+        }
+        props.history.push("/mypage/userinfo/edit");
+        return;
+      }
+    },
+    {
+      title: "계좌번호",
+      contentText: auth.userExtraInfo && auth.userExtraInfo.accountHolder,
+      link: "/store/apply/address",
+      bUsing: true,
+      bButton: true,
+      disabled: true,
+      onclick: function () {
+        if (!auth.userExtraInfo.bProfitable) {
+          props.history.push("/login/register/fifth");
+          return;
+        }
+        props.history.push("/mypage/userinfo/edit");
+        return;
+      }
+    },
+    {
+      title: "예금주",
+      contentText: auth.userExtraInfo && auth.userExtraInfo.bank,
+      link: "/store/apply/address",
+      bUsing: true,
+      bButton: true,
+      disabled: true,
+      onclick: function () {
+        if (!auth.userExtraInfo.bProfitable) {
+          props.history.push("/login/register/fifth");
+          return;
+        }
+        props.history.push("/mypage/userinfo/edit");
+        return;
+      }
     }
   ];
   console.log("나와", auth);
@@ -94,14 +173,65 @@ function LoginPage(props) {
         unmountOnExit
       >
         <div>
+          {!auth.userExtraInfo.bProfitable && (
+            <Alert
+              type="error"
+              title="입금정보"
+              description="입금정보가 작성되지 않으면 수익을 정산받지 못합니다"
+              actionDescription="정보작성"
+              link="/mypage/userinfo/edit"
+              onClick={() => {
+                props.history.push("/login/register/fifth");
+              }}
+            ></Alert>
+          )}
           <header>
-            <NavBar title="내정보" backLink="/store/apply/addinvestor" />
+            <NavBar title="내정보" backLink="/mypage" />
           </header>
 
           <main>
-            <section className={classes.section}>
+            <Divider />
+
+            <section
+              style={{
+                marginTop: "32px"
+              }}
+              className={classes.section}
+            >
+              <div
+                style={{
+                  fontSize: "22px",
+                  marginLeft: "22px",
+                  marginTop: "24px",
+                  marginBottom: "54px"
+                }}
+              >
+                <span>기본회원정보</span>
+              </div>
               <MultipleForms data={data} />
             </section>
+            <div></div>
+            <Divider />
+
+            <section
+              style={{
+                marginTop: "32px"
+              }}
+              className={classes.section}
+            >
+              <div
+                style={{
+                  fontSize: "22px",
+                  marginLeft: "22px",
+                  marginTop: "24px",
+                  marginBottom: "54px"
+                }}
+              >
+                <span>입금정보</span>
+              </div>
+              <MultipleForms data={extraData} />
+            </section>
+
             <BlackBackgroundLgButton title={"확인"} />
           </main>
           <footer></footer>

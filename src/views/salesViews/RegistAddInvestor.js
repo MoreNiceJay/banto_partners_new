@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Radio from "@material-ui/core/Radio";
@@ -11,12 +11,13 @@ import FormControl from "@material-ui/core/FormControl";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormLabel from "@material-ui/core/FormLabel";
 import { useGlobal } from "../../globalContext";
+import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
 import * as common from "../../common";
-import { set } from "lodash";
+import * as constant from "../../Const";
+
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
-import { fetchPartnerStations } from "../../common.js";
 
 const useStyles = makeStyles((theme) => ({
   contact: { padding: "0px 0 0 25px" },
@@ -81,7 +82,10 @@ function RegistAddInvestor(props) {
 
   React.useEffect(() => {
     (async () => {
-      const result = await common.fetchOwnSalesStations(auth.userExtraInfo.id);
+      const id = auth.userExtraInfo
+        ? auth.userExtraInfo.id
+        : constant.exampleUserId;
+      const result = await common.fetchOwnSalesStations(id);
       // await common.insertStationExample();
       if (result.code !== 200) {
         alert(result.msg);
@@ -100,7 +104,10 @@ function RegistAddInvestor(props) {
       setPartnersStations(result.data);
     })();
     (async () => {
-      const result = await common.fetchUserStations(auth.userExtraInfo.id);
+      const id = auth.userExtraInfo
+        ? auth.userExtraInfo.id
+        : constant.exampleUserId;
+      const result = await common.fetchUserStations(id);
       // await common.insertStationExample();
       if (result.code !== 200) {
         alert(result.msg);
@@ -112,7 +119,10 @@ function RegistAddInvestor(props) {
 
   React.useEffect(() => {
     (async () => {
-      const result = await common.fetchOwnSalesStations(auth.userExtraInfo.id);
+      const id = auth.userExtraInfo
+        ? auth.userExtraInfo.id
+        : constant.exampleUserId;
+      const result = await common.fetchOwnSalesStations(id);
       // await common.insertStationExample();
       if (result.code !== 200) {
         alert(result.msg);
@@ -323,8 +333,22 @@ function RegistAddInvestor(props) {
   );
   return (
     <>
+      {!auth.userExtraInfo && (
+        <>
+          <Alert
+            type="info"
+            title="체험하기"
+            description="현재 체험히기를 이용중입니다"
+            actionDescription="로그인"
+            link="/login/login"
+            onClick={() => {
+              props.history.push("/login/login");
+            }}
+          ></Alert>
+        </>
+      )}
       <header>
-        <NavBar title="" backLink="/sales/regist/portion" />
+        <NavBar title="" backLink="/sales/regist/contact" />
         <HeaderInfo
           title={"등록할 스테이션이 있으신가요"}
           description="내가 구매한 스테이션이나 미리 협의된 구매자의 스테이션을 설치 할수 있습니다"
@@ -406,13 +430,16 @@ function RegistAddInvestor(props) {
               return;
               console.log("추스드", choosedStation);
             }
+            const id = auth.userExtraInfo
+              ? auth.userExtraInfo.id
+              : constant.exampleUserId;
             if (bInvestor === "ownSales") {
               // TODO 여기서 otherBuyer.stationId 스테이션 아이디로 가져오기
-              context.setSales_salesManager(auth.userExtraInfo.id);
+              context.setSales_salesManager(id);
               context.setSales_stationDoc(choosedStation.id);
 
               const salesPortion = choosedStation.data.preSalesManagers.find(
-                (e) => e.id === auth.userExtraInfo.id
+                (e) => e.id === id
               ).portion;
               context.setSales_salesPortion(salesPortion);
               context.setSales_stationId(choosedStation.data.stationId);
@@ -421,7 +448,7 @@ function RegistAddInvestor(props) {
 
               //TODO 바이어 포션 비율 함수
             } else if (bInvestor === "banto") {
-              context.setSales_salesManager(auth.userExtraInfo.id);
+              context.setSales_salesManager(id);
               context.setSales_stationDoc(choosedStation.id);
 
               context.setSales_salesPortion(choosedStation.data.salesPortion);
@@ -429,7 +456,7 @@ function RegistAddInvestor(props) {
               context.setSales_buyer(choosedStation.data.buyer);
               context.setSales_buyerPortion(choosedStation.data.buyerPortion);
             } else if (bInvestor === "mine") {
-              context.setSales_salesManager(auth.userExtraInfo.id);
+              context.setSales_salesManager(id);
               context.setSales_stationDoc(choosedStation.id);
 
               context.setSales_salesPortion(choosedStation.data.buyerPortion);

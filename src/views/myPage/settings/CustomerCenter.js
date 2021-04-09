@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { HeaderInfo } from "../../../components/HeaderInfo.js";
-import { NavBar } from "../../../components/NavBar.js";
+import NavBar from "../../../components/NavBar.js";
 
 import { useGlobal } from "../../../globalContext";
 import { useAuth } from "../../../AuthContext";

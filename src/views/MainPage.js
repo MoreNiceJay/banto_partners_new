@@ -9,6 +9,7 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import SwipeableViews from "react-swipeable-views";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import { autoPlay } from "react-swipeable-views-utils";
 import { Link } from "react-router-dom";
 import Slide from "@material-ui/core/Slide";
@@ -19,14 +20,17 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "14px",
     color: "#6f6f6f",
     padding: "10px",
-    marginRight: "16px"
+    marginRight: "16px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   },
   section: { margin: "40px 0" },
   descriptionSpan: {
     fontSize: "14px",
     color: "#6f6f6f"
   },
-  titleLink: { fontSize: "25px", fontWeight: "700", marginTop: "20px" },
+  titleLink: { fontSize: "26px", fontWeight: "medium", marginTop: "20px" },
   root: {
     "& .MuiMobileStepper-dotActive": {
       backgroundColor: "black"
@@ -88,7 +92,6 @@ function MainPage(props) {
   const classes = useStyles(props);
   const theme = useTheme();
   const auth = useAuth();
-
   const [activeStep, setActiveStep] = React.useState(0);
   const maxSteps = tutorialSteps.length;
 
@@ -103,6 +106,54 @@ function MainPage(props) {
   const handleStepChange = (step) => {
     setActiveStep(step);
   };
+  const LogoHeader = () => (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "rows",
+        justifyContent: "space-between",
+        alignItems: "center"
+      }}
+    >
+      <img
+        src={require("../assets/img/splash.png")}
+        style={{ width: "167px", height: "auto", marginLeft: "24px" }}
+        alt="logo"
+      />
+
+      <Link to="#">
+        <span className={classes.myInfoLink}>
+          {!!auth.user ? (
+            <Link
+              to="/mypage"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#838383"
+              }}
+            >
+              마이 페이지 <ChevronRightIcon />
+            </Link>
+          ) : (
+            <Link
+              to="/login/login"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#838383"
+              }}
+            >
+              로그인
+              <ChevronRightIcon />
+            </Link>
+          )}
+        </span>
+      </Link>
+    </div>
+  );
+
   return (
     <>
       {/* <Slide
@@ -118,36 +169,13 @@ function MainPage(props) {
         <div className={classes.emptySpace}></div>
       </header>
       <main>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "rows",
-            justifyContent: "space-between",
-            alignItems: "end"
-          }}
-        >
-          <img
-            src={require("../assets/img/splash.png")}
-            style={{ width: "167px", height: "auto", marginLeft: "16px" }}
-            alt="logo"
-          />
-
-          <Link to="#">
-            <span className={classes.myInfoLink}>
-              {!!auth.user ? (
-                <Link to="/mypage">설정</Link>
-              ) : (
-                <Link to="/login/login">로그인</Link>
-              )}
-            </span>
-          </Link>
-        </div>
+        <LogoHeader />
         <section className={classes.section}>
           <p
             className={classes.descriptionSpan}
             style={{ marginLeft: "30px", marginBottom: "10px" }}
           >
-            이벤트
+            {/* 이벤트 */}
           </p>
 
           {/* <div className={classes.root}> */}
@@ -225,18 +253,12 @@ function MainPage(props) {
           </div>
         </section>
         <section className={classes.section}>
-          <span
-            className={classes.descriptionSpan}
-            style={{ marginLeft: "30px" }}
-          >
-            아이템 선택
-          </span>
           <Link to="/battery-service-roll" style={{ color: "black" }}>
-            <h1 className={classes.titleLink} style={{ marginLeft: "30px" }}>
+            <h1 className={classes.titleLink} style={{ marginLeft: "24px" }}>
               보조배터리 대여서비스
             </h1>
           </Link>
-          {auth.user && (
+          {/* {auth.user && (
             <Link
               onClick={() => {
                 auth.signOut();
@@ -245,7 +267,7 @@ function MainPage(props) {
             >
               로그아웃
             </Link>
-          )}
+          )} */}
         </section>
       </main>
       <footer></footer>

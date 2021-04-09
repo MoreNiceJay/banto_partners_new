@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
-import { NavBar } from "../../components/NavBar.js";
+import NavBar from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
+import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
@@ -28,6 +29,7 @@ import PRadio from "../../components/PRadio.js";
 import Select from "@material-ui/core/Select";
 import PortionTextField from "../../components/PortionTextField.js";
 import InputBase from "@material-ui/core/InputBase";
+import * as constant from "../../Const";
 
 var _ = require("lodash");
 
@@ -160,18 +162,18 @@ function LoginPage(props) {
   const handleChange = (event) => {
     console.log(event.target.value);
     setBSales(event.target.value);
-    if (event.target.value === "true") {
-      context.setStore_bSales(true);
-    } else {
-      context.setStore_bSales(false);
-    }
+    // if (event.target.value === "true") {
+    //   context.setStore_bSales(true);
+    // } else {
+    //   context.setStore_bSales(false);
+    // }
   };
   const context = useGlobal();
   const auth = useAuth();
   let percentage = _.range(0, 26);
 
   React.useEffect(() => {
-    if (context.getStoreInfo.bSales) {
+    if (context.getStoreInfo.setStore_salesManager !== "") {
       setBSales("true");
     } else {
       setBSales("false");
@@ -189,8 +191,22 @@ function LoginPage(props) {
         unmountOnExit
       >
         <div>
+          {!auth.userExtraInfo && (
+            <>
+              <Alert
+                type="info"
+                title="체험하기"
+                description="현재 체험히기를 이용중입니다"
+                actionDescription="로그인"
+                link="/login/login"
+                onClick={() => {
+                  props.history.push("/login/login");
+                }}
+              ></Alert>
+            </>
+          )}
           <header>
-            <NavBar title="추가정보 입력" backLink="/store/apply/Address" />
+            <NavBar title="추가정보 입력" backLink="/store/apply/contact" />
           </header>
 
           <main>
@@ -251,12 +267,12 @@ function LoginPage(props) {
               {bSales === "true" && (
                 <>
                   <div style={{ marginTop: "40px" }}>
-                    <InputTitle text="영업자의 전화번호" />
+                    <InputTitle text="영업자의 id" />
                     <PTextField
                       placeholder="Phone Number"
                       value={context.getStoreInfo.salesContact}
                       onChange={(e) => {
-                        context.setStore_salesContact(e.target.value);
+                        context.setStore_salesManager(e.target.value);
                       }}
                     />
                   </div>
