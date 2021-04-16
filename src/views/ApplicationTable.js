@@ -183,9 +183,7 @@ function LoginPage(props) {
                       key={index}
                       style={{ height: "90px" }}
                       onClick={() => {
-                        props.history.push(
-                          `/table/applicationdetail?applicationId=${i.applicationId}&role=${query.role}`
-                        );
+                        window.location.href = `/table/applicationdetail?applicationId=${i.applicationId}&role=${query.role}`;
                       }}
                     >
                       <TableCell

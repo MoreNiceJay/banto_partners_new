@@ -185,10 +185,7 @@ function LoginPage(props) {
             </>
           )}
           <header>
-            <NavBar
-              title="스테이션 정보"
-              backLink={`/table/station?role=${query.role}`}
-            />
+            <NavBar title="스테이션 정보" backLink={`/popToTop/`} />
           </header>
 
           <main>
