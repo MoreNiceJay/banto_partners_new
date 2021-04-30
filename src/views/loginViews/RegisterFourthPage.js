@@ -131,10 +131,10 @@ function LoginPage(props) {
                 <Button
                   onClick={() => {
                     var actionCodeSettings = {
-                      url: "https://75qiy.csb.app",
-                      // iOS: {
-                      //   bundleId: "com.example.ios"
-                      // },
+                      url: "https://dynamic.banto.mulli.world/hello",
+                      iOS: {
+                        bundleId: "io.banto.banto-partners-packaging"
+                      },
                       // android: {
                       //   packageName: "com.example.android",
                       //   installApp: false,

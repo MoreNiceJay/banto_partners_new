@@ -6,7 +6,7 @@ import Slide from "@material-ui/core/Slide";
 
 const useStyles = makeStyles((theme) => ({
   section: { padding: "55px 0 0 25px" },
-  rollSpan: { fontSize: "26px", fontWeight: "bold" },
+  rollSpan: { fontSize: "24px" },
   rollRestSpan: { fontSize: "24px", fontWeight: "300" },
   rollDescription: {
     fontWeight: "300",
@@ -34,9 +34,17 @@ function BatteryServiceRoll(props) {
 
           <main>
             <section className={classes.section}>
+              <p
+                style={{
+                  marginBottom: "44px",
+                  fontSize: "28px",
+                  fontWeight: "bold"
+                }}
+              >
+                역할
+              </p>
               <Link to="/investormenu" style={{ color: "black" }}>
-                <span className={classes.rollSpan}>구매자</span>
-                <span className={classes.rollRestSpan}>로 시작</span>
+                <span className={classes.rollSpan}>구매자로 시작</span>
                 <p className={classes.rollDescription}>
                   반토 스테이션을 구입해 수익을 창출 합니다
                 </p>
@@ -44,8 +52,7 @@ function BatteryServiceRoll(props) {
             </section>
             <section className={classes.section}>
               <Link to="/salesmenu" style={{ color: "black" }}>
-                <span className={classes.rollSpan}>세일즈</span>
-                <span className={classes.rollRestSpan}>로 시작</span>
+                <span className={classes.rollSpan}>세일즈로 시작</span>
               </Link>
               <p className={classes.rollDescription}>
                 반토 스테이션을 소개해 수익을 창출 합니다
@@ -53,8 +60,7 @@ function BatteryServiceRoll(props) {
             </section>
             <section className={classes.section}>
               <Link to="/storemenu" style={{ color: "black" }}>
-                <span className={classes.rollSpan}>가맹점</span>
-                <span className={classes.rollRestSpan}>로 시작</span>
+                <span className={classes.rollSpan}>가맹점으로 시작</span>
               </Link>
               <p className={classes.rollDescription}>
                 매장에 반토 스테이션을 무료로 설치 할 수 있습니다

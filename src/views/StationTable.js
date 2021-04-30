@@ -183,9 +183,7 @@ function LoginPage(props) {
                       key={index}
                       style={{ height: "90px" }}
                       onClick={() => {
-                        props.history.push(
-                          `/table/stationdetail?stationId=${i.stationId}&role=${query.role}`
-                        );
+                        window.location.href = `/table/stationdetail?stationId=${i.stationId}&role=${query.role}`;
                       }}
                     >
                       <TableCell

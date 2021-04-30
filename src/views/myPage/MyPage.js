@@ -141,11 +141,11 @@ function LoginPage(props) {
           {!!auth.user ? (
             <Link
               // to="/mypage"
-              onClick={() => {
+              onClick={async () => {
                 if (window.confirm("로그아웃 하시겠습니까")) {
-                  auth.signOut();
+                  await auth.signOut();
                 }
-                props.history.push("/main");
+                window.location.href = "/main";
               }}
               style={{
                 display: "flex",

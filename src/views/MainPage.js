@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "14px",
     color: "#6f6f6f"
   },
-  titleLink: { fontSize: "26px", fontWeight: "medium", marginTop: "20px" },
+  titleLink: { fontSize: "22px", fontWeight: "medium", marginTop: "20px" },
   root: {
     "& .MuiMobileStepper-dotActive": {
       backgroundColor: "black"
@@ -69,23 +69,23 @@ const tutorialSteps = [
   {
     label: "Bird",
     imgPath:
-      "https://firebasestorage.googleapis.com/v0/b/banto-partners.appspot.com/o/Group%20721.png?alt=media&token=f4cfadbb-dc6d-43ea-b751-1c17e91c67d8"
-  },
-  {
-    label: "Bali, Indonesia",
-    imgPath:
-      "https://firebasestorage.googleapis.com/v0/b/banto-partners.appspot.com/o/Group%20722.png?alt=media&token=82311124-cfd5-4cde-9cf2-4c759eafee6e"
-  },
-  {
-    label: "NeONBRAND Digital Marketing, Las Vegas, United States",
-    imgPath:
-      "https://firebasestorage.googleapis.com/v0/b/banto-partners.appspot.com/o/Group%20723.png?alt=media&token=75b6c26b-222e-476a-9ecd-cb0d2fe645a7"
-  },
-  {
-    label: "Goč, Serbia",
-    imgPath:
-      "https://firebasestorage.googleapis.com/v0/b/banto-partners.appspot.com/o/Group%20724.png?alt=media&token=07a518e9-3cef-48e3-8e56-ace383391248"
+      "https://firebasestorage.googleapis.com/v0/b/banto-partners.appspot.com/o/%E1%84%8B%E1%85%B5%E1%84%87%E1%85%A6%E1%86%AB%E1%84%90%E1%85%B3.png?alt=media&token=6fb127bb-9fa3-4feb-a661-0303d8c99309"
   }
+  // {
+  //   label: "Bali, Indonesia",
+  //   imgPath:
+  //     "https://firebasestorage.googleapis.com/v0/b/banto-partners.appspot.com/o/Group%20722.png?alt=media&token=82311124-cfd5-4cde-9cf2-4c759eafee6e"
+  // },
+  // {
+  //   label: "NeONBRAND Digital Marketing, Las Vegas, United States",
+  //   imgPath:
+  //     "https://firebasestorage.googleapis.com/v0/b/banto-partners.appspot.com/o/Group%20723.png?alt=media&token=75b6c26b-222e-476a-9ecd-cb0d2fe645a7"
+  // },
+  // {
+  //   label: "Goč, Serbia",
+  //   imgPath:
+  //     "https://firebasestorage.googleapis.com/v0/b/banto-partners.appspot.com/o/Group%20724.png?alt=media&token=07a518e9-3cef-48e3-8e56-ace383391248"
+  // }
 ];
 
 function MainPage(props) {
@@ -172,12 +172,16 @@ function MainPage(props) {
           <LogoHeader />
           <section className={classes.section}>
             <p
-              className={classes.descriptionSpan}
-              style={{ marginLeft: "30px", marginBottom: "10px" }}
+              style={{
+                marginLeft: "40px",
+                marginBottom: "14px",
+                fontSize: "22px",
+                fontWeight: "bold"
+              }}
             >
-              {/* 이벤트 */}
+              이벤트
             </p>
-
+            <a href="bantopartners://yes">안녕</a>
             {/* <div className={classes.root}> */}
             <AutoPlaySwipeableViews
               axis={theme.direction === "rtl" ? "x-reverse" : "x"}
@@ -216,7 +220,7 @@ function MainPage(props) {
                   marginTop: "10px"
                 }}
                 variant="dots"
-                steps={6}
+                steps={tutorialSteps.length}
                 position="static"
                 activeStep={activeStep}
                 className={classes.root}
@@ -253,6 +257,16 @@ function MainPage(props) {
             </div>
           </section>
           <section className={classes.section}>
+            <p
+              style={{
+                marginLeft: "40px",
+                marginBottom: "14px",
+                fontSize: "28px",
+                fontWeight: "bold"
+              }}
+            >
+              참여하기
+            </p>
             <div
               style={{
                 border: "1px solid white",
@@ -291,19 +305,17 @@ function MainPage(props) {
                       color: "#c4c4c4"
                     }}
                   >
-                    반토스테이션을 설치해 수익창출
+                    반토스테이션을 설치하면 수익이 창출되지요
                   </p>
                 </div>
                 <div>
-                  <img
-                    src={require("../assets/img/go.png")}
+                  <ChevronRightIcon
                     style={{
                       width: "32px",
                       height: "32px",
                       marginLeft: "auto",
                       marginRight: "24px"
                     }}
-                    alt="goButton"
                   />
                 </div>
               </Link>
