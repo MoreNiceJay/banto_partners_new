@@ -385,7 +385,7 @@ function LoginPage({ props, location }) {
                           component="th"
                           scope="row"
                         >
-                          <p>{i.rentalTimeStamp}</p>
+                          <p>{common.getMonthDayTimeMinuteSecond(i.rentalTimeStamp)}</p>
                         </TableCell>
 
                         <TableCell

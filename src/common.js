@@ -346,6 +346,22 @@ export function getTimeStamp() {
 
   return s;
 }
+export function getMonthDayTimeMinuteSecond(time) {
+  var d = new Date(time);
+  var s =
+    
+    leadingZeros(d.getMonth() + 1, 2) +
+    "-" +
+    leadingZeros(d.getDate(), 2) +
+    getInputDayLabel(time) + 
+    " " +
+    leadingZeros(d.getHours(), 2) +
+    ":" +
+    leadingZeros(d.getMinutes(), 2) 
+    
+
+  return s;
+}
 
 export function leadingZeros(n, digits) {
   var zero = "";
