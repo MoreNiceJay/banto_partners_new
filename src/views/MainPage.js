@@ -181,7 +181,7 @@ function MainPage(props) {
             >
               이벤트
             </p>
-            <a href="bantopartners://yes">안녕</a>
+            {/* <a href="bantopartners://yes">안녕</a> */}
             {/* <div className={classes.root}> */}
             <AutoPlaySwipeableViews
               axis={theme.direction === "rtl" ? "x-reverse" : "x"}

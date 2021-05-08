@@ -346,18 +346,29 @@ export function getTimeStamp() {
 
   return s;
 }
-export function getMonthDayTimeMinuteSecond(time) {
+export function getMonthDayTimeMinute(time) {
   var d = new Date(time);
   var s =
     
     leadingZeros(d.getMonth() + 1, 2) +
     "-" +
     leadingZeros(d.getDate(), 2) +
+    "(" + 
     getInputDayLabel(time) + 
-    " " +
+    ") " +
     leadingZeros(d.getHours(), 2) +
     ":" +
     leadingZeros(d.getMinutes(), 2) 
+    
+
+  return s;
+}
+export function getTodayYear() {
+  var d = new Date();
+  var s =
+    
+  leadingZeros(d.getFullYear(), 4) 
+   
     
 
   return s;

@@ -236,7 +236,7 @@ function LoginPage({ props, location }) {
           >
             <div
               style={{
-                margin: "40px 24px",
+                margin: "20px 24px",
                 boxShadow: "0px 6px 10px rgba(0, 10, 18, 0.2)"
               }}
             >
@@ -246,7 +246,8 @@ function LoginPage({ props, location }) {
                   fontWeight: "500",
                   fontSize: "16px",
                   color: "#ECEFF1",
-                  opacity: "0.6"
+                  opacity: "0.6",
+                  textAlign:"center"
                 }}
               >
                 {calender && calender.replace("-", ".")} 수익
@@ -259,24 +260,29 @@ function LoginPage({ props, location }) {
                   fontSize: "28px",
                   lineHeight: "34px",
                   textAlign: "left",
-                  marginTop: "16px"
+                  marginTop: "16px",
+                  textAlign:"center"
+
                 }}
               >
                 {(!!!earning ? "0" : numberWithCommas(earning)) + " 원"}
               </p>
               <div
                 style={{
+                  marginTop:"18px",
                   display: "flex",
                   alignItems: "center",
                   width: "100%",
+                  flexDirection:"column",
                   justifyContent: "flex-end"
                 }}
               >
+                <div style={{height:"1px", width:"100%", backgroundColor:"grey"}}></div>
                 <Button
                   style={{
                     color: "white",
                     textAlign: "right",
-                    alignSelf: "flex-end"
+                    alignSelf: "center"
                   }}
                   onClick={async () => {
                     if (!auth.userExtraInfo) {
@@ -385,7 +391,7 @@ function LoginPage({ props, location }) {
                           component="th"
                           scope="row"
                         >
-                          <p>{common.getMonthDayTimeMinuteSecond(i.rentalTimeStamp)}</p>
+                          <p>{common.getMonthDayTimeMinute(i.rentalTimeStamp)}</p>
                         </TableCell>
 
                         <TableCell
@@ -395,7 +401,8 @@ function LoginPage({ props, location }) {
                           <p
                             style={{
                               fontWeight: "400",
-                              fontSize: "16px"
+                              fontSize: "16px",
+                              textAlign:"center"
                               // color: "#00838F"
                             }}
                           >
@@ -404,7 +411,9 @@ function LoginPage({ props, location }) {
                           <p
                             style={{
                               fontWeight: "400",
-                              fontSize: "16px"
+                              fontSize: "12px",
+                              textAlign:"center"
+
                               // color: "#00838F"
                             }}
                           >
@@ -426,20 +435,20 @@ function LoginPage({ props, location }) {
                               i.returnTimeStamp
                             )}
                           </p>
-                          <p
+                          {/* <p
                             style={{
                               fontSize: "13px",
                               color: "#263238"
                             }}
                           >
                             {i.status}
-                          </p>
+                          </p> */}
                           <p
                             style={{
                               fontStyle: "normal",
                               fontWeight: "800",
                               fontSize: "26px",
-                              marginTop: "8px"
+                              
                             }}
                           >
                             {numberWithCommas(i.price) + "원"}

@@ -17,7 +17,7 @@ import { useAuth } from "../../AuthContext";
 import * as constant from "../../Const.js";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
-
+import * as common from "../../common"
 const useStyles = makeStyles((theme) => ({
   section: { padding: "55px 0 0 30px" },
   infoTitle: { fontSize: "25px", fontWeight: "700" },
@@ -249,7 +249,7 @@ function RegistFinal(props) {
                       lineHeight: "21px"
                     }}
                   >
-                    2020년 하반기 정책사항에 동의 합니다
+                    {common.getTodayYear()}년 하반기 정책사항에 동의 합니다
                   </span>
                 }
               />
@@ -257,7 +257,6 @@ function RegistFinal(props) {
                 <Link
                   style={{
                     marginRight: "24px",
-                    textDecoration: "underline"
                   }}
                 >
                   약관확인
