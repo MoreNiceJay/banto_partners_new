@@ -163,7 +163,7 @@ function LoginPage(props) {
             zIndex: "99999"
           }}
         >
-          <NavBar title="신청서 정보" backLink="/main" />
+          <NavBar title="신청서" backLink="/main" />
         </header>
 
         {/* </div> */}
@@ -190,7 +190,7 @@ function LoginPage(props) {
                         style={{
                           fontSize: "14px",
                           fontWeight: "bold",
-                          verticalAlign: "top"
+                          verticalAlign: "center"
                         }}
                         component="th"
                         scope="row"
@@ -199,14 +199,15 @@ function LoginPage(props) {
                       </TableCell>
 
                       <TableCell
-                        style={{ height: "60px", verticalAlign: "top" }}
+                        style={{ height: "60px", verticalAlign: "center" }}
                         align="left"
+                        
                       >
                         <p
                           style={{
                             fontWeight: "bold",
                             fontSize: "16px",
-                            color: "#00838F"
+                            textAlign:"center"
                           }}
                         >
                           {i.storeName}
@@ -215,7 +216,8 @@ function LoginPage(props) {
                           style={{
                             fontWeight: "bold",
                             fontSize: "16px",
-                            color: "#00838F"
+                            textAlign:"center"
+
                           }}
                         >
                           ({i.stationId})
@@ -227,11 +229,13 @@ function LoginPage(props) {
                       >
                         <p
                           style={{
-                            fontFamily: "Montserrat",
+                            
                             fontStyle: "normal",
                             fontWeight: "800",
-                            fontSize: "26px",
-                            marginTop: "8px"
+                            fontSize: "18px",
+                            marginTop: "8px",
+                            color: "#00838F",
+
                           }}
                         >
                           {i.status === "WAITING" ? "승인 대기중" : "승인완료"}

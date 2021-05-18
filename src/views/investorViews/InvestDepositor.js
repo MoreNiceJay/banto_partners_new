@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { HeaderInfo } from "../../components/HeaderInfo.js";
 import NavBar from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -10,17 +9,13 @@ import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
 import Slide from "@material-ui/core/Slide";
-import { Link } from "react-router-dom";
-import { withStyles } from "@material-ui/core/styles";
+
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import CircleChecked from "@material-ui/icons/CheckCircleOutline";
+import SubTitle from "../../components/SubTitle";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 const useStyles = makeStyles((theme) => ({
@@ -34,21 +29,21 @@ const useStyles = makeStyles((theme) => ({
   headerTitle: { fontSize: "18px", fontWeight: "bold", margin: "auto" },
   textField: {
     "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-      border: "none"
+      // border: "none"
     }
   },
   select: {
     "&:before": {
-      border: "none"
+      // border: "none"
     },
     "&:after": {
-      border: "none"
+      // border: "none"
     },
     "&:hover:not(.Mui-disabled):before": {
-      border: "none"
+      // border: "none"
     },
     "&:hover::before": {
-      border: "none"
+      // border: "none"
     }
   }
 }));
@@ -62,9 +57,12 @@ function LoginPage(props) {
   const handleChange = (event) => {
     setValue(event.target.value);
     if (event.target.value === "yes") {
-      context.setInvest_bank(auth.userExtraInfo.bank);
-      context.setInvest_bankAccount(auth.userExtraInfo.accountNumber);
-      context.setInvest_depositor(auth.userExtraInfo.depositor);
+      console.log(auth.userExtraInfo);
+      if (auth.userExtraInfo) {
+        context.setInvest_bank(auth.userExtraInfo.bank);
+        context.setInvest_bankAccount(auth.userExtraInfo.accountNumber);
+        context.setInvest_depositor(auth.userExtraInfo.depositor);
+      }
     }
   };
   const handleSlectChange = (event) => {
@@ -113,13 +111,13 @@ function LoginPage(props) {
         }}
         inputProps={{
           style: {
-            paddingLeft: "0px",
+            // paddingLeft: "0px",
             fontSize: "26px",
             fontFamily: "Montserrat",
-            fontWeight: "bold",
+            fontWeight: "bold"
 
-            boxSizing: "border-box",
-            marginTop: "10px"
+            // boxSizing: "border-box",
+            // marginTop: "10px"
           }
         }}
       />
@@ -137,7 +135,7 @@ function LoginPage(props) {
       <div>
         <FormControl
           style={{
-            margin: "0 24px",
+            margin: "0 0 0 24px",
             marginTop: "12px",
             width: "calc(100% - 64px)"
           }}
@@ -162,6 +160,7 @@ function LoginPage(props) {
             id="demo-simple-select"
             value={context.getInvestInfo.bank}
             placeholder="Bank"
+            variant="outlined"
             style={{
               fontSize: "26px",
               fontFamily: "Montserrat",
@@ -170,6 +169,7 @@ function LoginPage(props) {
               marginTop: "10px"
             }}
             onChange={handleSlectChange}
+            // native={true}
             inputProps={{
               style: {
                 fontSize: "26px",
@@ -267,13 +267,13 @@ function LoginPage(props) {
         }}
         inputProps={{
           style: {
-            paddingLeft: "0px",
+            // paddingLeft: "0px",
             fontSize: "26px",
             fontFamily: "Montserrat",
-            fontWeight: "bold",
+            fontWeight: "bold"
 
-            boxSizing: "border-box",
-            marginTop: "10px"
+            // boxSizing: "border-box",
+            // marginTop: "10px"
           }
         }}
       />
@@ -322,20 +322,23 @@ function LoginPage(props) {
                     margin: "16px 0 0 24px"
                   }}
                 >
-                  2/2
+                  2/4
                 </p>
+                <SubTitle title="계좌정보" />
                 <p
                   style={{
                     fontStyle: "normal",
                     fontWeight: "500",
                     fontSize: "16px",
+                    paddingTop: "12px",
                     margin: "16px 0 0 24px"
                   }}
                 >
                   입금자명이{" "}
                   <span
                     style={{
-                      textDecoration: "underline"
+                      textDecoration: "underline",
+                      fontSize: "18px"
                     }}
                   >
                     {auth.userExtraInfo ? auth.userExtraInfo.name : "홍길동"}
@@ -353,7 +356,8 @@ function LoginPage(props) {
                   입금 은행은{" "}
                   <span
                     style={{
-                      textDecoration: "underline"
+                      textDecoration: "underline",
+                      fontSize: "18px"
                     }}
                   >
                     {auth.userExtraInfo ? auth.userExtraInfo.bank : "반토은행"}
@@ -368,10 +372,11 @@ function LoginPage(props) {
                     margin: "16px 0 0 24px"
                   }}
                 >
-                  계좌번호는
+                  계좌번호는{" "}
                   <span
                     style={{
-                      textDecoration: "underline"
+                      textDecoration: "underline",
+                      fontSize: "18px"
                     }}
                   >
                     {auth.userExtraInfo
@@ -409,7 +414,7 @@ function LoginPage(props) {
                           }}
                         />
                       }
-                      label="Yes"
+                      label="네. 일치합니다"
                     />
                     <FormControlLabel
                       value="no"
@@ -427,7 +432,7 @@ function LoginPage(props) {
                           }}
                         />
                       }
-                      label="No"
+                      label="아니오"
                     />
                   </RadioGroup>
                 </FormControl>

@@ -179,20 +179,34 @@ export async function deleteApplication(applicationId) {
 }
 export async function fetchStations(userId, role) {
   try {
+    var startTime = new Date().getTime();
+
     const dataArray = [];
     const stationnRef = db.collection("Stations").where(role, "==", userId);
 
     const querySnapshot = await stationnRef.get();
+    
+    (querySnapshot.forEach((doc) => {
+         (dataArray.push(doc.data()))
+ 
+    }))
+    await Promise.all(dataArray.map(async (value,index) => {
+      const doc = await db.collection('Franchises').doc(value.franchiseDoc).get()
+        dataArray[index].storeName = doc.data().storeName
+        console.log(doc.data().storeName)
+      
+    }))
 
-    querySnapshot.forEach((doc) => {
-      dataArray.push(doc.data());
-    });
+
+    var endTime = new Date().getTime();
+    console.log("측정시간",endTime - startTime);
 
     return {
       code: 200,
       data: dataArray
     };
   } catch (error) {
+    console.log(error)
     return {
       code: 400,
       msg: "시스템에러 고객센터에 문의해주세요"

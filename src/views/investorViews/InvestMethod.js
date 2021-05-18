@@ -25,6 +25,8 @@ import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import * as constant from "../../Const";
 import * as common from "../../common";
+import SubTitle from "../../components/SubTitle";
+
 var _ = require("lodash");
 
 const useStyles = makeStyles((theme) => ({
@@ -38,21 +40,21 @@ const useStyles = makeStyles((theme) => ({
   headerTitle: { fontSize: "18px", fontWeight: "bold", margin: "auto" },
   textField: {
     "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-      border: "none"
+      // border: "none"
     }
   },
   select: {
     "&:before": {
-      border: "none"
+      // border: "none"
     },
     "&:after": {
-      border: "none"
+      // border: "none"
     },
     "&:hover:not(.Mui-disabled):before": {
-      border: "none"
+      // border: "none"
     },
     "&:hover::before": {
-      border: "none"
+      // border: "none"
     }
   }
 }));
@@ -85,38 +87,13 @@ function LoginPage(props) {
       <p
         style={{
           fontStyle: "normal",
-          fontWeight: "200",
-          fontSize: "16px",
-          margin: "16px 0 0 24px"
-        }}
-      >
-        <>
-          기기를 설치할 세일즈 파트너는 아래 설정하시는 이익률을 확인하여 설치할
-          기기를 선택할 수 있습니다{" "}
-        </>
-        <br />
-        {"(이익률은 설치전까지 투자 -> 스테이션 에서 수정할 수 있습니다)"}
-      </p>
-      <p
-        style={{
-          fontStyle: "normal",
-          fontWeight: "200",
-          fontSize: "16px",
-          margin: "16px 0 0 24px"
-        }}
-      >
-        영업이 가맹점에게 설치 요청을 할때 분배되는 수익률 안에서 가맹점의
-        수익을 보장해야합니다
-      </p>
-      <p
-        style={{
-          fontStyle: "normal",
           fontWeight: "500",
           fontSize: "16px",
-          margin: "16px 0 0 24px"
+          margin: "16px 0 0 24px",
+          paddingTop: "24px"
         }}
       >
-        영업분에게 분배할 수익률
+        세일즈 파트너에게 분배할 수익률을 선택하세요
       </p>
 
       <div>
@@ -147,21 +124,20 @@ function LoginPage(props) {
             id="demo-simple-select"
             value={context.getInvestInfo.salesPortion}
             placeholder="Bank"
+            variant="outlined"
             style={{
               fontSize: "26px",
               fontFamily: "Montserrat",
-              fontWeight: "bold",
-              boxSizing: "border-box",
-              marginTop: "10px"
+              fontWeight: "bold"
+              // boxSizing: "border-box"
             }}
             onChange={handleSlectChange}
             inputProps={{
               style: {
                 fontSize: "26px",
                 fontFamily: "Montserrat",
-                fontWeight: "bold",
-                boxSizing: "border-box",
-                marginTop: "10px"
+                fontWeight: "bold"
+                // boxSizing: "border-box"
               }
             }}
           >
@@ -176,13 +152,38 @@ function LoginPage(props) {
             fontStyle: "normal",
             fontWeight: "500",
             fontSize: "16px",
-            margin: "16px 0 0 24px"
+            margin: "16px 38px 24px 24px",
+            textAlign: "right"
           }}
         >
           내 수익 계산기 :{" "}
           {myPortionCalculater(maxPortion, context.getInvestInfo.salesPortion)}%
         </p>
       </div>
+      <p
+        style={{
+          fontStyle: "normal",
+          fontWeight: "200",
+          fontSize: "16px",
+          margin: "16px 0 0 28px"
+        }}
+      >
+        <>
+          - 세일즈 파트너는 설정한 이익률을 통해 설치할 기기를 선택할 수
+          있습니다
+        </>
+      </p>
+      <p
+        style={{
+          fontStyle: "normal",
+          fontWeight: "200",
+          fontSize: "16px",
+          margin: "16px 0 0 24px"
+        }}
+      >
+        - 세일즈 파트너는 가맹점에게 설치 요청을 할때 설정된 수익률 안에서
+        가맹점의 수익을 보장합니다
+      </p>
     </>
   );
   function myPortionCalculater(maxPortion, salesPortion) {
@@ -193,24 +194,13 @@ function LoginPage(props) {
       <p
         style={{
           fontStyle: "normal",
-          fontWeight: "200",
-          fontSize: "16px",
-          margin: "16px 0 0 24px"
-        }}
-      >
-        <>초대할 영업자 및 가맹점 아이디</>
-        <br />
-        {"아이디는 내정보 -> 내 아이디에서 확인 할 수 있습니다"}
-      </p>
-      <p
-        style={{
-          fontStyle: "normal",
           fontWeight: "500",
           fontSize: "16px",
-          margin: "16px 0 0 24px"
+          margin: "16px 0 0 24px",
+          paddingTop: "36px"
         }}
       >
-        영업자 아이디
+        세일즈 파트너 아이디를 추가해주세요
       </p>
       {invitations.map((value) => (
         <>
@@ -220,7 +210,7 @@ function LoginPage(props) {
             id="standard-full-width"
             // label="Phone Number"
             className={classes.textField}
-            placeholder="추가할 세일즈님 & 가맹 점주님 ID"
+            placeholder="추가할 세일즈 파트너 ID"
             // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
             value={value.id}
             onChange={(e) => {
@@ -242,13 +232,13 @@ function LoginPage(props) {
             }}
             inputProps={{
               style: {
-                paddingLeft: "0px",
+                // paddingLeft: "0px",
                 fontSize: "26px",
-                fontFamily: "Montserrat",
-                fontWeight: "bold",
+                // fontFamily: "Montserrat",
+                fontWeight: "bold"
 
-                boxSizing: "border-box",
-                marginTop: "10px"
+                // boxSizing: "border-box"
+                // marginTop: "10px"
               }
             }}
           />{" "}
@@ -259,6 +249,15 @@ function LoginPage(props) {
               width: "calc(100% - 64px)"
             }}
           >
+            <p
+              style={{
+                fontStyle: "normal",
+                fontWeight: "500",
+                fontSize: "16px"
+              }}
+            >
+              세일즈 파트너의 수익률
+            </p>
             <InputLabel
               shrink={false}
               style={{
@@ -277,6 +276,7 @@ function LoginPage(props) {
               className={classes.select}
               labelId="demo-simple-select-label"
               id="demo-simple-select"
+              variant="outlined"
               value={value.portion}
               placeholder="Bank"
               style={{
@@ -311,6 +311,7 @@ function LoginPage(props) {
             </Select>
           </FormControl>
           <Button
+            style={{ paddingLeft: "24px" }}
             onClick={() => {
               const invis = [...invitations].filter(
                 (variable) => variable.key !== value.key
@@ -336,6 +337,18 @@ function LoginPage(props) {
       >
         더하기
       </Button>
+      <p
+        style={{
+          fontStyle: "normal",
+          fontWeight: "200",
+          fontSize: "16px",
+          margin: "16px 0 0 24px"
+        }}
+      >
+        <>초대할 영업자 및 가맹점 아이디</>
+        <br />
+        {"아이디는 내정보 -> 내 아이디에서 확인 할 수 있습니다"}
+      </p>
     </>
   );
 
@@ -398,27 +411,20 @@ function LoginPage(props) {
                     margin: "16px 0 0 24px"
                   }}
                 >
-                  2/2
+                  3/4
                 </p>
+                <SubTitle title="영업 방법" />
+
                 <p
                   style={{
                     fontStyle: "normal",
                     fontWeight: "500",
                     fontSize: "16px",
-                    margin: "16px 0 0 24px"
+                    margin: "16px 0 0 24px",
+                    paddingTop: "12px"
                   }}
                 >
                   반토 파트너스 영업망을 통해 영업을 설치하시겠습니까
-                </p>
-                <p
-                  style={{
-                    fontStyle: "normal",
-                    fontWeight: "300",
-                    fontSize: "16px",
-                    margin: "16px 0 0 24px"
-                  }}
-                >
-                  *파트너스에 가입한 영업자, 가맹점에 의해 자동으로 설치됩니다
                 </p>
               </div>
               <div style={{ marginLeft: "8px" }}>
@@ -490,6 +496,22 @@ function LoginPage(props) {
                   </RadioGroup>
                 </FormControl>
               </div>
+
+              <p
+                style={{
+                  fontStyle: "normal",
+                  fontWeight: "300",
+                  fontSize: "16px",
+                  margin: "16px 0 0 24px",
+                  color: "blue"
+                }}
+              >
+                {value === constant.salesMethod.banto
+                  ? "*파트너스에 가입한 영업자, 가맹점에 의해 자동으로 설치됩니다"
+                  : value === constant.salesMethod.ownSales
+                  ? "*지정한 영업자(본인포함)만 해당 스테이션을 설치할 수 있습니다"
+                  : "*설정 후에 설치할 수 있습니다"}
+              </p>
               {value === constant.salesMethod.banto
                 ? bantoBody
                 : value === constant.salesMethod.ownSales

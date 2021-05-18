@@ -99,7 +99,6 @@ function LoginPage(props) {
         return;
       }
       let dataAdded = result.data && result.data;
-
       setData({
         data: [...apiData.data, ...dataAdded],
         pageNumber: apiData.pageNumber + 1
@@ -175,7 +174,15 @@ function LoginPage(props) {
         >
           <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+          <TableRow>
+            <TableCell align="center">가맹점</TableCell>
+            <TableCell align="right">상태&nbsp;</TableCell>
+           
+          </TableRow>
+        </TableHead>
               <TableBody>
+        
                 {apiData.data &&
                   // apiData.data.userId &&
                   apiData.data.map((i, index) => (
@@ -187,14 +194,14 @@ function LoginPage(props) {
                       }}
                     >
                       <TableCell
-                        style={{ height: "60px", verticalAlign: "top" }}
-                        align="left"
+                        style={{ height: "60px", verticalAlign: "center" }}
+                        align="center"
                       >
                         <p
                           style={{
                             fontWeight: "bold",
-                            fontSize: "16px",
-                            color: "#00838F"
+                            fontSize: "20px",
+                            
                           }}
                         >
                           {i.storeName}
@@ -203,7 +210,6 @@ function LoginPage(props) {
                           style={{
                             fontWeight: "bold",
                             fontSize: "16px",
-                            color: "#00838F"
                           }}
                         >
                           ({i.stationId})
@@ -215,7 +221,6 @@ function LoginPage(props) {
                       >
                         <p
                           style={{
-                            fontFamily: "Montserrat",
                             fontStyle: "normal",
                             fontWeight: "800",
                             fontSize: "26px",
@@ -226,13 +231,13 @@ function LoginPage(props) {
                         </p>
                         <p
                           style={{
-                            fontFamily: "Montserrat",
                             fontStyle: "normal",
                             fontWeight: "800",
                             fontSize: "26px",
                             marginTop: "8px"
                           }}
                         >
+                          {console.log("라스트 업데이트", i)}
                           ({common.timeForToday(i.lastUpdated)})
                         </p>
                       </TableCell>

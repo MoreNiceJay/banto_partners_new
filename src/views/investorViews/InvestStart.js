@@ -221,13 +221,12 @@ function InvestStart(props) {
                     border: buttonDisabled
                       ? "2px solid #f1f1f1"
                       : "2px solid #000A12",
-                    fontFamily: "Montserrat",
                     fontStyle: "normal",
                     fontWeight: "600",
                     fontSize: "12px"
                   }}
                 >
-                  next
+                  다음
                 </Button>
               </div>
             </section>
