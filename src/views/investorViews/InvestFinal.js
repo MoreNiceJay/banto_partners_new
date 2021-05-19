@@ -21,19 +21,24 @@ import { useGlobal } from "../../globalContext";
 import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
 import * as constant from "../../Const";
+import SubTitle from "../../components/SubTitle";
+import Modal from '@material-ui/core/Modal';
+import PolicyModal from "../../components/PolicyModal"
+
 
 const useStyles = makeStyles((theme) => ({
-  card: { backgroundColor: "black", margin: "12px 16px", borderRadius: "15px" },
+  card: { backgroundColor: "black", margin: "24px 24px", borderRadius: "15px" },
   description: {
-    textAlign: "center",
+    textAlign: "left",
     fontStyle: "normal",
-    fontWeight: "700",
+    fontWeight: "400",
     fontSize: "14px",
-    marginTop: "16px"
+    marginTop: "16px",
+    marginLeft:"24px"
   },
   card2: {
     backgroundColor: "#F7F7F7",
-    margin: "12px 16px",
+    margin: "24px",
     borderRadius: "15px",
     border: "2px solid #F7F7F7",
     marginTop: "32px"
@@ -56,8 +61,35 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "24px",
     lineHeight: "36px",
     marginTop: "8px"
-  }
+  },
+  paper: {
+    position: 'absolute',
+    width: "90%",
+    backgroundColor: "white",
+    border: '2px solid #000',
+    height: "90%",
+    display:"flex",
+    flexDirection:"column"
+
+    // boxShadow: theme.shadows[5],
+    // padding: theme.spacing(2, 4, 3),
+  },
 }));
+
+
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+
+
 function InvestFinal(props) {
   const classes = useStyles(props);
   const context = useGlobal();
@@ -65,10 +97,42 @@ function InvestFinal(props) {
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
-  console.log(context.getInvestInfo);
+
+  const [modalStyle] = React.useState(getModalStyle);
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+
+  const body = (
+    // <div style={modalStyle} className={classes.paper}>
+     
+    //   <iframe  style={{alignSelf:"center",height:"90%", width:"90%"}} src="https://bantoservice.xyz/policy" />
+    //   <Button
+    //     style={{ backgroundColor:"black", color:"white" , marginTop:"5%", marginLeft:"10px", marginRight:"10px", marginBottom:"5px"}}
+    //     // variant="contained"
+    //     onClick={() => {
+    //       setOpen(false);
+
+    //     }}
+    //   >
+    //     확인
+    //   </Button>
+      
+    // </div>
+    <PolicyModal url="https://bantoservice.xyz/policy" closeModal={()=>{setOpen(false)}}></PolicyModal>
+    
+  );
+
+
 
   const [state, setState] = React.useState({
-    checkedA: true,
+    checkedA: false,
     checkedB: true,
     checkedF: true,
     checkedG: true
@@ -76,7 +140,6 @@ function InvestFinal(props) {
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
-  console.log(context.getInvestInfo.stationAmount);
   const GreenCheckbox = withStyles({
     root: {
       color: "black",
@@ -119,6 +182,8 @@ function InvestFinal(props) {
 
           <main>
             <section>
+            <SubTitle title="주문 정보" />
+
               <Paper variant="outlined" square className={classes.card}>
                 <div style={{ margin: "52px 24px" }}>
                   <p
@@ -227,10 +292,61 @@ function InvestFinal(props) {
                       " 원 / "}{" "}
                     {`${context.getInvestInfo.amount}대`}
                   </p>
+                  
+                        <p style={{
+                      color: "#5DDEF4",
+                      fontWeight: "400",
+                      fontSize: "16px",
+                      marginTop: "56px",
+                      textAlign: "left"
+                    }} className={classes.bankInfoDescription}>영업 방법</p>
+                        <p className={classes.bankInfoInfo}  style={{
+                      color: "#5DDEF4",
+                      fontFamily: "Montserrat",
+                      fontStyle: "normal",
+                      fontWeight: "bold",
+                      fontSize: "32px",
+                      lineHeight: "34px",
+                      textAlign: "right",
+                      marginTop: "16px",
+                      textAlign: "left"
+                    }}>
+                          {context.getInvestInfo.salesMethod === constant.salesMethod.banto ? "반토 영업망" :(context.getInvestInfo.salesMethod === constant.salesMethod.ownSales ? "자체 영업망" :("추후 선택"))}
+                        </p>
+                      {context.getInvestInfo.salesMethod === constant.salesMethod.ownSales ? 
+                      ( <> <p className={classes.bankInfoDescription} style={{
+                        color: "#5DDEF4",
+                        fontWeight: "400",
+                        fontSize: "16px",
+                        marginTop: "56px",
+                        textAlign: "left"
+                      }}>
+                          영업자 
+                        </p>
+                        <p className={classes.bankInfoInfo}
+                        style={{
+                          color: "#5DDEF4",
+                          fontFamily: "Montserrat",
+                          fontStyle: "normal",
+                          fontWeight: "bold",
+                          fontSize: "32px",
+                          lineHeight: "34px",
+                          textAlign: "right",
+                          marginTop: "16px",
+                          textAlign: "left"
+                        }}>
+                          {context.getInvestInfo.preSalesIds.map((value)=>{
+                            return <p>{value} </p>
+                          })}
+                        </p></>):""} 
+
                 </div>
               </Paper>
+              
+              <SubTitle title="입금 정보" />
+
               <p className={classes.description}>
-                아래 계좌로 이체하시면 투자가 완료됩니다!
+                아래 계좌로 이체하시면 투자가 완료됩니다
               </p>
             </section>
             <section className={classes.section}>
@@ -251,19 +367,27 @@ function InvestFinal(props) {
                         <p className={classes.bankInfoInfo}>반토주식회사</p>
                       </li>
                       <li>
+                        <p className={classes.bankInfoDescription}>입금할 금액</p>
+                        <p className={classes.bankInfoInfo}>{numberWithCommas(context.getInvestInfo.totalPrice) +
+                      " 원 "}</p>
+                      </li>
+                      {/* <li>
                         <p className={classes.bankInfoDescription}>영업 방법</p>
                         <p className={classes.bankInfoInfo}>
-                          {context.getInvestInfo.salesMethod}
+                          {context.getInvestInfo.salesMethod === constant.salesMethod.banto ? "반토 영업망" :(context.getInvestInfo.salesMethod === constant.salesMethod.ownSales ? "자체 영업망" :("추후 선택"))}
                         </p>
                       </li>
-                      <li>
+                      {context.getInvestInfo.salesMethod === constant.salesMethod.ownSales ? (<li>
                         <p className={classes.bankInfoDescription}>
-                          영업자 & 가맹점주님 ID
+                          영업자 
                         </p>
                         <p className={classes.bankInfoInfo}>
-                          {context.getInvestInfo.preSalesIds}
+                          {context.getInvestInfo.preSalesIds.map((value)=>{
+                            return <p>{value} </p>
+                          })}
                         </p>
-                      </li>
+                      </li>):""} */}
+                      
                     </ul>
                   </div>
                 </Paper>
@@ -295,12 +419,16 @@ function InvestFinal(props) {
                           lineHeight: "21px"
                         }}
                       >
-                        2020년 하반기 정책사항에 동의 합니다
+                        {common.getTodayYear()}년 하반기 정책사항에 동의 합니다
                       </span>
                     }
                   />
                   <p style={{ textAlign: "right" }}>
                     <Link
+                    onClick={()=>{
+                      // alert("약관 띄우자")
+                      handleOpen()
+                    }}
                       style={{
                         marginRight: "24px",
                         textDecoration: "underline"
@@ -329,6 +457,11 @@ function InvestFinal(props) {
                     backgroundColor: "black"
                   }}
                   onClick={async () => {
+                    if(!state.checkedA){
+                      alert("약관 동의가 필요합니다")
+                      return
+                    }
+
                     if (!auth.userExtraInfo) {
                       if (
                         window.confirm(
@@ -354,6 +487,13 @@ function InvestFinal(props) {
             </section>
           </main>
           <footer></footer>
+          <Modal
+        open={open}
+        onClose={handleClose}
+       
+      >
+        {body}
+      </Modal>
         </div>
       </Slide>
     </>
