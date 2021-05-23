@@ -100,14 +100,107 @@ function LoginPage(props) {
       color: "black"
     }
   })((props) => <Checkbox color="default" {...props} />);
-  const data = [
+  const buyerData = [
     {
-      title: "매장명",
+      title: "스테이션 수",
+      data: apiData && apiData.amount,
+      link: "/sales/regist/address"
+    },
+    {
+      title: "총 금액",
+      data: 
+        apiData && apiData.totalPrice,
+      link: "/sales/regist/address"
+    },
+    {
+      title: "입금자",
+      data: apiData && apiData.storeOwnerPhoneNumber,
+      link: "/sales/regist/contact"
+    },
+    {
+      title: "은행",
       data: apiData && apiData.storeName,
       link: "/sales/regist/address"
     },
     {
-      title: "매장 주소",
+      title: "계좌번호",
+      data: [
+        apiData && apiData.storeMainAddress,
+        apiData && apiData.storeRestAddress
+      ].join(" "),
+      link: "/sales/regist/address"
+    },
+    {
+      title: "신청서 상태",
+      data: apiData && apiData.storeOwnerPhoneNumber,
+      link: "/sales/regist/contact"
+    },
+
+    {
+      title: "영업 방법",
+      data: apiData && apiData.storePhoneNumber,
+      link: "/sales/regist/contact"
+    },
+
+    {
+      title: "세일즈 파트너에게 할당된 수익률",
+      data: apiData && apiData.storePortion + "%",
+      link: "/sales/regist/portion"
+    },
+    {
+      title: "나의 수익률",
+      data: apiData && apiData.storePortion + "%",
+      link: "/sales/regist/portion"
+    },
+    {
+      title: "영업인 (수익률)",
+      data: `${
+        auth.userExtraInfo ? auth.userExtraInfo.id : constant.exampleUserId
+      }(${apiData && apiData.salesPortion}%)`,
+      link: "/sales/regist/portion"
+    },
+    apiData && apiData.buyerStatus === "noOwner" && {},
+          
+    {
+      title: "스테이션 보유자(스테이션 ID)(수익률%)",
+      data: `${
+        apiData && apiData.buyerStatus === "noOwner"
+          ? "반토 무료 스테이션 신청"
+          : apiData && apiData.buyerStatus === "ownBuyer"
+          ? `${auth.user.email} (${apiData && apiData.stationId}) (${
+              apiData && apiData.buyerPortion
+            }%)`
+          : `${apiData && apiData.buyer} (${apiData && apiData.stationId}) (${
+              apiData && apiData.buyerPortion
+            }%)`
+      }`,
+      link: "/sales/regist/portion"
+    }
+  ];
+  const data = [
+    {
+      title: "스테이션 수",
+      data: apiData && apiData.amount,
+      link: "/sales/regist/address"
+    },
+    {
+      title: "총 금액",
+      data: 
+        apiData && apiData.totalPrice,
+      link: "/sales/regist/address"
+    },
+    {
+      title: "입금자",
+      data: apiData && apiData.storeOwnerPhoneNumber,
+      link: "/sales/regist/contact"
+    },
+    {
+      title: "은행",
+      data: apiData && apiData.storeName,
+      link: "/sales/regist/address"
+    },
+    {
+      title: "계좌번호",
       data: [
         apiData && apiData.storeMainAddress,
         apiData && apiData.storeRestAddress
@@ -154,6 +247,424 @@ function LoginPage(props) {
       link: "/sales/regist/portion"
     }
   ];
+  
+  
+  const buyerBody = (<><section className={classes.section}>
+    {apiData &&
+      data.map((value) => {
+        return (
+          <div>
+            <div
+              style={{
+                display: "flex",
+                flexDirextion: "rows",
+                alignItems: "center",
+                justifyContent: "space-between",
+                margin: "16px 0 0 24px"
+              }}
+            >
+              <p
+                style={{
+                  fontStyle: "normal",
+                  fontWeight: "500",
+                  fontSize: "16px",
+                  color: "#000A12",
+                  opacity: "0.4"
+                }}
+              >
+                {value.title}
+              </p>
+
+              {/* <Link
+                style={{
+                  textDecoration: "underline",
+                  fontFamily: "Noto Sans CJK KR",
+                  fontStyle: "normal",
+                  fontWeight: "500",
+                  fontSize: "12px",
+                  marginRight: "24px"
+                }}
+              >
+                수정
+              </Link> */}
+            </div>
+            <p
+              style={{
+                fontFamily: "Montserrat",
+                fontStyle: "normal",
+                fontWeight: "bold",
+                fontSize: "24px",
+                margin: "16px 0 60px 24px",
+                color: "#000A12"
+              }}
+            >
+              {value.data}
+            </p>
+          </div>
+        );
+      })}
+  </section>
+  <section>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column"
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "rows",
+          alignItems: "center",
+          justifyContent: "space-between"
+        }}
+      >
+        {/* <FormControlLabel
+          style={{ marginLeft: "14px" }}
+          control={
+            <BlackCheckbox
+              checked={state.checkedA}
+              onChange={handleChange}
+              name="checkedA"
+              icon={<CircleUnchecked />}
+              checkedIcon={<CircleCheckedFilled />}
+            />
+          }
+          label={
+            <span
+              style={{
+                fontStyle: "normal",
+                fontWeight: "normal",
+                fontSize: "14px",
+                lineHeight: "21px"
+              }}
+            >
+              2020년 하반기 정책사항에 동의 합니다
+            </span>
+          }
+        />
+        <p style={{ textAlign: "right" }}>
+          <Link
+            style={{
+              marginRight: "24px",
+              textDecoration: "underline"
+            }}
+          >
+            약관확인
+          </Link>
+        </p> */}
+      </div>
+
+      <Button
+        variant="outlined"
+        onClick={async () => {
+          if (window.confirm("신청서를 삭제하시겠습니까")) {
+            const result = await common.deleteApplication(id);
+            if (result.code !== 200) {
+              alert(result.msg);
+              return;
+            }
+            alert("삭제되었습니다");
+            props.history.push("/table/application?role=sales");
+          } else {
+          }
+        }}
+        style={{
+          width: "calc(100% - 64px)",
+          height: "64px",
+          margin: "24px 32px",
+          borderRadius: "15px",
+          backgroundColor: "#000A12",
+          border: "2px solid #000A12",
+          fontFamily: "Noto Sans CJK KR",
+          fontStyle: "normal",
+          fontWeight: "500",
+          fontSize: "18px",
+          color: "white"
+        }}
+      >
+        삭제하기
+      </Button>
+    </div>
+  </section></>)
+  
+  const salesBody = (<><section className={classes.section}>
+    {apiData &&
+      data.map((value) => {
+        return (
+          <div>
+            <div
+              style={{
+                display: "flex",
+                flexDirextion: "rows",
+                alignItems: "center",
+                justifyContent: "space-between",
+                margin: "16px 0 0 24px"
+              }}
+            >
+              <p
+                style={{
+                  fontStyle: "normal",
+                  fontWeight: "500",
+                  fontSize: "16px",
+                  color: "#000A12",
+                  opacity: "0.4"
+                }}
+              >
+                {value.title}
+              </p>
+
+              {/* <Link
+                style={{
+                  textDecoration: "underline",
+                  fontFamily: "Noto Sans CJK KR",
+                  fontStyle: "normal",
+                  fontWeight: "500",
+                  fontSize: "12px",
+                  marginRight: "24px"
+                }}
+              >
+                수정
+              </Link> */}
+            </div>
+            <p
+              style={{
+                fontFamily: "Montserrat",
+                fontStyle: "normal",
+                fontWeight: "bold",
+                fontSize: "24px",
+                margin: "16px 0 60px 24px",
+                color: "#000A12"
+              }}
+            >
+              {value.data}
+            </p>
+          </div>
+        );
+      })}
+  </section>
+  <section>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column"
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "rows",
+          alignItems: "center",
+          justifyContent: "space-between"
+        }}
+      >
+        {/* <FormControlLabel
+          style={{ marginLeft: "14px" }}
+          control={
+            <BlackCheckbox
+              checked={state.checkedA}
+              onChange={handleChange}
+              name="checkedA"
+              icon={<CircleUnchecked />}
+              checkedIcon={<CircleCheckedFilled />}
+            />
+          }
+          label={
+            <span
+              style={{
+                fontStyle: "normal",
+                fontWeight: "normal",
+                fontSize: "14px",
+                lineHeight: "21px"
+              }}
+            >
+              2020년 하반기 정책사항에 동의 합니다
+            </span>
+          }
+        />
+        <p style={{ textAlign: "right" }}>
+          <Link
+            style={{
+              marginRight: "24px",
+              textDecoration: "underline"
+            }}
+          >
+            약관확인
+          </Link>
+        </p> */}
+      </div>
+
+      <Button
+        variant="outlined"
+        onClick={async () => {
+          if (window.confirm("신청서를 삭제하시겠습니까")) {
+            const result = await common.deleteApplication(id);
+            if (result.code !== 200) {
+              alert(result.msg);
+              return;
+            }
+            alert("삭제되었습니다");
+            props.history.push("/table/application?role=sales");
+          } else {
+          }
+        }}
+        style={{
+          width: "calc(100% - 64px)",
+          height: "64px",
+          margin: "24px 32px",
+          borderRadius: "15px",
+          backgroundColor: "#000A12",
+          border: "2px solid #000A12",
+          fontFamily: "Noto Sans CJK KR",
+          fontStyle: "normal",
+          fontWeight: "500",
+          fontSize: "18px",
+          color: "white"
+        }}
+      >
+        삭제하기
+      </Button>
+    </div>
+  </section></>)
+
+const storeBody = (<><section className={classes.section}>
+  {apiData &&
+    data.map((value) => {
+      return (
+        <div>
+          <div
+            style={{
+              display: "flex",
+              flexDirextion: "rows",
+              alignItems: "center",
+              justifyContent: "space-between",
+              margin: "16px 0 0 24px"
+            }}
+          >
+            <p
+              style={{
+                fontStyle: "normal",
+                fontWeight: "500",
+                fontSize: "16px",
+                color: "#000A12",
+                opacity: "0.4"
+              }}
+            >
+              {value.title}
+            </p>
+
+            {/* <Link
+              style={{
+                textDecoration: "underline",
+                fontFamily: "Noto Sans CJK KR",
+                fontStyle: "normal",
+                fontWeight: "500",
+                fontSize: "12px",
+                marginRight: "24px"
+              }}
+            >
+              수정
+            </Link> */}
+          </div>
+          <p
+            style={{
+              fontFamily: "Montserrat",
+              fontStyle: "normal",
+              fontWeight: "bold",
+              fontSize: "24px",
+              margin: "16px 0 60px 24px",
+              color: "#000A12"
+            }}
+          >
+            {value.data}
+          </p>
+        </div>
+      );
+    })}
+</section>
+<section>
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column"
+    }}
+  >
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "rows",
+        alignItems: "center",
+        justifyContent: "space-between"
+      }}
+    >
+      {/* <FormControlLabel
+        style={{ marginLeft: "14px" }}
+        control={
+          <BlackCheckbox
+            checked={state.checkedA}
+            onChange={handleChange}
+            name="checkedA"
+            icon={<CircleUnchecked />}
+            checkedIcon={<CircleCheckedFilled />}
+          />
+        }
+        label={
+          <span
+            style={{
+              fontStyle: "normal",
+              fontWeight: "normal",
+              fontSize: "14px",
+              lineHeight: "21px"
+            }}
+          >
+            2020년 하반기 정책사항에 동의 합니다
+          </span>
+        }
+      />
+      <p style={{ textAlign: "right" }}>
+        <Link
+          style={{
+            marginRight: "24px",
+            textDecoration: "underline"
+          }}
+        >
+          약관확인
+        </Link>
+      </p> */}
+    </div>
+
+    <Button
+      variant="outlined"
+      onClick={async () => {
+        if (window.confirm("신청서를 삭제하시겠습니까")) {
+          const result = await common.deleteApplication(id);
+          if (result.code !== 200) {
+            alert(result.msg);
+            return;
+          }
+          alert("삭제되었습니다");
+          props.history.push("/table/application?role=sales");
+        } else {
+        }
+      }}
+      style={{
+        width: "calc(100% - 64px)",
+        height: "64px",
+        margin: "24px 32px",
+        borderRadius: "15px",
+        backgroundColor: "#000A12",
+        border: "2px solid #000A12",
+        fontFamily: "Noto Sans CJK KR",
+        fontStyle: "normal",
+        fontWeight: "500",
+        fontSize: "18px",
+        color: "white"
+      }}
+    >
+      삭제하기
+    </Button>
+  </div>
+</section></>)
 
   return (
     <>
@@ -177,148 +688,11 @@ function LoginPage(props) {
             </>
           )}
           <header>
-            <NavBar title="스테이션 정보" backLink={`/popToTop/`} search=" " />
+            <NavBar title="신청서 정보" backLink={`/popToTop/`}  />
           </header>
 
           <main>
-            <section className={classes.section}>
-              {apiData &&
-                data.map((value) => {
-                  return (
-                    <div>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirextion: "rows",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          margin: "16px 0 0 24px"
-                        }}
-                      >
-                        <p
-                          style={{
-                            fontStyle: "normal",
-                            fontWeight: "500",
-                            fontSize: "16px",
-                            color: "#000A12",
-                            opacity: "0.4"
-                          }}
-                        >
-                          {value.title}
-                        </p>
-
-                        {/* <Link
-                          style={{
-                            textDecoration: "underline",
-                            fontFamily: "Noto Sans CJK KR",
-                            fontStyle: "normal",
-                            fontWeight: "500",
-                            fontSize: "12px",
-                            marginRight: "24px"
-                          }}
-                        >
-                          수정
-                        </Link> */}
-                      </div>
-                      <p
-                        style={{
-                          fontFamily: "Montserrat",
-                          fontStyle: "normal",
-                          fontWeight: "bold",
-                          fontSize: "24px",
-                          margin: "16px 0 60px 24px",
-                          color: "#000A12"
-                        }}
-                      >
-                        {value.data}
-                      </p>
-                    </div>
-                  );
-                })}
-            </section>
-            <section>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column"
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "rows",
-                    alignItems: "center",
-                    justifyContent: "space-between"
-                  }}
-                >
-                  {/* <FormControlLabel
-                    style={{ marginLeft: "14px" }}
-                    control={
-                      <BlackCheckbox
-                        checked={state.checkedA}
-                        onChange={handleChange}
-                        name="checkedA"
-                        icon={<CircleUnchecked />}
-                        checkedIcon={<CircleCheckedFilled />}
-                      />
-                    }
-                    label={
-                      <span
-                        style={{
-                          fontStyle: "normal",
-                          fontWeight: "normal",
-                          fontSize: "14px",
-                          lineHeight: "21px"
-                        }}
-                      >
-                        2020년 하반기 정책사항에 동의 합니다
-                      </span>
-                    }
-                  />
-                  <p style={{ textAlign: "right" }}>
-                    <Link
-                      style={{
-                        marginRight: "24px",
-                        textDecoration: "underline"
-                      }}
-                    >
-                      약관확인
-                    </Link>
-                  </p> */}
-                </div>
-
-                <Button
-                  variant="outlined"
-                  onClick={async () => {
-                    if (window.confirm("신청서를 삭제하시겠습니까")) {
-                      const result = await common.deleteApplication(id);
-                      if (result.code !== 200) {
-                        alert(result.msg);
-                        return;
-                      }
-                      alert("삭제되었습니다");
-                      props.history.push("/table/application?role=sales");
-                    } else {
-                    }
-                  }}
-                  style={{
-                    width: "calc(100% - 64px)",
-                    height: "64px",
-                    margin: "24px 32px",
-                    borderRadius: "15px",
-                    backgroundColor: "#000A12",
-                    border: "2px solid #000A12",
-                    fontFamily: "Noto Sans CJK KR",
-                    fontStyle: "normal",
-                    fontWeight: "500",
-                    fontSize: "18px",
-                    color: "white"
-                  }}
-                >
-                  삭제하기
-                </Button>
-              </div>
-            </section>
+            {role === "buyer" ? buyerBody:(role === "salesManager"? salesBody:storeBody)}
           </main>
           <footer></footer>
         </div>
