@@ -24,6 +24,7 @@ import * as constant from "../../Const";
 import SubTitle from "../../components/SubTitle";
 import Modal from '@material-ui/core/Modal';
 import PolicyModal from "../../components/PolicyModal"
+import Axios from "axios";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -478,10 +479,26 @@ function InvestFinal(props) {
                       constant.role.buyer,
                       context.getInvestInfo
                     );
+
+                    console.log("유저아이디", auth.user.email)
+                    const result = await Axios.post(
+                      constant.urls.domain + "/notifications/sendMsgBuyer",
+                      {
+                        email:auth.user.email,
+                        amount:context.getInvestInfo.amount,
+                        price:context.getInvestInfo.totalPrice,
+                        
+                      }
+                    );
+                    console.log("result:", result)
+                    if (result.data.code !== 200) {
+                      return { code: 400, msg: result.data.msg };
+                    }
+                    await 
                     props.history.push("/investor/done");
                   }}
                 >
-                  완료
+                  신청 완료
                 </Button>
               </div>
             </section>

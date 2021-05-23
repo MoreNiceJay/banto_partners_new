@@ -5,7 +5,7 @@ import { HeaderInfo } from "../../components/HeaderInfo.js";
 import NavBar from "../../components/NavBar.js";
 import { MenuList } from "../../components/MenuList.js";
 import BottomNavigation from "../../components/BottomNavigation.js";
-
+import EmtySpace from "../../components/EmptySpace"
 import Slide from "@material-ui/core/Slide";
 
 const useStyles = makeStyles((theme) => ({
@@ -16,26 +16,28 @@ function InvestorMenu(props) {
 
   const roleMenu = [
     {
-      titleBold: "투자",
-      titleRegular: "하기",
+      titleBold: "구매하기",
+      titleRegular: "",
       link: "/investor/invest"
     },
     {
-      titleBold: "수익",
-      titleRegular: "확인",
-      link: "/table/earning?role=buyer"
+      titleBold: "신청서 상태",
+      titleRegular: "",
+      link: "/table/application?role=buyer"
     },
+   
 
     {
-      titleBold: "스테이션",
-      titleRegular: " 정보",
+      titleBold: "설치된 반토 스테이션",
+      titleRegular: "",
       link: "/table/station?role=buyer"
     },
     {
-      titleBold: "신청서",
-      titleRegular: "상태",
-      link: "/table/application?role=buyer"
+      titleBold: "내 수익",
+      titleRegular: "",
+      link: "/table/earning?role=buyer"
     }
+   
   ];
 
   return (
@@ -51,17 +53,18 @@ function InvestorMenu(props) {
           <header>
             <NavBar title="" backLink="battery-service-roll" />
             <HeaderInfo
-              title="투자자"
-              description="반토 스테이션에 투자하여 수익을 창출할 수 있습니다"
+              title="구매자"
+              description="반토 스테이션을 구매하면 자동으로 수익을 창출할 수 있습니다"
             />
           </header>
           <main>
             <MenuList menuList={roleMenu} />
           </main>
+          {/* 여기에 브로셔 넣기 */}
           <div className={classes.emptySpace} />
 
           <footer></footer>
-          <BottomNavigation />
+          {/* <BottomNavigation /> */}
         </div>
       </Slide>
     </>

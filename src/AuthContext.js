@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
         return;
       }
       const userInfo = await fetchUserStatus();
-      console.log(userInfo.data, "유저인포");
+      // console.log(userInfo.data, "유저인포");
       if (userInfo.code !== 200) {
         console.log(userInfo.msg);
         return;

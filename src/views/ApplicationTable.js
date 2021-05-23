@@ -139,6 +139,8 @@ function LoginPage(props) {
   //     });
   //   });
   // }, []);
+  const backLink =  query.role === "buyer" ? "investormenu" : (query.role === "salesManager" ? "salesmenu" : "storemenu")
+  const roleName =  query.role === "buyer" ? "구매자" : (query.role === "salesManager" ? "세일즈" : "가맹점")
 
   return (
     <>
@@ -163,7 +165,7 @@ function LoginPage(props) {
             zIndex: "99999"
           }}
         >
-          <NavBar title="신청서" backLink="/main" />
+          <NavBar title={`${roleName} 신청서`} backLink={`/${backLink}`} />
         </header>
 
         {/* </div> */}

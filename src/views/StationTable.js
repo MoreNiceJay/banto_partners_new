@@ -139,6 +139,10 @@ function LoginPage(props) {
   //   });
   // }, []);
 
+  console.log(query.role)
+  const backLink =  query.role === "buyer" ? "investormenu" : (query.role === "salesManager" ? "salesmenu" : "storemenu")
+  const roleName =  query.role === "buyer" ? "구매자" : (query.role === "salesManager" ? "세일즈" : "가맹점")
+
   return (
     <>
       {!auth.userExtraInfo && (
@@ -162,7 +166,8 @@ function LoginPage(props) {
             zIndex: "99999"
           }}
         >
-          <NavBar title="스테이션" backLink="/salesmenu" />
+          <NavBar title=  {`${roleName} 스테이션 `}
+ backLink = {`/${backLink}`} />
         </header>
 
         {/* </div> */}

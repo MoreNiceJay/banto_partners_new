@@ -186,6 +186,9 @@ function LoginPage({ props, location }) {
       await fetchRevenue();
     })();
   }, [calender]);
+  console.log(query.role)
+  const backLink =  query.role === "buyer" ? "investormenu" : (query.role === "salesManager" ? "salesmenu" : "storemenu")
+  const roleName =  query.role === "buyer" ? "구매자" : (query.role === "salesManager" ? "세일즈" : "가맹점")
 
   return (
     <>
@@ -213,7 +216,7 @@ function LoginPage({ props, location }) {
             zIndex: "99999"
           }}
         >
-          <NavBar title="수익 확인" backLink="/main" />
+          <NavBar title={`${roleName} 수익`} backLink={`/${backLink}`} />
         </header>
 
         <div

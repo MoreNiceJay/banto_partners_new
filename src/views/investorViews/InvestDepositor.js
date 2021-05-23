@@ -136,7 +136,7 @@ function LoginPage(props) {
         <FormControl
           style={{
             margin: "0 0 0 24px",
-            marginTop: "12px",
+            marginTop: "4px",
             width: "calc(100% - 64px)"
           }}
         >

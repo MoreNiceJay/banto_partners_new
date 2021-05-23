@@ -21,26 +21,28 @@ function SalesMenu(props) {
 
   const roleMenu = [
     {
-      titleBold: "등록",
-      titleRegular: "하기",
+      titleBold: "가맹점 등록하기",
+      titleRegular: "",
       link: "/sales/regist/address"
-    },
+    }
+,
+{
+  titleBold: "신청서 상태",
+  titleRegular: "",
+  link: "/table/application?role=salesManager"
+},
     {
-      titleBold: "수익",
-      titleRegular: "확인",
-      link: "/table/earning?role=salesManager"
-    },
-
-    {
-      titleBold: "스테이션",
-      titleRegular: " 정보",
+      titleBold: "설치된 반토 스테이션",
+      titleRegular: "",
       link: "/table/station?role=salesManager"
     },
+   
+    ,
     {
-      titleBold: "신청서",
-      titleRegular: "상태",
-      link: "/table/application?role=salesManager"
-    }
+      titleBold: "내 수익",
+      titleRegular: "",
+      link: "/table/earning?role=salesManager"
+    },
   ];
   return (
     <>
@@ -62,7 +64,7 @@ function SalesMenu(props) {
         <NavBar title="" backLink="battery-service-roll" />
         <HeaderInfo
           title="영업"
-          description="가맹점을 모집해 수익을 창출 할 수 있습니다"
+          description="가맹점을 찾아 등록하면 매달 자동으로 수익이 창출 됩니다"
         />
       </header>
       <main>

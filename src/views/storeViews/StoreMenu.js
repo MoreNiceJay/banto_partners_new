@@ -23,26 +23,28 @@ function SalesMenu(props) {
 
   const roleMenu = [
     {
-      titleBold: "스테이션 신청",
-      titleRegular: "하기",
+      titleBold: "반토 스테이션 신청",
+      titleRegular: "",
       link: "/store/apply/address"
     },
+    
     {
-      titleBold: "수익",
-      titleRegular: "확인",
-      link: "/table/earning?role=storeOwner"
+      titleBold: "신청서 상태",
+      titleRegular: "",
+      link: "/table/application?role=storeOwner"
     },
+    
 
     {
-      titleBold: "스테이션",
-      titleRegular: " 정보",
+      titleBold: "설치된 반토 스테이션",
+      titleRegular: "",
       link: "/table/station?role=storeOwner"
     },
     {
-      titleBold: "신청서",
-      titleRegular: "상태",
-      link: "/table/application?role=storeOwner"
-    }
+      titleBold: "내 수익",
+      titleRegular: "",
+      link: "/table/earning?role=storeOwner"
+    },
   ];
   return (
     <>

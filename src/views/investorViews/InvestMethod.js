@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { HeaderInfo } from "../../components/HeaderInfo.js";
 import NavBar from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -10,8 +9,7 @@ import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
+
 import Slide from "@material-ui/core/Slide";
 import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
@@ -26,6 +24,7 @@ import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import * as constant from "../../Const";
 import * as common from "../../common";
 import SubTitle from "../../components/SubTitle";
+import EmptySpace from "../../components/EmptySpace";
 
 var _ = require("lodash");
 
@@ -84,13 +83,19 @@ function LoginPage(props) {
 
   const bantoBody = (
     <>
+
+<EmptySpace/>
+<EmptySpace/>
+
+<SubTitle title="수익률 선택" />
+
       <p
         style={{
           fontStyle: "normal",
           fontWeight: "500",
           fontSize: "16px",
-          margin: "16px 0 0 24px",
-          paddingTop: "24px"
+          margin: "12px 0 0 24px",
+          paddingTop: "16px"
         }}
       >
         세일즈 파트너에게 분배할 수익률을 선택하세요
@@ -164,25 +169,21 @@ function LoginPage(props) {
         style={{
           fontStyle: "normal",
           fontWeight: "200",
-          fontSize: "16px",
-          margin: "16px 0 0 28px"
+          fontSize: "12px",
+          margin: "16px 0 0 24px"
         }}
       >
-        <>
-          - 세일즈 파트너는 설정한 이익률을 통해 설치할 기기를 선택할 수
-          있습니다
-        </>
+        *세일즈 파트너는 수익률을 확인해 설치할 기기를 선택합니다 
       </p>
       <p
         style={{
           fontStyle: "normal",
           fontWeight: "200",
-          fontSize: "16px",
+          fontSize: "12px",
           margin: "16px 0 0 24px"
         }}
       >
-        - 세일즈 파트너는 가맹점에게 설치 요청을 할때 설정된 수익률 안에서
-        가맹점의 수익을 보장합니다
+        *현재 수익률내에서 세일즈와 가맹점이 수익을 나눕니다
       </p>
     </>
   );
@@ -191,16 +192,20 @@ function LoginPage(props) {
   }
   const ownSalesBody = (
     <>
+    <EmptySpace/>
+<EmptySpace/>
+
+<SubTitle title="세일즈 파트너 등록" />
       <p
         style={{
           fontStyle: "normal",
           fontWeight: "500",
           fontSize: "16px",
           margin: "16px 0 0 24px",
-          paddingTop: "36px"
+          paddingTop: "12px"
         }}
       >
-        세일즈 파트너 아이디를 추가해주세요
+        세일즈 파트너의 아이디를 추가해주세요
       </p>
       {invitations.map((value) => (
         <>
@@ -256,7 +261,7 @@ function LoginPage(props) {
                 fontSize: "16px"
               }}
             >
-              세일즈 파트너의 수익률
+              세일즈 파트너 수익률
             </p>
             <InputLabel
               shrink={false}
@@ -341,13 +346,11 @@ function LoginPage(props) {
         style={{
           fontStyle: "normal",
           fontWeight: "200",
-          fontSize: "16px",
+          fontSize: "12px",
           margin: "16px 0 0 24px"
         }}
       >
-        <>초대할 영업자 및 가맹점 아이디</>
-        <br />
-        {"아이디는 내정보 -> 내 아이디에서 확인 할 수 있습니다"}
+        {`*세일즈 파트너의 아이디는 '내정보'에서 확인할 수 있습니다`}
       </p>
     </>
   );
@@ -358,13 +361,12 @@ function LoginPage(props) {
         style={{
           fontStyle: "normal",
           fontWeight: "200",
-          fontSize: "16px",
+          fontSize: "12px",
           margin: "16px 0 0 24px"
         }}
       >
-        <>세일즈 방법 설정은 구매후</>
-        <br />
-        {"(이익률은 설치전까지 투자 -> 스테이션 에서 수정할 수 있습니다)"}
+        <>*영업 방법은 설치전까지 '투자자' -{'>'} '신청서 상태' 에서 수정합니다</>
+        
       </p>
     </>
   );
@@ -501,16 +503,16 @@ function LoginPage(props) {
                 style={{
                   fontStyle: "normal",
                   fontWeight: "300",
-                  fontSize: "16px",
+                  fontSize: "12px",
                   margin: "16px 0 0 24px",
-                  color: "blue"
+                  color: "black"
                 }}
               >
                 {value === constant.salesMethod.banto
                   ? "*파트너스에 가입한 영업자, 가맹점에 의해 자동으로 설치됩니다"
                   : value === constant.salesMethod.ownSales
                   ? "*지정한 영업자(본인포함)만 해당 스테이션을 설치할 수 있습니다"
-                  : "*설정 후에 설치할 수 있습니다"}
+                  : "*설정 후에 설치됩니다"}
               </p>
               {value === constant.salesMethod.banto
                 ? bantoBody
