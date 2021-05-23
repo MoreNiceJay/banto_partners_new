@@ -182,7 +182,7 @@ export async function fetchStations(userId, role) {
     var startTime = new Date().getTime();
 
     const dataArray = [];
-    const stationnRef = db.collection("Stations").where(role, "==", userId).where("franchiseDoc", "!=", "")
+    const stationnRef = db.collection("Stations").where(role, "==", userId).where("approvedBy", "!=", "")
 
     const querySnapshot = await stationnRef.get();
     
@@ -191,8 +191,13 @@ export async function fetchStations(userId, role) {
           
     }))
     
+    console.log("dataArray",dataArray)
+
     await Promise.all(dataArray.map(async (value,index) => {
       console.log("벨류",value)
+      if (value.franchiseDoc === ""){
+        return
+      }
       const doc = await db.collection('Franchises').doc(value.franchiseDoc).get()
         dataArray[index].storeName = doc.data().storeName
         console.log(doc.data().storeName)

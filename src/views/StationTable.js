@@ -209,7 +209,7 @@ function LoginPage(props) {
                             
                           }}
                         >
-                          {i.storeName}
+                          {i.storeName ? i.storeName : "(영업 대기중)" }
                         </p>
                         <p
                           style={{

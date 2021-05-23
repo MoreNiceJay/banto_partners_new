@@ -60,7 +60,7 @@ export function GlobalProvider({ children }) {
     bank: "",
     bankAccount: "",
     createdBy: "",
-    confirmedBy: "",
+    approvedBy: "",
     installedBy: "",
     franchiseDoc: "",
     bIsOn: false,
@@ -91,7 +91,7 @@ export function GlobalProvider({ children }) {
     storePhoto: [],
     naverStoreUrl: "",
     createdBy: "",
-    confirmedBy: "",
+    approvedBy: "",
     contractYear: 0
   });
 
@@ -117,7 +117,7 @@ export function GlobalProvider({ children }) {
     naverStoreUrl: "",
     createdBy: "",
 
-    confirmedBy: "",
+    approvedBy: "",
     contractYear: 0
   });
 
