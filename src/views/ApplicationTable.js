@@ -211,7 +211,7 @@ function LoginPage(props) {
                   fontStyle: "normal",
                   fontWeight: "800",
                   fontSize: "18px",
-                  color: i.status === "WAITING" ? "black" : "#2eea19",
+                  color: i.status === "WAITING" ? "black" : "#71C848",
 
                 }}
               >
@@ -221,9 +221,10 @@ function LoginPage(props) {
               <p
                style={{
                 fontSize: "10px",
+                fontWeigth:"bold",
                 verticalAlign: "center"
               }}
-              >                {i.status === "WAITING" ? "" : `(${common.getMonthDayTimeMinute(i.approvedBy)})`}
+              >                {i.status === "WAITING" ? "" : `${common.getMonthDayTimeMinute(i.approvedBy)}`}
 </p>
             </TableCell>
           </TableRow>

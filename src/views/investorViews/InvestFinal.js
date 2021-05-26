@@ -490,10 +490,10 @@ function InvestFinal(props) {
                         
                       }
                     );
-                    console.log("result:", result)
-                    if (result.data.code !== 200) {
-                      return { code: 400, msg: result.data.msg };
-                    }
+                    // console.log("result:", result)
+                    // if (result.data.code !== 200) {
+                    //   return { code: 400, msg: result.data.msg };
+                    // }
                     await 
                     props.history.push("/investor/done");
                   }}

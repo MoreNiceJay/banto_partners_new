@@ -68,7 +68,8 @@ export function GlobalProvider({ children }) {
     bNeedToRetrieve: false,
     retrievingAskedBy: "",
     registeredBy: "",
-    lastUpdated: ""
+    lastUpdated: "",
+    postCode:"",
   });
 
   const [store, setStore] = React.useState({
@@ -100,6 +101,7 @@ export function GlobalProvider({ children }) {
     stationDoc: "",
 
     status: "WAITING",
+    rejectedReason:"",
     storeName: "",
     storeMainAddress: "",
     storeRestAddress: "",

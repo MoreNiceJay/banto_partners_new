@@ -20,6 +20,8 @@ import * as common from "../common";
 import qs from "qs";
 import firebase from "../firebaseConfig";
 import Alert from "../components/Alert.js";
+import DescriptionText from "../components/DescriptionText.js";
+
 import * as constant from "../Const";
 
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +37,15 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
       border: "none"
     }
-  }
+  },
+  description: {
+    textAlign: "left",
+    fontStyle: "normal",
+    fontWeight: "400",
+    fontSize: "14px",
+    marginTop: "16px",
+    marginLeft:"24px"
+  },
 }));
 
 function LoginPage(props) {
@@ -55,6 +65,7 @@ function LoginPage(props) {
       : query.role === "storeOwner"
       ? constant.dbCollection.storeApplication
       : null;
+  
   React.useEffect(() => {
     (async () => {
       if (!doc) {
@@ -100,7 +111,9 @@ function LoginPage(props) {
       color: "black"
     }
   })((props) => <Checkbox color="default" {...props} />);
-  const buyerData = [
+  console.log("salesMethod", constant.salesMethod)
+
+  let buyerData = [
     {
       title: "스테이션 수",
       data: apiData && apiData.amount,
@@ -109,74 +122,84 @@ function LoginPage(props) {
     {
       title: "총 금액",
       data: 
-        apiData && apiData.totalPrice,
+        apiData && common.numberWithCommas(apiData.totalPrice)+"원",
       link: "/sales/regist/address"
     },
     {
       title: "입금자",
-      data: apiData && apiData.storeOwnerPhoneNumber,
+      data: apiData && apiData.depositor,
       link: "/sales/regist/contact"
     },
     {
       title: "은행",
-      data: apiData && apiData.storeName,
+      data: apiData && apiData.bank,
       link: "/sales/regist/address"
     },
     {
       title: "계좌번호",
-      data: [
-        apiData && apiData.storeMainAddress,
-        apiData && apiData.storeRestAddress
-      ].join(" "),
+      data: apiData && apiData.bankAccount,
       link: "/sales/regist/address"
     },
     {
       title: "신청서 상태",
-      data: apiData && apiData.storeOwnerPhoneNumber,
+      data: apiData && apiData.status === "WAITING" ? "입금 확인중" : "승인 완료",
       link: "/sales/regist/contact"
     },
-
+    {
+      title: "신청 날짜",
+      data: apiData && common.getMonthDayTimeMinute(apiData.createdBy) ,
+      link: "/sales/regist/portion"
+    },
+    apiData && (apiData.approvedBy !== "" ?
+    {
+      title: "승인 날짜",
+      data: apiData && common.getMonthDayTimeMinute(apiData.approvedBy),
+      link: "/sales/regist/portion"
+    }:{}),
     {
       title: "영업 방법",
-      data: apiData && apiData.storePhoneNumber,
+      data: apiData && (apiData.salesMethod === constant.salesMethod.banto ? "반토 영업망" : (apiData.salesMethod === constant.salesMethod.ownSales ? "자체 영업" : "선택되지 않음")) ,
       link: "/sales/regist/contact"
     },
-
+    apiData && (apiData.salesMethod === constant.salesMethod.banto ?
     {
       title: "세일즈 파트너에게 할당된 수익률",
-      data: apiData && apiData.storePortion + "%",
+      data: apiData && apiData.salesPortion + "%",
       link: "/sales/regist/portion"
-    },
+    }:{}),
     {
       title: "나의 수익률",
-      data: apiData && apiData.storePortion + "%",
+      data: apiData && apiData.buyerPortion - apiData.salesPortion + "%",
       link: "/sales/regist/portion"
     },
+    apiData && apiData.salesMethod === constant.salesMethod.ownSales &&
     {
       title: "영업인 (수익률)",
-      data: `${
-        auth.userExtraInfo ? auth.userExtraInfo.id : constant.exampleUserId
-      }(${apiData && apiData.salesPortion}%)`,
-      link: "/sales/regist/portion"
-    },
-    apiData && apiData.buyerStatus === "noOwner" && {},
-          
-    {
-      title: "스테이션 보유자(스테이션 ID)(수익률%)",
-      data: `${
-        apiData && apiData.buyerStatus === "noOwner"
-          ? "반토 무료 스테이션 신청"
-          : apiData && apiData.buyerStatus === "ownBuyer"
-          ? `${auth.user.email} (${apiData && apiData.stationId}) (${
-              apiData && apiData.buyerPortion
-            }%)`
-          : `${apiData && apiData.buyer} (${apiData && apiData.stationId}) (${
-              apiData && apiData.buyerPortion
-            }%)`
-      }`,
+      data: apiData && apiData.preSalesManagers.map((value)=> <p style={{marginTop:"8px"}}>{`${value.id}(${value.portion}%)`}</p>),
+      // data: `${
+      //   auth.userExtraInfo ? auth.userExtraInfo.id + apiData.preSalesIds: constant.exampleUserId
+      // }(${apiData && apiData.salesPortion}%)`,
       link: "/sales/regist/portion"
     }
-  ];
+          
+    // {
+    //   title: "스테이션 보유자(스테이션 ID)(수익률%)",
+    //   data: `${
+    //     apiData && apiData.buyerStatus === "noOwner"
+    //       ? "반토 무료 스테이션 신청"
+    //       : apiData && apiData.buyerStatus === "ownBuyer"
+    //       ? `${auth.user.email} (${apiData && apiData.stationId}) (${
+    //           apiData && apiData.buyerPortion
+    //         }%)`
+    //       : `${apiData && apiData.buyer} (${apiData && apiData.stationId}) (${
+    //           apiData && apiData.buyerPortion
+    //         }%)`
+    //   }`,
+    //   link: "/sales/regist/portion"
+    // }
+  ]
+
+
   const data = [
     {
       title: "스테이션 수",
@@ -251,7 +274,11 @@ function LoginPage(props) {
   
   const buyerBody = (<><section className={classes.section}>
     {apiData &&
-      data.map((value) => {
+      buyerData.map((value) => {
+        if (Object.keys(value).length === 0)
+        return
+
+        
         return (
           <div>
             <div
@@ -353,8 +380,12 @@ function LoginPage(props) {
             약관확인
           </Link>
         </p> */}
-      </div>
 
+      </div>
+                
+      <DescriptionText title={`영업 방법은 '구매자'->'내 스테이션' 에서 변경할 수 있습니다`}></DescriptionText>
+      <p className={classes.description}>
+</p>
       <Button
         variant="outlined"
         onClick={async () => {
@@ -365,7 +396,7 @@ function LoginPage(props) {
               return;
             }
             alert("삭제되었습니다");
-            props.history.push("/table/application?role=sales");
+            window.location.href= "/popToTop/"
           } else {
           }
         }}
@@ -386,6 +417,7 @@ function LoginPage(props) {
         삭제하기
       </Button>
     </div>
+
   </section></>)
   
   const salesBody = (<><section className={classes.section}>
