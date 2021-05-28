@@ -24,6 +24,8 @@ import RegistContact from "./views/salesViews/RegistContact.js";
 import RegistFinal from "./views/salesViews/RegistFinal.js";
 import RegistAddress from "./views/salesViews/RegistAddress.js";
 import RegistPortion from "./views/salesViews/RegistPortion.js";
+import RegistAgreement from "./views/salesViews/RegistAgreement.js";
+
 import RegistAddInvestor from "./views/salesViews/RegistAddInvestor.js";
 /* member store */
 import StoreMenu from "./views/storeViews/StoreMenu.js";
@@ -124,6 +126,12 @@ ReactDOM.render(
                 exact
                 path="/sales/regist/add-investor"
                 component={RegistAddInvestor}
+              />
+
+              <Route
+                exact
+                path="/sales/regist/agreement"
+                component={RegistAgreement}
               />
               <Route exact path="/sales/regist/final" component={RegistFinal} />
 

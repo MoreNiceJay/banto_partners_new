@@ -11,6 +11,14 @@ import { useGlobal } from "../../globalContext";
 import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
 import Modal from "@material-ui/core/Modal";
+
+import ProgressBreadcum from "../../components/ProgressBreadcum"
+import SubTitle from "../../components/SubTitle";
+import EmptySpace from "../../components/EmptySpace";
+
+import DescriptionText from "../../components/DescriptionText";
+import SquareButton from "../../components/SquareButton.js";
+
 import moment from "moment";
 const useStyles = makeStyles((theme) => ({
   addressContainer: {
@@ -18,13 +26,13 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     padding: "55px 0 0 25px"
   },
-  contactPersonTitle: { fontSize: "25px", fontWeight: "700" },
+  contactPersonTitle: { fontSize: "24px", fontWeight: "700", marginBottom: "8px" },
   firstAddressWithButton: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center"
   },
-  addressTextField: { width: "calc(100% - 25px)", marginTop: "10px" }
+  addressTextField: { width: "calc(100% - 24px)", marginTop: "10px", marginBottom: "8px" }
 }));
 function RegistAddress(props) {
   const context = useGlobal();
@@ -34,7 +42,7 @@ function RegistAddress(props) {
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
   const [storeName, setStoreName] = React.useState("");
-  const [mainAddress, setMainAddress] = React.useState("*필수");
+  const [mainAddress, setMainAddress] = React.useState(null);
   const [restAddress, setRestAddress] = React.useState(null);
 
   const handleComplete = (data) => {
@@ -83,7 +91,7 @@ function RegistAddress(props) {
   const handleClose = () => {
     setOpen(false);
   };
-  function mySubmitHandler() {}
+  function mySubmitHandler() { }
 
   const body = (
     <div style={modalStyle} className={classes.paper}>
@@ -116,16 +124,23 @@ function RegistAddress(props) {
       )}
       <header>
         <NavBar title="" backLink="/salesmenu" />
-        <HeaderInfo
+        {/* <HeaderInfo
           title={"등록" + "\u00A0" + "\u00A0" + "\u00A0" + "1/3"}
           description="가맹점을 등록합니다"
-        />
+        /> */}
       </header>
       <main>
+        <ProgressBreadcum title="1/4" />
+        <SubTitle title="가맹점 정보 등록" />
+        <DescriptionText title={"설치할 매장명과 매장주소를 입력합니다"} />
         <section>
+          <EmptySpace />
+          <EmptySpace />
           <TextField
             title="매장명"
             description="예) 스타벅스 구로점"
+            // label="필수"
+            placeholder={"필수"}
             value={storeName}
             onChange={onChangeStoreName}
           />
@@ -139,18 +154,24 @@ function RegistAddress(props) {
               inputProps={{ inputMode: "numeric" }}
               variant="outlined"
               value={mainAddress}
+              placeholder={"필수"}
+
               onClick={handleOpen}
+              style={{ marginBottom: "8px" }}
             />
             <MTextField
               className={classes.addressTextField}
               id="outlined-basic2"
               variant="outlined"
-              label="*필수 나머지 주소"
+              // label="*필수 나머지 주소"
+              placeholder={"필수 나머지 주소"}
+
               value={restAddress}
               onChange={onChangeRestAddress}
             />
           </div>
-          <FormButton
+
+          <SquareButton
             onClick={() => {
               console.log(storeName, mainAddress, restAddress);
               if (!storeName || !mainAddress || !restAddress) {
@@ -163,8 +184,9 @@ function RegistAddress(props) {
               context.setSales_storeRestAddress(restAddress);
               props.history.push("/sales/regist/contact");
             }}
-            title="다음"
+            text="다음"
           />
+
         </section>
       </main>
       <footer></footer>

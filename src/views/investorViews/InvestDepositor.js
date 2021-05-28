@@ -313,7 +313,6 @@ function LoginPage(props) {
               <div className={classes.amount}>
                 <p
                   style={{
-                    fontFamily: "Montserrat",
                     fontStyle: "normal",
                     fontWeight: "500",
                     fontSize: "14px",

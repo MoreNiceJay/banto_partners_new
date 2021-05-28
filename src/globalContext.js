@@ -69,7 +69,7 @@ export function GlobalProvider({ children }) {
     retrievingAskedBy: "",
     registeredBy: "",
     lastUpdated: "",
-    postCode:"",
+    postCode: "",
   });
 
   const [store, setStore] = React.useState({
@@ -101,7 +101,7 @@ export function GlobalProvider({ children }) {
     stationDoc: "",
 
     status: "WAITING",
-    rejectedReason:"",
+    rejectedReason: "",
     storeName: "",
     storeMainAddress: "",
     storeRestAddress: "",
@@ -545,6 +545,11 @@ export function GlobalProvider({ children }) {
   async function setSales_stationDoc(a) {
     await setSalesRegisterationInfo((prevState) => {
       return { ...prevState, stationDoc: a };
+    });
+  }
+  async function setSales_contractYear(a) {
+    await setSalesRegisterationInfo((prevState) => {
+      return { ...prevState, contractYear: a };
     });
   }
 

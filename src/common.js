@@ -185,28 +185,28 @@ export async function fetchStations(userId, role) {
     const stationnRef = db.collection("Stations").where(role, "==", userId).where("approvedBy", "!=", "")
 
     const querySnapshot = await stationnRef.get();
-    
-    (querySnapshot.forEach((doc) => {
-         (dataArray.push(doc.data()))
-          
-    }))
-    
-    console.log("dataArray",dataArray)
 
-    await Promise.all(dataArray.map(async (value,index) => {
-      console.log("벨류",value)
-      if (value.franchiseDoc === ""){
+    (querySnapshot.forEach((doc) => {
+      (dataArray.push(doc.data()))
+
+    }))
+
+    console.log("dataArray", dataArray)
+
+    await Promise.all(dataArray.map(async (value, index) => {
+      console.log("벨류", value)
+      if (value.franchiseDoc === "") {
         return
       }
       const doc = await db.collection('Franchises').doc(value.franchiseDoc).get()
-        dataArray[index].storeName = doc.data().storeName
-        console.log(doc.data().storeName)
-      
+      dataArray[index].storeName = doc.data().storeName
+      console.log(doc.data().storeName)
+
     }))
 
 
     var endTime = new Date().getTime();
-    console.log("측정시간",endTime - startTime);
+    console.log("측정시간", endTime - startTime);
 
     return {
       code: 200,
@@ -370,27 +370,27 @@ export function getTimeStamp() {
 export function getMonthDayTimeMinute(time) {
   var d = new Date(time);
   var s =
-    
+
     leadingZeros(d.getMonth() + 1, 2) +
     "-" +
     leadingZeros(d.getDate(), 2) +
-    "(" + 
-    getInputDayLabel(time) + 
+    "(" +
+    getInputDayLabel(time) +
     ") " +
     leadingZeros(d.getHours(), 2) +
     ":" +
-    leadingZeros(d.getMinutes(), 2) 
-    
+    leadingZeros(d.getMinutes(), 2)
+
 
   return s;
 }
 export function getTodayYear() {
   var d = new Date();
   var s =
-    
-  leadingZeros(d.getFullYear(), 4) 
-   
-    
+
+    leadingZeros(d.getFullYear(), 4)
+
+
 
   return s;
 }
@@ -474,3 +474,50 @@ export const mailEarningData = async (email, userId, role, yearMonth) => {
     return { code: 400, msg: error };
   }
 };
+
+export const checkUserIdExisted = async (userId) => {
+  try {
+    const querySnapshot = await db
+      .collection("Users")
+      .where("id", "==", userId)
+      .get();
+    if (querySnapshot.empty) {
+
+      return { code: 200, result: false }
+    }
+    const emailArray = []
+    querySnapshot.forEach(doc => {
+      emailArray.push(doc.data().email)
+    })
+    return { code: 200, result: true, email: emailArray }
+
+  } catch (e) {
+    console.log("에러4", e);
+    return { code: 400, msg: "시스템에러, 다시시도해 주세요" };
+  }
+
+}
+
+export const checkUserPhoneNumExisted = async (phoneNumber) => {
+  console.log(phoneNumber)
+  try {
+    const querySnapshot = await db
+      .collection("Users")
+      .where("phoneNumber", "==", phoneNumber)
+      .get();
+    if (querySnapshot.empty) {
+
+      return { code: 200, result: false }
+    }
+    const emailArray = []
+    querySnapshot.forEach(doc => {
+      emailArray.push(doc.data().email)
+    })
+    return { code: 200, result: true, email: emailArray }
+
+  } catch (e) {
+    console.log("에러4", e);
+    return { code: 400, msg: "시스템에러, 다시시도해 주세요" };
+  }
+
+}

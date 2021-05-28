@@ -7,6 +7,12 @@ import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
 import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
+
+import ProgressBreadcum from "../../components/ProgressBreadcum"
+import SubTitle from "../../components/SubTitle";
+import DescriptionText from "../../components/DescriptionText";
+import  SquareButton  from "../../components/SquareButton.js";
+
 const useStyles = makeStyles((theme) => ({
   contact: { padding: "55px 0 0 25px" },
   contactPerson: { display: "flex", flexDirection: "column" },
@@ -15,11 +21,18 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "rows",
     alignItems: "baseline"
   },
-  contactPersonTitle: { fontSize: "25px", fontWeight: "700" },
+  contactPersonTitle: { fontSize: "24px", fontWeight: "700", marginBottom:"8px" },
   contactPersonDescription: {
+    textAlign: "left",
+    fontStyle: "normal",
+    fontWeight: "400",
     fontSize: "14px",
-    color: "#6f6f6f",
-    paddingLeft: "10px"
+    marginTop: "16px",
+    marginLeft:"12px",
+    marginRight:"24px",
+    color:"black",
+    lineHeight: "150%",
+    marginBottom:"8px"
   },
   contactPersonTextField: { marginTop: "10px", width: "calc(100% - 25px)" },
   nextButton: {
@@ -84,10 +97,13 @@ function RegistContact(props) {
       )}
       <header>
         <NavBar title="" backLink="/sales/regist/address" />
-        <HeaderInfo
+        {/* <HeaderInfo
           title={"등록" + "\u00A0" + "\u00A0" + "\u00A0" + "2/3"}
           description="가맹점을 등록합니다"
-        />
+        /> */}
+         <ProgressBreadcum title="2/4"/>
+      <SubTitle title="가맹점 정보 등록" />
+      <DescriptionText title={"가맹점주님의 연락처는 스테이션 설치 확인시 필요합니다"}/>
       </header>
       <main>
         <section>
@@ -102,10 +118,11 @@ function RegistContact(props) {
                 </span>
               </div>
               <TextField
+              
                 className={classes.contactPersonTextField}
                 id="outlined-basic"
                 inputProps={{ inputMode: "numeric", maxLength: 11 }}
-                label="*필수"
+                placeholder="필수"
                 variant="outlined"
                 value={storeOwnerContact}
                 // autoFocus
@@ -132,14 +149,12 @@ function RegistContact(props) {
               />
             </div>
           </div>
-          <Button
-            className={classes.nextButton}
-            size="large"
-            variant="outlined"
+          <SquareButton
+          
             onClick={mySubmitHandler}
+            text="다음"
           >
-            다음
-          </Button>
+          </SquareButton>
         </section>
       </main>
       <footer></footer>

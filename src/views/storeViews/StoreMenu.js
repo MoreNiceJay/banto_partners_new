@@ -36,7 +36,7 @@ function SalesMenu(props) {
     
 
     {
-      titleBold: "설치된 반토 스테이션",
+      titleBold: "내 반토 스테이션",
       titleRegular: "",
       link: "/table/station?role=storeOwner"
     },

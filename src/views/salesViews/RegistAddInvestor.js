@@ -18,9 +18,17 @@ import * as constant from "../../Const";
 
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
+import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
+import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
+
+import ProgressBreadcum from "../../components/ProgressBreadcum"
+import SubTitle from "../../components/SubTitle";
+import DescriptionText from "../../components/DescriptionText";
+import SquareButton from "../../components/SquareButton.js";
+import EmptySpace from "../../components/EmptySpace";
 
 const useStyles = makeStyles((theme) => ({
-  contact: { padding: "0px 0 0 25px" },
+  contact: { padding: "0px 0 0 24px" },
   contactPerson: { display: "flex", flexDirection: "column" },
   contactTexts: {
     display: "flex",
@@ -50,7 +58,9 @@ const useStyles = makeStyles((theme) => ({
     display: "block",
     margin: "0 auto"
   },
-  radioButtonGroup: { padding: "30px 30px 0 30px " },
+  radioButtonGroup: {
+    //  padding: "30px 30px 0 30px " 
+  },
 
   consentInvestor: {
     fontSize: "20px",
@@ -67,9 +77,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 function RegistAddInvestor(props) {
   const classes = useStyles(props);
-  function mySubmitHandler() {}
+  function mySubmitHandler() { }
   const [error, setError] = React.useState(false);
-  const [helperText, setHelperText] = React.useState("Choose wisely");
+  const [helperText, setHelperText] = React.useState("");
 
   const [bInvestor, setBInvestor] = React.useState("banto");
   const context = useGlobal();
@@ -150,17 +160,24 @@ function RegistAddInvestor(props) {
 
   const bantoBody = (
     <>
+      <DescriptionText title="*할당된 수익률로 영업활동을 할 수 있습니다" />
+      <EmptySpace />
+      <EmptySpace />
+
+      <SubTitle title="반토에 등록된 스테이션" />
+      <DescriptionText title="할당된 수익률을 확인해 선택하세요" />
+
       {/* <hr style={{ borderStyle: "dotted", marginBottom: "20px" }} /> */}
       <div className={classes.contact}>
         <div className={classes.contactPerson}>
-          <div className={classes.contactTexts}>
+          {/* <div className={classes.contactTexts}>
             <span className={classes.contactPersonTitle}>
-              반토 프로그램에 등록된 스테이션
+              반토에 등록된 스테이션
             </span>
             <span className={classes.contactPersonDescription}>
               스테이션 오너ID / 영업자에게 할당되는 수익률
             </span>
-          </div>
+          </div> */}
           <div style={{ width: "100%" }}>
             <FormControl
               variant="outlined"
@@ -213,17 +230,23 @@ function RegistAddInvestor(props) {
 
   const ownSalesBody = (
     <>
+      <DescriptionText title="*스테이션 구매자가 직접 입력한 세일즈파트너스에게만 노출됩니다" />
+      <EmptySpace />
+      <EmptySpace />
+
+      <SubTitle title="협의된 구매자의 스테이션" />
+      <DescriptionText title="구매자ID를 확인하세요" />
       {/* <hr style={{ borderStyle: "dotted", marginBottom: "20px" }} /> */}
       <div className={classes.contact}>
         <div className={classes.contactPerson}>
-          <div className={classes.contactTexts}>
+          {/* <div className={classes.contactTexts}>
             <span className={classes.contactPersonTitle}>
               협의된 구매자의 스테이션
             </span>
             <span className={classes.contactPersonDescription}>
               스테이션 오너ID / 영업자에게 할당되는 수익률
             </span>
-          </div>
+          </div> */}
           <div style={{ width: "100%" }}>
             <FormControl
               variant="outlined"
@@ -280,13 +303,19 @@ function RegistAddInvestor(props) {
   );
   const ownBody = (
     <>
+      <DescriptionText title="*내가 구매한 스테이션을 직접 설치할 수 있습니다" />
+      <EmptySpace />
+      <EmptySpace />
+
+      <SubTitle title="내 스테이션" />
+      <DescriptionText title="'구매자'->'구매하기'에서 스테이션을 구매할 수 있습니다" />
       {/* <hr style={{ borderStyle: "dotted", marginBottom: "20px" }} /> */}
       <div className={classes.contact}>
         <div className={classes.contactPerson}>
-          <div className={classes.contactTexts}>
+          {/* <div className={classes.contactTexts}>
             <span className={classes.contactPersonTitle}>내 스테이션</span>
             <span className={classes.contactPersonDescription}></span>
-          </div>
+          </div> */}
           <div style={{ width: "100%" }}>
             <FormControl
               variant="outlined"
@@ -349,32 +378,47 @@ function RegistAddInvestor(props) {
       )}
       <header>
         <NavBar title="" backLink="/sales/regist/contact" />
-        <HeaderInfo
+        {/* <HeaderInfo
           title={"등록할 스테이션이 있으신가요"}
           description="내가 구매한 스테이션이나 미리 협의된 구매자의 스테이션을 설치 할수 있습니다"
-        />
+        /> */}
       </header>
       <main>
+        <ProgressBreadcum title="3/4" />
+        <SubTitle title="반토 스테이션 선택" />
+        <DescriptionText title={"반토에 등록되어있는 스테이션을 선택해 무료로 설치하고 수익을 얻을 수 있습니다"} />
         <div className={classes.radioButtonGroup}>
           <FormControl
             component="fieldset"
             error={error}
             className={classes.formControl}
           >
-            <FormLabel component="legend" className={classes.consentInvestor}>
-              등록할 스테이션이 있으신가요?
-            </FormLabel>
+            <EmptySpace />
+            <EmptySpace />
+            <SubTitle title="스테이션" />
+
             <RadioGroup
               aria-label="quiz"
               name="quiz"
               value={bInvestor}
               onChange={handleRadioChange}
+              style={{ marginLeft: "24px", marginTop: "24px" }}
             >
               <FormControlLabel
                 value="banto"
                 control={
                   <Radio
-                    classes={{ root: classes.radio, checked: classes.checked }}
+                    icon={<CircleUnchecked />}
+                    checkedIcon={<CircleCheckedFilled />}
+                    style={{
+                      color: "black",
+                      "&$checked": {
+                        color: "black"
+                      },
+
+                      checked: {}
+                    }}
+
                   />
                 }
                 label="반토 파트너스 프로그램을 통해 무료로 신청하겠습니다"
@@ -384,22 +428,39 @@ function RegistAddInvestor(props) {
                 value="mine"
                 control={
                   <Radio
-                    classes={{ root: classes.radio, checked: classes.checked }}
-                  />
+                    icon={<CircleUnchecked />}
+                    checkedIcon={<CircleCheckedFilled />}
+                    style={{
+                      color: "black",
+                      "&$checked": {
+                        color: "black"
+                      },
+
+                      checked: {}
+                    }} />
                 }
-                label="네. 구매한 스테이션이 있습니다"
+                label="구매한 스테이션이 있습니다"
               />
               <FormControlLabel
                 value="ownSales"
                 control={
                   <Radio
-                    classes={{ root: classes.radio, checked: classes.checked }}
+                    icon={<CircleUnchecked />}
+                    checkedIcon={<CircleCheckedFilled />}
+                    style={{
+                      color: "black",
+                      "&$checked": {
+                        color: "black"
+                      },
+
+                      checked: {}
+                    }}
                   />
                 }
-                label="네. 다른 구매자의 스테이션을 설치하기로 협의했습니다"
+                label="다른 구매자의 스테이션을 설치하기로 협의했습니다"
               />
             </RadioGroup>
-            <FormHelperText>{helperText}</FormHelperText>
+            {/* <FormHelperText>{helperText}</FormHelperText> */}
             {/* <Button
               type="submit"
               variant="outlined"
@@ -413,14 +474,15 @@ function RegistAddInvestor(props) {
         {bInvestor === "banto"
           ? bantoBody
           : bInvestor === "ownSales"
-          ? ownSalesBody
-          : ownBody}
+            ? ownSalesBody
+            : ownBody}
 
-        <Button
-          className={classes.nextButton}
-          size="large"
-          variant="outlined"
-          type="submit"
+        <SquareButton
+          // className={classes.nextButton}
+          // size="large"
+          // variant="outlined"
+          // type="submit"
+          text="다음"
           style={{ marginBottom: "40px" }}
           onClick={() => {
             console.log("비인베스터", bInvestor);
@@ -468,7 +530,7 @@ function RegistAddInvestor(props) {
           }}
         >
           다음
-        </Button>
+        </SquareButton>
       </main>
       <footer></footer>
     </>

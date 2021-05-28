@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme) => ({
   squareButton: {
     width: "64px",
     height: "64px",
-    margin: "24px 32px",
+    margin: "24px 24px",
     borderRadius: "15px",
     fontFamily: "Montserrat",
     fontStyle: "normal",
@@ -43,8 +43,15 @@ export default function PTextField(props) {
     </Button>
   ));
   return (
-    <>
+    
+      <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end"
+                }}
+              >
       <SquareButton {...props} />
-    </>
+      </div>
+    
   );
 }
