@@ -25,6 +25,7 @@
     "react-router-dom": "5.2.0",
     "react-scripts": "3.4.3",
     "react-swipeable-views": "0.13.9",
+    "signature_pad": "^3.0.0-beta.4",
     "styled-components": "5.1.1",
     "use-state-with-callback": "2.0.3",
     "yup": "0.29.3"

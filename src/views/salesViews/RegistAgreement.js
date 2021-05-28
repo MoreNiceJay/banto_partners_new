@@ -19,6 +19,9 @@ import EmptySpace from "../../components/EmptySpace";
 import DescriptionText from "../../components/DescriptionText";
 import SquareButton from "../../components/SquareButton.js";
 
+import SignaturePad from "signature_pad";
+
+
 import moment from "moment";
 const useStyles = makeStyles((theme) => ({
     addressContainer: {
@@ -44,6 +47,27 @@ function RegistAgreement(props) {
     const [storeName, setStoreName] = React.useState("");
     const [mainAddress, setMainAddress] = React.useState(null);
     const [restAddress, setRestAddress] = React.useState(null);
+
+    const [sigPadData, setSigPadData] = useState(null);
+    let sigPad = null;
+    const handleRestSignature = () => {
+        sigPad.clear();
+        setSigPadData();
+    };
+
+
+    useEffect(() => {
+        sigPad = new SignaturePad(document.querySelector("canvas"), {
+            onBegin: () => {
+                setSigPadData(sigPad.toDataURL()); // data:image/png;base64,iVBORw0K...
+                /**
+                 * signaturePad.toDataURL(); // save image as PNG
+                 * signaturePad.toDataURL("image/jpeg"); // save image as JPEG
+                 * signaturePad.toDataURL("image/svg+xml"); // save image as SVG
+                 * */
+            }
+        });
+    }, []);
 
     const handleComplete = (data) => {
         let fullAddress = data.address;
@@ -108,6 +132,7 @@ function RegistAgreement(props) {
 
     return (
         <>
+
             {!auth.userExtraInfo && (
                 <>
                     <Alert
@@ -129,9 +154,9 @@ function RegistAgreement(props) {
           description="가맹점을 등록합니다"
         /> */}
             </header>
-            <main>
+            <main style={{ width: "100%", height: "100vh" }}>
                 <ProgressBreadcum title="1/4" />
-                <SubTitle title="가맹점 확인사항" />
+                <SubTitle title="가맹점과 계약 체결" />
                 <DescriptionText title={"가맹점주님께 계약 체결정보를 확인드리고 서명을 받아 계약을 완료합니다"} />
                 <section>
                     <EmptySpace />
@@ -170,6 +195,28 @@ function RegistAgreement(props) {
                             onChange={onChangeRestAddress}
                         />
                     </div>
+
+
+                    <EmptySpace />
+                    <EmptySpace />
+                    <EmptySpace />
+
+                    <div className="Signature">
+                        <canvas
+                            width={100}
+                            height={125}
+                            style={{ border: "1px solid #cdcdcd" }}
+                        />
+                        <button onClick={handleRestSignature}>리셋</button>
+                    </div>
+
+
+                    <EmptySpace />
+                    <EmptySpace />
+                    <EmptySpace />
+                    <EmptySpace />
+                    <EmptySpace />
+
 
                     <SquareButton
                         onClick={() => {
