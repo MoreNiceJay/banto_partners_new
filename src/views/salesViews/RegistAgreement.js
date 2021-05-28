@@ -11,15 +11,17 @@ import { useGlobal } from "../../globalContext";
 import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
 import Modal from "@material-ui/core/Modal";
-
+import * as common from "../../common"
 import ProgressBreadcum from "../../components/ProgressBreadcum"
 import SubTitle from "../../components/SubTitle";
 import EmptySpace from "../../components/EmptySpace";
+import firebase from "../../firebaseConfig";
 
 import DescriptionText from "../../components/DescriptionText";
 import SquareButton from "../../components/SquareButton.js";
 
-import SignaturePad from "signature_pad";
+// import SignaturePad from "signature_pad";
+import SignaturePad from "react-signature-canvas";
 
 
 import moment from "moment";
@@ -36,6 +38,10 @@ const useStyles = makeStyles((theme) => ({
         alignItems: "center"
     },
     addressTextField: { width: "calc(100% - 24px)", marginTop: "10px", marginBottom: "8px" }
+    , sigatureCanvas: {
+        width: "100%",
+        height: "100%"
+    }
 }));
 function RegistAgreement(props) {
     const context = useGlobal();
@@ -48,26 +54,40 @@ function RegistAgreement(props) {
     const [mainAddress, setMainAddress] = React.useState(null);
     const [restAddress, setRestAddress] = React.useState(null);
 
-    const [sigPadData, setSigPadData] = useState(null);
-    let sigPad = null;
-    const handleRestSignature = () => {
-        sigPad.clear();
-        setSigPadData();
-    };
+    const [imageURL, setImageURl] = useState(null);
+    const sigCanvas = React.useRef({});
+    const clear = () => sigCanvas.current.clear();
+    const save = () => {
+        setImageURl(sigCanvas.current.getTrimmedCanvas().toDataURL("image/jpg"));
 
 
-    useEffect(() => {
-        sigPad = new SignaturePad(document.querySelector("canvas"), {
-            onBegin: () => {
-                setSigPadData(sigPad.toDataURL()); // data:image/png;base64,iVBORw0K...
-                /**
-                 * signaturePad.toDataURL(); // save image as PNG
-                 * signaturePad.toDataURL("image/jpeg"); // save image as JPEG
-                 * signaturePad.toDataURL("image/svg+xml"); // save image as SVG
-                 * */
-            }
-        });
-    }, []);
+        // Upload file and metadata to the object 'images/mountains.jpg'
+        // var uploadTask = storageRef.child('images/' + "hello").put(imageURL, metadata);
+
+        console.log(imageURL)
+
+    }
+    // var getFileBlob = function (url, cb) {
+    //     var xhr = new XMLHttpRequest();
+    //     xhr.open("GET", url);
+    //     xhr.responseType = "blob";
+    //     xhr.addEventListener('load', function () {
+    //         cb(xhr.response);
+    //     });
+    //     xhr.send();
+    // };
+    // var uploadToStorage = (imageURL) => {
+    //     try {
+    //         getFileBlob(imageURL, blob => {
+    //             common.storage.ref().put(blob).then(function (snapshot) {
+    //                 console.log('Uploaded a blob or file!');
+    //             })
+    //         })
+    //     } catch (e) {
+    //         console.log(e)
+    //     }
+    // }
+
 
     const handleComplete = (data) => {
         let fullAddress = data.address;
@@ -113,6 +133,8 @@ function RegistAgreement(props) {
     };
 
     const handleClose = () => {
+        // uploadToStorage(imageURL)
+
         setOpen(false);
     };
     function mySubmitHandler() { }
@@ -142,7 +164,7 @@ function RegistAgreement(props) {
                         actionDescription="로그인"
                         link="/login/login"
                         onClick={() => {
-                            props.history.push("/login/login");
+                            props.history.push("/sales/regist/add-investor");
                         }}
                     ></Alert>
                 </>
@@ -159,6 +181,9 @@ function RegistAgreement(props) {
                 <SubTitle title="가맹점과 계약 체결" />
                 <DescriptionText title={"가맹점주님께 계약 체결정보를 확인드리고 서명을 받아 계약을 완료합니다"} />
                 <section>
+
+
+
                     <EmptySpace />
                     <EmptySpace />
                     <TextField
@@ -198,28 +223,80 @@ function RegistAgreement(props) {
 
 
                     <EmptySpace />
-                    <EmptySpace />
-                    <EmptySpace />
+                    <div style={{ width: "calc(100% - 48px", margin: "auto" }} >
+                        <h3>가맹점주님 서명</h3>
+                        <div style={{
+                            width: "100%",
+                            border: "1px dashed #666",
+                            height: "100px",
 
-                    <div className="Signature">
-                        <canvas
-                            width={100}
-                            height={125}
-                            style={{ border: "1px solid #cdcdcd" }}
-                        />
-                        <button onClick={handleRestSignature}>리셋</button>
+                        }}>
+                            <SignaturePad
+                                ref={sigCanvas}
+                                backgroundColor="white"
+                                // className={classes.sigatureCanvas}
+                                canvasProps={{
+                                    // width: "200%",
+                                    // height: "200%",
+                                    className: "signatureCanvas"
+                                }}
+
+                            />
+                            <button onClick={clear}>다시 사인</button>
+                            <button onClick={save}>Save</button>
+                            {/* <button onClick={undo}>Undo</button> */}
+                        </div>
+                        {console.log("imageURL", imageURL)}
+                        {imageURL ? (
+                            <img
+                                src={imageURL}
+                                alt="Sign"
+                                style={{
+                                    display: "block",
+                                    width: "150px",
+                                    minHeight: "50px",
+                                    border: "1px solid #000"
+                                }}
+                            />
+                        ) : null}
                     </div>
 
+                    <EmptySpace />
 
-                    <EmptySpace />
-                    <EmptySpace />
-                    <EmptySpace />
-                    <EmptySpace />
-                    <EmptySpace />
 
 
                     <SquareButton
-                        onClick={() => {
+                        onClick={async () => {
+                            save()
+                            // // Base64 formatted string
+                            // var message = '5b6p5Y+344GX44G+44GX44Gf77yB44GK44KB44Gn44Go44GG77yB';
+                            // common.storage.ref().putString(message, 'base64').then(function (snapshot) {
+                            //     console.log('Uploaded a base64 string!');
+                            // });
+                            var uploadTask = common.storage.ref().child('sign/name.jpg').putString(imageURL, 'data_url')
+
+                            uploadTask.on('state_changed', function (snapshot) {
+                                // Observe state change events such as progress, pause, and resume
+                                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                                var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                console.log('Upload is ' + progress + '% done');
+                                switch (snapshot.state) {
+                                    case firebase.storage.TaskState.PAUSED: // or 'paused'
+                                        console.log('Upload is paused');
+                                        break;
+                                    case firebase.storage.TaskState.RUNNING: // or 'running'
+                                        console.log('Upload is running');
+                                        break;
+                                }
+                            }, function (error) {
+                                // Handle unsuccessful uploads
+                            }, function () {
+                                // Handle successful uploads on complete
+                                // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                                uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+                                    console.log('File available at', downloadURL);
+                                });
+                            });
                             console.log(storeName, mainAddress, restAddress);
                             if (!storeName || !mainAddress || !restAddress) {
                                 alert("정보를 기입해주세요");
@@ -229,7 +306,7 @@ function RegistAgreement(props) {
                             context.setSales_storeName(storeName);
                             context.setSales_storeMainAddress(mainAddress);
                             context.setSales_storeRestAddress(restAddress);
-                            props.history.push("/sales/regist/contact");
+                            props.history.push("/sales/regist/final");
                         }}
                         text="다음"
                     />

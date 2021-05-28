@@ -6,6 +6,8 @@ import { last } from "lodash";
 import axios from "axios";
 let db = firebase.firestore();
 let user = firebase.auth().currentUser;
+export var storage = firebase.storage();
+
 var _ = require("lodash");
 
 export const StationObject = {
