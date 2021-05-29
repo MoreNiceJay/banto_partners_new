@@ -140,8 +140,8 @@ function LoginPage(props) {
   // }, []);
 
   console.log(query.role)
-  const backLink =  query.role === "buyer" ? "investormenu" : (query.role === "salesManager" ? "salesmenu" : "storemenu")
-  const roleName =  query.role === "buyer" ? "구매자" : (query.role === "salesManager" ? "세일즈" : "가맹점")
+  const backLink = query.role === "buyer" ? "investormenu" : (query.role === "salesManager" ? "salesmenu" : "storemenu")
+  const roleName = query.role === "buyer" ? "구매자" : (query.role === "salesManager" ? "세일즈" : "가맹점")
 
   return (
     <>
@@ -166,8 +166,8 @@ function LoginPage(props) {
             zIndex: "99999"
           }}
         >
-          <NavBar title=  {`${roleName} 스테이션 `}
- backLink = {`/${backLink}`} />
+          <NavBar title={`${roleName} 스테이션 `}
+            backLink={`/${backLink}`} />
         </header>
 
         {/* </div> */}
@@ -179,15 +179,15 @@ function LoginPage(props) {
         >
           <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="simple table">
-            <TableHead>
-          <TableRow>
-            <TableCell align="center">가맹점</TableCell>
-            <TableCell align="right">상태&nbsp;</TableCell>
-           
-          </TableRow>
-        </TableHead>
+              <TableHead>
+                <TableRow>
+                  <TableCell align="center">가맹점</TableCell>
+                  <TableCell align="right">상태&nbsp;</TableCell>
+
+                </TableRow>
+              </TableHead>
               <TableBody>
-        
+
                 {apiData.data &&
                   // apiData.data.userId &&
                   apiData.data.map((i, index) => (
@@ -195,7 +195,7 @@ function LoginPage(props) {
                       key={index}
                       style={{ height: "90px" }}
                       onClick={() => {
-                        window.location.href = `/table/stationdetail?stationId=${i.stationId}&role=${query.role}`;
+                        props.history.push(`/table/stationdetail?stationId=${i.stationId}&role=${query.role}`)
                       }}
                     >
                       <TableCell
@@ -206,10 +206,10 @@ function LoginPage(props) {
                           style={{
                             fontWeight: "bold",
                             fontSize: "20px",
-                            
+
                           }}
                         >
-                          {i.storeName ? i.storeName : "(영업 대기중)" }
+                          {i.storeName ? i.storeName : "(영업 대기중)"}
                         </p>
                         <p
                           style={{

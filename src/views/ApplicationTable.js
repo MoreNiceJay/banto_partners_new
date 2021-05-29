@@ -140,262 +140,262 @@ function LoginPage(props) {
   //     });
   //   });
   // }, []);
-  const backLink =  query.role === "buyer" ? "investormenu" : (query.role === "salesManager" ? "salesmenu" : "storemenu")
-  const roleName =  query.role === "buyer" ? "구매자" : (query.role === "salesManager" ? "세일즈" : "가맹점")
+  const backLink = query.role === "buyer" ? "investormenu" : (query.role === "salesManager" ? "salesmenu" : "storemenu")
+  const roleName = query.role === "buyer" ? "구매자" : (query.role === "salesManager" ? "세일즈" : "가맹점")
 
-  const buyerTable =  (<TableContainer component={Paper}>
-  <Table className={classes.table} aria-label="simple table">
-  <TableHead>
-<TableRow>
-  <TableCell align="left">신청날짜</TableCell>
-  <TableCell align="center">스테이션#</TableCell>
-  <TableCell align="right">상태&nbsp;</TableCell>
- 
-</TableRow>
-</TableHead>
-    <TableBody>
-      {apiData.data &&
-        // apiData.data.userId &&
-        apiData.data.map((i, index) => (
-          <TableRow
-            key={index}
-            style={{ height: "90px" }}
-            onClick={() => {
-              window.location.href = `/table/applicationdetail?applicationId=${i.applicationId}&role=${query.role}`;
-            }}
-          >
-            <TableCell
-              style={{
-                fontSize: "14px",
-                fontWeight: "bold",
-                verticalAlign: "center"
+  const buyerTable = (<TableContainer component={Paper}>
+    <Table className={classes.table} aria-label="simple table">
+      <TableHead>
+        <TableRow>
+          <TableCell align="left">신청날짜</TableCell>
+          <TableCell align="center">스테이션#</TableCell>
+          <TableCell align="right">상태&nbsp;</TableCell>
+
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {apiData.data &&
+          // apiData.data.userId &&
+          apiData.data.map((i, index) => (
+            <TableRow
+              key={index}
+              style={{ height: "90px" }}
+              onClick={() => {
+                props.history.push(`/table/applicationdetail?applicationId=${i.applicationId}&role=${query.role}`)
               }}
-              component="th"
-              scope="row"
             >
-              <p>{common.getMonthDayTimeMinute(i.createdBy)}</p>
-            </TableCell>
-
-            <TableCell
-              style={{ height: "60px", verticalAlign: "center" }}
-              align="left"
-              
-            >
-              <p
+              <TableCell
                 style={{
+                  fontSize: "14px",
                   fontWeight: "bold",
-                  fontSize: "16px",
-                  textAlign:"center"
+                  verticalAlign: "center"
                 }}
+                component="th"
+                scope="row"
               >
-                {i.storeName}
-              </p>
-              <p
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "16px",
-                  textAlign:"center"
+                <p>{common.getMonthDayTimeMinute(i.createdBy)}</p>
+              </TableCell>
 
-                }}
+              <TableCell
+                style={{ height: "60px", verticalAlign: "center" }}
+                align="left"
+
               >
-                {i.amount}대
-              </p>
-            </TableCell>
-            <TableCell
-              style={{ height: "60px", verticalAlign: "center" }}
-              align="right"
-            >
-              <p
-                style={{
-                  
-                  fontStyle: "normal",
-                  fontWeight: "800",
-                  fontSize: "18px",
-                  color: i.status === "WAITING" ? "black" : "#71C848",
+                <p
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                    textAlign: "center"
+                  }}
+                >
+                  {i.storeName}
+                </p>
+                <p
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                    textAlign: "center"
 
-                }}
+                  }}
+                >
+                  {i.amount}대
+              </p>
+              </TableCell>
+              <TableCell
+                style={{ height: "60px", verticalAlign: "center" }}
+                align="right"
               >
-                {i.status === "WAITING" ? "입금 확인중" : "승인완료"}
+                <p
+                  style={{
 
-              </p>
-              <p
-               style={{
-                fontSize: "10px",
-                fontWeigth:"bold",
-                verticalAlign: "center"
+                    fontStyle: "normal",
+                    fontWeight: "800",
+                    fontSize: "18px",
+                    color: i.status === "WAITING" ? "black" : "#71C848",
+
+                  }}
+                >
+                  {i.status === "WAITING" ? "입금 확인중" : "승인완료"}
+
+                </p>
+                <p
+                  style={{
+                    fontSize: "10px",
+                    fontWeigth: "bold",
+                    verticalAlign: "center"
+                  }}
+                >                {i.status === "WAITING" ? "" : `${common.getMonthDayTimeMinute(i.approvedBy)}`}
+                </p>
+              </TableCell>
+            </TableRow>
+          ))}
+      </TableBody>
+    </Table>
+  </TableContainer>)
+
+  const salesTable = (<TableContainer component={Paper}>
+    <Table className={classes.table} aria-label="simple table">
+      <TableHead>
+        <TableRow>
+          <TableCell align="left">신청날짜</TableCell>
+          <TableCell align="center">스테이션#</TableCell>
+          <TableCell align="right">상태&nbsp;</TableCell>
+
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {apiData.data &&
+          // apiData.data.userId &&
+          apiData.data.map((i, index) => (
+            <TableRow
+              key={index}
+              style={{ height: "90px" }}
+              onClick={() => {
+                props.history.push(`/table/applicationdetail?applicationId=${i.applicationId}&role=${query.role}`)
               }}
-              >                {i.status === "WAITING" ? "" : `${common.getMonthDayTimeMinute(i.approvedBy)}`}
-</p>
-            </TableCell>
-          </TableRow>
-        ))}
-    </TableBody>
-  </Table>
-</TableContainer>)
+            >
+              <TableCell
+                style={{
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  verticalAlign: "center"
+                }}
+                component="th"
+                scope="row"
+              >
+                <p>2020.01.23</p>
+              </TableCell>
 
-const salesTable =  (<TableContainer component={Paper}>
-  <Table className={classes.table} aria-label="simple table">
-  <TableHead>
-<TableRow>
-  <TableCell align="left">신청날짜</TableCell>
-  <TableCell align="center">스테이션#</TableCell>
-  <TableCell align="right">상태&nbsp;</TableCell>
- 
-</TableRow>
-</TableHead>
-    <TableBody>
-      {apiData.data &&
-        // apiData.data.userId &&
-        apiData.data.map((i, index) => (
-          <TableRow
-            key={index}
-            style={{ height: "90px" }}
-            onClick={() => {
-              window.location.href = `/table/applicationdetail?applicationId=${i.applicationId}&role=${query.role}`;
-            }}
-          >
-            <TableCell
-              style={{
-                fontSize: "14px",
-                fontWeight: "bold",
-                verticalAlign: "center"
+              <TableCell
+                style={{ height: "60px", verticalAlign: "center" }}
+                align="left"
+
+              >
+                <p
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                    textAlign: "center"
+                  }}
+                >
+                  {i.storeName}
+                </p>
+                <p
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                    textAlign: "center"
+
+                  }}
+                >
+                  ({i.stationId})
+              </p>
+              </TableCell>
+              <TableCell
+                style={{ height: "60px", verticalAlign: "top" }}
+                align="right"
+              >
+                <p
+                  style={{
+
+                    fontStyle: "normal",
+                    fontWeight: "800",
+                    fontSize: "18px",
+                    marginTop: "8px",
+                    color: "#00838F",
+
+                  }}
+                >
+                  {i.status === "WAITING" ? "승인 대기중" : "승인완료"}
+                </p>
+              </TableCell>
+            </TableRow>
+          ))}
+      </TableBody>
+    </Table>
+  </TableContainer>)
+
+  const storeTable = (<TableContainer component={Paper}>
+    <Table className={classes.table} aria-label="simple table">
+      <TableHead>
+        <TableRow>
+          <TableCell align="left">신청날짜</TableCell>
+          <TableCell align="center">스테이션#</TableCell>
+          <TableCell align="right">상태&nbsp;</TableCell>
+
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {apiData.data &&
+          // apiData.data.userId &&
+          apiData.data.map((i, index) => (
+            <TableRow
+              key={index}
+              style={{ height: "90px" }}
+              onClick={() => {
+                props.history.push(`/table/applicationdetail?applicationId=${i.applicationId}&role=${query.role}`)
               }}
-              component="th"
-              scope="row"
             >
-              <p>2020.01.23</p>
-            </TableCell>
-
-            <TableCell
-              style={{ height: "60px", verticalAlign: "center" }}
-              align="left"
-              
-            >
-              <p
+              <TableCell
                 style={{
+                  fontSize: "14px",
                   fontWeight: "bold",
-                  fontSize: "16px",
-                  textAlign:"center"
+                  verticalAlign: "center"
                 }}
+                component="th"
+                scope="row"
               >
-                {i.storeName}
-              </p>
-              <p
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "16px",
-                  textAlign:"center"
+                <p>2020.01.23</p>
+              </TableCell>
 
-                }}
+              <TableCell
+                style={{ height: "60px", verticalAlign: "center" }}
+                align="left"
+
               >
-                ({i.stationId})
-              </p>
-            </TableCell>
-            <TableCell
-              style={{ height: "60px", verticalAlign: "top" }}
-              align="right"
-            >
-              <p
-                style={{
-                  
-                  fontStyle: "normal",
-                  fontWeight: "800",
-                  fontSize: "18px",
-                  marginTop: "8px",
-                  color: "#00838F",
+                <p
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                    textAlign: "center"
+                  }}
+                >
+                  {i.storeName}
+                </p>
+                <p
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                    textAlign: "center"
 
-                }}
+                  }}
+                >
+                  ({i.stationId})
+              </p>
+              </TableCell>
+              <TableCell
+                style={{ height: "60px", verticalAlign: "top" }}
+                align="right"
               >
-                {i.status === "WAITING" ? "승인 대기중" : "승인완료"}
-              </p>
-            </TableCell>
-          </TableRow>
-        ))}
-    </TableBody>
-  </Table>
-</TableContainer>)
+                <p
+                  style={{
 
-const storeTable =  (<TableContainer component={Paper}>
-  <Table className={classes.table} aria-label="simple table">
-  <TableHead>
-<TableRow>
-  <TableCell align="left">신청날짜</TableCell>
-  <TableCell align="center">스테이션#</TableCell>
-  <TableCell align="right">상태&nbsp;</TableCell>
- 
-</TableRow>
-</TableHead>
-    <TableBody>
-      {apiData.data &&
-        // apiData.data.userId &&
-        apiData.data.map((i, index) => (
-          <TableRow
-            key={index}
-            style={{ height: "90px" }}
-            onClick={() => {
-              window.location.href = `/table/applicationdetail?applicationId=${i.applicationId}&role=${query.role}`;
-            }}
-          >
-            <TableCell
-              style={{
-                fontSize: "14px",
-                fontWeight: "bold",
-                verticalAlign: "center"
-              }}
-              component="th"
-              scope="row"
-            >
-              <p>2020.01.23</p>
-            </TableCell>
+                    fontStyle: "normal",
+                    fontWeight: "800",
+                    fontSize: "18px",
+                    marginTop: "8px",
+                    color: "#00838F",
 
-            <TableCell
-              style={{ height: "60px", verticalAlign: "center" }}
-              align="left"
-              
-            >
-              <p
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "16px",
-                  textAlign:"center"
-                }}
-              >
-                {i.storeName}
-              </p>
-              <p
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "16px",
-                  textAlign:"center"
-
-                }}
-              >
-                ({i.stationId})
-              </p>
-            </TableCell>
-            <TableCell
-              style={{ height: "60px", verticalAlign: "top" }}
-              align="right"
-            >
-              <p
-                style={{
-                  
-                  fontStyle: "normal",
-                  fontWeight: "800",
-                  fontSize: "18px",
-                  marginTop: "8px",
-                  color: "#00838F",
-
-                }}
-              >
-                {i.status === "WAITING" ? "승인 대기중" : "승인완료"}
-              </p>
-            </TableCell>
-          </TableRow>
-        ))}
-    </TableBody>
-  </Table>
-</TableContainer>)
+                  }}
+                >
+                  {i.status === "WAITING" ? "승인 대기중" : "승인완료"}
+                </p>
+              </TableCell>
+            </TableRow>
+          ))}
+      </TableBody>
+    </Table>
+  </TableContainer>)
 
 
 
@@ -433,7 +433,7 @@ const storeTable =  (<TableContainer component={Paper}>
           hasMore={false}
           loader={<h5 style={{ fontSize: "20px", zIndex: "2" }}>Loading...</h5>}
         >
-         {query.role === "buyer" ? buyerTable:(query.role === "salesManager" ? salesTable : storeTable)}
+          {query.role === "buyer" ? buyerTable : (query.role === "salesManager" ? salesTable : storeTable)}
         </InfiniteScroll>
       </div>
       <div></div>

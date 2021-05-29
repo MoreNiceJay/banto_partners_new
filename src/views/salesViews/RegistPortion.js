@@ -262,7 +262,8 @@ function RegistPortion(props) {
           color="primary"
           className={classes.modalBuyButton}
           onClick={() => {
-            window.location.href = "/sales/regist/agreement"
+
+            props.history.push("/sales/regist/agreement")
           }}
         >
           네 이해했습니다

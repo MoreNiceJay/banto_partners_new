@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "400",
     fontSize: "14px",
     marginTop: "16px",
-    marginLeft:"24px"
+    marginLeft: "24px"
   },
 }));
 
@@ -61,11 +61,11 @@ function LoginPage(props) {
     role === "buyer"
       ? constant.dbCollection.buyerApplication
       : role === "salesManager"
-      ? constant.dbCollection.salesApplication
-      : query.role === "storeOwner"
-      ? constant.dbCollection.storeApplication
-      : null;
-  
+        ? constant.dbCollection.salesApplication
+        : query.role === "storeOwner"
+          ? constant.dbCollection.storeApplication
+          : null;
+
   React.useEffect(() => {
     (async () => {
       if (!doc) {
@@ -121,8 +121,9 @@ function LoginPage(props) {
     },
     {
       title: "총 금액",
-      data: 
-        apiData && common.numberWithCommas(apiData.totalPrice)+"원",
+      data:
+        // apiData && common.numberWithCommas(apiData.totalPrice)+"원",
+        apiData && (apiData.totalPrice) + "원",
       link: "/sales/regist/address"
     },
     {
@@ -147,26 +148,26 @@ function LoginPage(props) {
     },
     {
       title: "신청 날짜",
-      data: apiData && common.getMonthDayTimeMinute(apiData.createdBy) ,
+      data: apiData && common.getMonthDayTimeMinute(apiData.createdBy),
       link: "/sales/regist/portion"
     },
     apiData && (apiData.approvedBy !== "" ?
-    {
-      title: "승인 날짜",
-      data: apiData && common.getMonthDayTimeMinute(apiData.approvedBy),
-      link: "/sales/regist/portion"
-    }:{}),
+      {
+        title: "승인 날짜",
+        data: apiData && common.getMonthDayTimeMinute(apiData.approvedBy),
+        link: "/sales/regist/portion"
+      } : {}),
     {
       title: "영업 방법",
-      data: apiData && (apiData.salesMethod === constant.salesMethod.banto ? "반토 영업망" : (apiData.salesMethod === constant.salesMethod.ownSales ? "자체 영업" : "선택되지 않음")) ,
+      data: apiData && (apiData.salesMethod === constant.salesMethod.banto ? "반토 영업망" : (apiData.salesMethod === constant.salesMethod.ownSales ? "자체 영업" : "선택되지 않음")),
       link: "/sales/regist/contact"
     },
     apiData && (apiData.salesMethod === constant.salesMethod.banto ?
-    {
-      title: "세일즈 파트너에게 할당된 수익률",
-      data: apiData && apiData.salesPortion + "%",
-      link: "/sales/regist/portion"
-    }:{}),
+      {
+        title: "세일즈 파트너에게 할당된 수익률",
+        data: apiData && apiData.salesPortion + "%",
+        link: "/sales/regist/portion"
+      } : {}),
     {
       title: "나의 수익률",
       data: apiData && apiData.buyerPortion - apiData.salesPortion + "%",
@@ -175,13 +176,13 @@ function LoginPage(props) {
     apiData && apiData.salesMethod === constant.salesMethod.ownSales &&
     {
       title: "영업인 (수익률)",
-      data: apiData && apiData.preSalesManagers.map((value)=> <p style={{marginTop:"8px"}}>{`${value.id}(${value.portion}%)`}</p>),
+      data: apiData && apiData.preSalesManagers.map((value) => <p style={{ marginTop: "8px" }}>{`${value.id}(${value.portion}%)`}</p>),
       // data: `${
       //   auth.userExtraInfo ? auth.userExtraInfo.id + apiData.preSalesIds: constant.exampleUserId
       // }(${apiData && apiData.salesPortion}%)`,
       link: "/sales/regist/portion"
     }
-          
+
     // {
     //   title: "스테이션 보유자(스테이션 ID)(수익률%)",
     //   data: `${
@@ -208,7 +209,7 @@ function LoginPage(props) {
     },
     {
       title: "총 금액",
-      data: 
+      data:
         apiData && apiData.totalPrice,
       link: "/sales/regist/address"
     },
@@ -249,36 +250,32 @@ function LoginPage(props) {
     },
     {
       title: "영업인 (수익률)",
-      data: `${
-        auth.userExtraInfo ? auth.userExtraInfo.id : constant.exampleUserId
-      }(${apiData && apiData.salesPortion}%)`,
+      data: `${auth.userExtraInfo ? auth.userExtraInfo.id : constant.exampleUserId
+        }(${apiData && apiData.salesPortion}%)`,
       link: "/sales/regist/portion"
     },
     {
       title: "스테이션 보유자(스테이션 ID)(수익률%)",
-      data: `${
-        apiData && apiData.buyerStatus === "noOwner"
+      data: `${apiData && apiData.buyerStatus === "noOwner"
           ? "반토 무료 스테이션 신청"
           : apiData && apiData.buyerStatus === "ownBuyer"
-          ? `${auth.user.email} (${apiData && apiData.stationId}) (${
-              apiData && apiData.buyerPortion
+            ? `${auth.user.email} (${apiData && apiData.stationId}) (${apiData && apiData.buyerPortion
             }%)`
-          : `${apiData && apiData.buyer} (${apiData && apiData.stationId}) (${
-              apiData && apiData.buyerPortion
+            : `${apiData && apiData.buyer} (${apiData && apiData.stationId}) (${apiData && apiData.buyerPortion
             }%)`
-      }`,
+        }`,
       link: "/sales/regist/portion"
     }
   ];
-  
-  
+
+
   const buyerBody = (<><section className={classes.section}>
     {apiData &&
       buyerData.map((value) => {
         if (Object.keys(value).length === 0)
-        return
+          return
 
-        
+
         return (
           <div>
             <div
@@ -331,22 +328,22 @@ function LoginPage(props) {
         );
       })}
   </section>
-  <section>
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column"
-      }}
-    >
+    <section>
       <div
         style={{
           display: "flex",
-          flexDirection: "rows",
-          alignItems: "center",
-          justifyContent: "space-between"
+          flexDirection: "column"
         }}
       >
-        {/* <FormControlLabel
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "rows",
+            alignItems: "center",
+            justifyContent: "space-between"
+          }}
+        >
+          {/* <FormControlLabel
           style={{ marginLeft: "14px" }}
           control={
             <BlackCheckbox
@@ -381,45 +378,45 @@ function LoginPage(props) {
           </Link>
         </p> */}
 
-      </div>
-                
-      <DescriptionText title={`영업 방법은 '구매자'->'내 스테이션' 에서 변경할 수 있습니다`}></DescriptionText>
-      <p className={classes.description}>
-</p>
-      <Button
-        variant="outlined"
-        onClick={async () => {
-          if (window.confirm("신청서를 삭제하시겠습니까")) {
-            const result = await common.deleteApplication(id);
-            if (result.code !== 200) {
-              alert(result.msg);
-              return;
-            }
-            alert("삭제되었습니다");
-            window.location.href= "/popToTop/"
-          } else {
-          }
-        }}
-        style={{
-          width: "calc(100% - 64px)",
-          height: "64px",
-          margin: "24px 32px",
-          borderRadius: "15px",
-          backgroundColor: "#000A12",
-          border: "2px solid #000A12",
-          fontFamily: "Noto Sans CJK KR",
-          fontStyle: "normal",
-          fontWeight: "500",
-          fontSize: "18px",
-          color: "white"
-        }}
-      >
-        삭제하기
-      </Button>
-    </div>
+        </div>
 
-  </section></>)
-  
+        <DescriptionText title={`영업 방법은 '구매자'->'내 스테이션' 에서 변경할 수 있습니다`}></DescriptionText>
+        <p className={classes.description}>
+        </p>
+        <Button
+          variant="outlined"
+          onClick={async () => {
+            if (window.confirm("신청서를 삭제하시겠습니까")) {
+              const result = await common.deleteApplication(id);
+              if (result.code !== 200) {
+                alert(result.msg);
+                return;
+              }
+              alert("삭제되었습니다");
+              window.location.href = "/popToTop/"
+            } else {
+            }
+          }}
+          style={{
+            width: "calc(100% - 64px)",
+            height: "64px",
+            margin: "24px 32px",
+            borderRadius: "15px",
+            backgroundColor: "#000A12",
+            border: "2px solid #000A12",
+            fontFamily: "Noto Sans CJK KR",
+            fontStyle: "normal",
+            fontWeight: "500",
+            fontSize: "18px",
+            color: "white"
+          }}
+        >
+          삭제하기
+      </Button>
+      </div>
+
+    </section></>)
+
   const salesBody = (<><section className={classes.section}>
     {apiData &&
       data.map((value) => {
@@ -475,22 +472,22 @@ function LoginPage(props) {
         );
       })}
   </section>
-  <section>
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column"
-      }}
-    >
+    <section>
       <div
         style={{
           display: "flex",
-          flexDirection: "rows",
-          alignItems: "center",
-          justifyContent: "space-between"
+          flexDirection: "column"
         }}
       >
-        {/* <FormControlLabel
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "rows",
+            alignItems: "center",
+            justifyContent: "space-between"
+          }}
+        >
+          {/* <FormControlLabel
           style={{ marginLeft: "14px" }}
           control={
             <BlackCheckbox
@@ -524,68 +521,68 @@ function LoginPage(props) {
             약관확인
           </Link>
         </p> */}
-      </div>
+        </div>
 
-      <Button
-        variant="outlined"
-        onClick={async () => {
-          if (window.confirm("신청서를 삭제하시겠습니까")) {
-            const result = await common.deleteApplication(id);
-            if (result.code !== 200) {
-              alert(result.msg);
-              return;
+        <Button
+          variant="outlined"
+          onClick={async () => {
+            if (window.confirm("신청서를 삭제하시겠습니까")) {
+              const result = await common.deleteApplication(id);
+              if (result.code !== 200) {
+                alert(result.msg);
+                return;
+              }
+              alert("삭제되었습니다");
+              props.history.push("/table/application?role=sales");
+            } else {
             }
-            alert("삭제되었습니다");
-            props.history.push("/table/application?role=sales");
-          } else {
-          }
-        }}
-        style={{
-          width: "calc(100% - 64px)",
-          height: "64px",
-          margin: "24px 32px",
-          borderRadius: "15px",
-          backgroundColor: "#000A12",
-          border: "2px solid #000A12",
-          fontFamily: "Noto Sans CJK KR",
-          fontStyle: "normal",
-          fontWeight: "500",
-          fontSize: "18px",
-          color: "white"
-        }}
-      >
-        삭제하기
+          }}
+          style={{
+            width: "calc(100% - 64px)",
+            height: "64px",
+            margin: "24px 32px",
+            borderRadius: "15px",
+            backgroundColor: "#000A12",
+            border: "2px solid #000A12",
+            fontFamily: "Noto Sans CJK KR",
+            fontStyle: "normal",
+            fontWeight: "500",
+            fontSize: "18px",
+            color: "white"
+          }}
+        >
+          삭제하기
       </Button>
-    </div>
-  </section></>)
+      </div>
+    </section></>)
 
-const storeBody = (<><section className={classes.section}>
-  {apiData &&
-    data.map((value) => {
-      return (
-        <div>
-          <div
-            style={{
-              display: "flex",
-              flexDirextion: "rows",
-              alignItems: "center",
-              justifyContent: "space-between",
-              margin: "16px 0 0 24px"
-            }}
-          >
-            <p
+  const storeBody = (<><section className={classes.section}>
+    {apiData &&
+      data.map((value) => {
+        return (
+          <div>
+            <div
               style={{
-                fontStyle: "normal",
-                fontWeight: "500",
-                fontSize: "16px",
-                color: "#000A12",
-                opacity: "0.4"
+                display: "flex",
+                flexDirextion: "rows",
+                alignItems: "center",
+                justifyContent: "space-between",
+                margin: "16px 0 0 24px"
               }}
             >
-              {value.title}
-            </p>
+              <p
+                style={{
+                  fontStyle: "normal",
+                  fontWeight: "500",
+                  fontSize: "16px",
+                  color: "#000A12",
+                  opacity: "0.4"
+                }}
+              >
+                {value.title}
+              </p>
 
-            {/* <Link
+              {/* <Link
               style={{
                 textDecoration: "underline",
                 fontFamily: "Noto Sans CJK KR",
@@ -597,39 +594,39 @@ const storeBody = (<><section className={classes.section}>
             >
               수정
             </Link> */}
+            </div>
+            <p
+              style={{
+                fontFamily: "Montserrat",
+                fontStyle: "normal",
+                fontWeight: "bold",
+                fontSize: "24px",
+                margin: "16px 0 60px 24px",
+                color: "#000A12"
+              }}
+            >
+              {value.data}
+            </p>
           </div>
-          <p
-            style={{
-              fontFamily: "Montserrat",
-              fontStyle: "normal",
-              fontWeight: "bold",
-              fontSize: "24px",
-              margin: "16px 0 60px 24px",
-              color: "#000A12"
-            }}
-          >
-            {value.data}
-          </p>
-        </div>
-      );
-    })}
-</section>
-<section>
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "column"
-    }}
-  >
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "rows",
-        alignItems: "center",
-        justifyContent: "space-between"
-      }}
-    >
-      {/* <FormControlLabel
+        );
+      })}
+  </section>
+    <section>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column"
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "rows",
+            alignItems: "center",
+            justifyContent: "space-between"
+          }}
+        >
+          {/* <FormControlLabel
         style={{ marginLeft: "14px" }}
         control={
           <BlackCheckbox
@@ -663,40 +660,40 @@ const storeBody = (<><section className={classes.section}>
           약관확인
         </Link>
       </p> */}
-    </div>
+        </div>
 
-    <Button
-      variant="outlined"
-      onClick={async () => {
-        if (window.confirm("신청서를 삭제하시겠습니까")) {
-          const result = await common.deleteApplication(id);
-          if (result.code !== 200) {
-            alert(result.msg);
-            return;
-          }
-          alert("삭제되었습니다");
-          props.history.push("/table/application?role=sales");
-        } else {
-        }
-      }}
-      style={{
-        width: "calc(100% - 64px)",
-        height: "64px",
-        margin: "24px 32px",
-        borderRadius: "15px",
-        backgroundColor: "#000A12",
-        border: "2px solid #000A12",
-        fontFamily: "Noto Sans CJK KR",
-        fontStyle: "normal",
-        fontWeight: "500",
-        fontSize: "18px",
-        color: "white"
-      }}
-    >
-      삭제하기
+        <Button
+          variant="outlined"
+          onClick={async () => {
+            if (window.confirm("신청서를 삭제하시겠습니까")) {
+              const result = await common.deleteApplication(id);
+              if (result.code !== 200) {
+                alert(result.msg);
+                return;
+              }
+              alert("삭제되었습니다");
+              props.history.push("/table/application?role=sales");
+            } else {
+            }
+          }}
+          style={{
+            width: "calc(100% - 64px)",
+            height: "64px",
+            margin: "24px 32px",
+            borderRadius: "15px",
+            backgroundColor: "#000A12",
+            border: "2px solid #000A12",
+            fontFamily: "Noto Sans CJK KR",
+            fontStyle: "normal",
+            fontWeight: "500",
+            fontSize: "18px",
+            color: "white"
+          }}
+        >
+          삭제하기
     </Button>
-  </div>
-</section></>)
+      </div>
+    </section></>)
 
   return (
     <>
@@ -720,11 +717,11 @@ const storeBody = (<><section className={classes.section}>
             </>
           )}
           <header>
-            <NavBar title="신청서 정보" backLink={`/popToTop/`}  />
+            <NavBar title="신청서 정보" backLink={`/popToTop/`} />
           </header>
 
           <main>
-            {role === "buyer" ? buyerBody:(role === "salesManager"? salesBody:storeBody)}
+            {role === "buyer" ? buyerBody : (role === "salesManager" ? salesBody : storeBody)}
           </main>
           <footer></footer>
         </div>

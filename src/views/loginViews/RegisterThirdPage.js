@@ -137,12 +137,12 @@ function LoginPage(props) {
                       marginTop: "10px"
                     }
                   }}
-                  // FormHelperTextProps={{
-                  //   style: {
-                  //     marginTop: "12px",
-                  //     fontSize: "14px"
-                  //   }
-                  // }}
+                // FormHelperTextProps={{
+                //   style: {
+                //     marginTop: "12px",
+                //     fontSize: "14px"
+                //   }
+                // }}
                 />
               </div>
               <p
@@ -188,12 +188,12 @@ function LoginPage(props) {
                     marginTop: "10px"
                   }
                 }}
-                // FormHelperTextProps={{
-                //   style: {
-                //     marginTop: "12px",
-                //     fontSize: "14px"
-                //   }
-                // }}
+              // FormHelperTextProps={{
+              //   style: {
+              //     marginTop: "12px",
+              //     fontSize: "14px"
+              //   }
+              // }}
               />
 
               <div style={{ marginTop: "40px" }}>
@@ -225,8 +225,7 @@ function LoginPage(props) {
                           lineHeight: "21px"
                         }}
                       >
-                        2020년 하반기 정책사항에 동의 합니다
-                      </span>
+                        {common.getTodayYear()}년 정책사항을 이해하고 동의 합니다                      </span>
                     }
                   />
                   <p style={{}}>
@@ -269,8 +268,7 @@ function LoginPage(props) {
                           lineHeight: "21px"
                         }}
                       >
-                        2020년 하반기 정책사항에 동의 합니다
-                      </span>
+                        {common.getTodayYear()}년 정책사항을 이해하고 동의 합니다                      </span>
                     }
                   />
                   <p style={{}}>

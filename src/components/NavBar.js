@@ -26,7 +26,7 @@ const NavBar = (props) => {
         <Link
           onClick={() => {
             console.log("요기야");
-            window.location.href = props.backLink;
+            props.history.push(props.backLink)
             return;
           }}
           className={classes.backButton}

@@ -18,8 +18,15 @@ import * as constant from "../../Const.js";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 
+import PolicyModal from "../../components/PolicyModal"
+import DescriptionText from "../../components/DescriptionText";
+import EmptySpace from "../../components/EmptySpace";
+import SubTitle from "../../components/SubTitle";
+import * as common from "../../common"
+
+
 const useStyles = makeStyles((theme) => ({
-  section: { padding: "55px 0 0 30px" },
+  section: { padding: "55px 0 0 0px" },
   infoTitle: { fontSize: "25px", fontWeight: "700" },
   dataUnlistOrder: { margin: "5px auto", "& li ": { padding: "5px 0 5px 0" } },
   dataTitleSpan: { fontSize: "14px", fontWeight: "600" },
@@ -69,16 +76,20 @@ function RegistFinal(props) {
   const classes = useStyles(props);
   const context = useGlobal();
   const auth = useAuth();
-  const [buyer, setBuyer] = React.useState({ email: "naver", portion: 0 });
+  const [open, setOpen] = React.useState(false);
   const [state, setState] = React.useState({
-    checkedA: true,
+    checkedA: false,
     checkedB: true,
     checkedF: true,
     checkedG: true
   });
 
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
   console.log("ㅍㅏ이널 세일즈 인포: ", context.salesInfo);
-  function mySubmitHandler() {}
+  function mySubmitHandler() { }
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
@@ -108,13 +119,13 @@ function RegistFinal(props) {
       link: "/sales/regist/contact"
     },
     {
-      title: "영업님 수익",
+      title: "세일즈 파트너 수익 수익",
       data: `${context.salesInfo.salesPortion}%`,
       link: "/sales/regist/portion"
     },
 
     {
-      title: "가맹점 수익 (가맹점 ID)",
+      title: "가맹점 수익",
       data:
         context.salesInfo.storePortion +
         context.salesInfo.storeBonusPortion +
@@ -156,11 +167,13 @@ function RegistFinal(props) {
         </>
       )}
       <header>
-        <NavBar title="" backLink="/sales/regist/portion" />
-        <HeaderInfo
+        <NavBar title="" backLink="/sales/regist/agreement" />
+        {/* <HeaderInfo
           title={"등록"}
           description="기입된 정보를 확인하고 신청 완료해주세요"
-        />
+        /> */}
+        <SubTitle title="등록" />
+        <DescriptionText title={"기입된 정보를 확인하고 신청 완료해주세요"} />
       </header>
       <main>
         <section className={classes.section}>
@@ -253,12 +266,14 @@ function RegistFinal(props) {
                       lineHeight: "21px"
                     }}
                   >
-                    2020년 하반기 정책사항에 동의 합니다
+                    {common.getTodayYear()}년 정책사항에 동의 합니다
                   </span>
                 }
               />
               <p style={{ textAlign: "right" }}>
                 <Link
+                  onClick={handleOpen}
+
                   style={{
                     marginRight: "24px",
                     textDecoration: "underline"
@@ -281,6 +296,16 @@ function RegistFinal(props) {
                   }
                   return;
                 }
+                if (!!!context.salesInfo.storeName || !!!context.salesInfo.storeMainAddress || !!!context.salesInfo.storeOwnerPhoneNumber || !!!context.salesInfo.stationId) {
+                  alert("입력되지 않은 정보가 있습니다. 확인 후 수정해주세요")
+                  return
+                }
+
+                if (!state.checkedA) {
+                  alert("정책을 확인 후 동의해 주세요")
+                  return
+                }
+
                 try {
                   //ㅅㅡ테이션 나갔는지 마지막 체크
                   const result = await auth.updateApplication(
@@ -314,8 +339,12 @@ function RegistFinal(props) {
               가입완료
             </Button>
           </div>
+
         </section>
+        {open && (<PolicyModal url="https://bantoservice.xyz/policy" closeModal={() => { setOpen(false) }}></PolicyModal>)}
+
       </main>
+
       <footer></footer>
     </>
   );

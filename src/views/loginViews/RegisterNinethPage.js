@@ -16,6 +16,8 @@ import Checkbox from "@material-ui/core/Checkbox";
 import CircleChecked from "@material-ui/icons/CheckCircleOutline";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
+import * as common from "../../common"
+
 const useStyles = makeStyles((theme) => ({
   emptySpace: { width: "100%", height: "44px" },
   headerSpace: {
@@ -216,7 +218,8 @@ function LoginPage(props) {
                           lineHeight: "21px"
                         }}
                       >
-                        2020년 하반기 정책사항에 동의 합니다
+                        {common.getTodayYear()}년 정책사항에 동의 합니다
+
                       </span>
                     }
                   />
