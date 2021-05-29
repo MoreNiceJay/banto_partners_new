@@ -108,6 +108,7 @@ export function GlobalProvider({ children }) {
     storeOwnerPhoneNumber: "",
     storePhoneNumber: "",
     storeOwner: "",
+    storeOwnerSignature: "",
     storePortion: 0,
     storeBonusPortion: 0,
     salesManager: "",
@@ -522,6 +523,12 @@ export function GlobalProvider({ children }) {
       return { ...prevState, buyerPortion: a };
     });
   }
+
+  async function setSales_storeOwnerSignature(a) {
+    await setSalesRegisterationInfo((prevState) => {
+      return { ...prevState, storeOwnerSignature: a };
+    });
+  }
   async function setSales_stationId(a) {
     await setSalesRegisterationInfo((prevState) => {
       return { ...prevState, stationId: a };
@@ -599,12 +606,14 @@ export function GlobalProvider({ children }) {
           setSales_storeOwnerPhoneNumber,
           setSales_storePhoneNumber,
           setSales_storeOwner,
+          setSales_storeOwnerSignature,
           setSales_storePortion,
           setSales_salesManager,
           setSales_salesPortion,
           setSales_storeBonusPortion,
           setSales_buyer,
           setSales_buyerPortion,
+
           setSales_stationId,
           setSales_storePhoto,
           setSales_naverStoreUrl,

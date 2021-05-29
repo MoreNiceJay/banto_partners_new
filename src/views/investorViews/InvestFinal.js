@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "400",
     fontSize: "14px",
     marginTop: "16px",
-    marginLeft:"24px"
+    marginLeft: "24px"
   },
   card2: {
     backgroundColor: "#F7F7F7",
@@ -69,8 +69,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "white",
     border: '2px solid #000',
     height: "90%",
-    display:"flex",
-    flexDirection:"column"
+    display: "flex",
+    flexDirection: "column"
 
     // boxShadow: theme.shadows[5],
     // padding: theme.spacing(2, 4, 3),
@@ -112,7 +112,7 @@ function InvestFinal(props) {
 
   const body = (
     // <div style={modalStyle} className={classes.paper}>
-     
+
     //   <iframe  style={{alignSelf:"center",height:"90%", width:"90%"}} src="https://bantoservice.xyz/policy" />
     //   <Button
     //     style={{ backgroundColor:"black", color:"white" , marginTop:"5%", marginLeft:"10px", marginRight:"10px", marginBottom:"5px"}}
@@ -124,10 +124,10 @@ function InvestFinal(props) {
     //   >
     //     확인
     //   </Button>
-      
+
     // </div>
-    <PolicyModal url="https://bantoservice.xyz/policy" closeModal={()=>{setOpen(false)}}></PolicyModal>
-    
+    <PolicyModal url="https://bantoservice.xyz/policy" closeModal={() => { setOpen(false) }}></PolicyModal>
+
   );
 
 
@@ -183,7 +183,7 @@ function InvestFinal(props) {
 
           <main>
             <section>
-            <SubTitle title="주문 정보" />
+              <SubTitle title="주문 정보" />
 
               <Paper variant="outlined" square className={classes.card}>
                 <div style={{ margin: "52px 24px" }}>
@@ -293,38 +293,38 @@ function InvestFinal(props) {
                       " 원 / "}{" "}
                     {`${context.getInvestInfo.amount}대`}
                   </p>
-                  
-                        <p style={{
+
+                  <p style={{
+                    color: "#5DDEF4",
+                    fontWeight: "400",
+                    fontSize: "16px",
+                    marginTop: "56px",
+                    textAlign: "left"
+                  }} className={classes.bankInfoDescription}>영업 방법</p>
+                  <p className={classes.bankInfoInfo} style={{
+                    color: "#5DDEF4",
+                    fontFamily: "Montserrat",
+                    fontStyle: "normal",
+                    fontWeight: "bold",
+                    fontSize: "32px",
+                    lineHeight: "34px",
+                    textAlign: "right",
+                    marginTop: "16px",
+                    textAlign: "left"
+                  }}>
+                    {context.getInvestInfo.salesMethod === constant.salesMethod.banto ? "반토 영업망" : (context.getInvestInfo.salesMethod === constant.salesMethod.ownSales ? "자체 영업망" : ("추후 선택"))}
+                  </p>
+                  {context.getInvestInfo.salesMethod === constant.salesMethod.ownSales ?
+                    (<> <p className={classes.bankInfoDescription} style={{
                       color: "#5DDEF4",
                       fontWeight: "400",
                       fontSize: "16px",
                       marginTop: "56px",
                       textAlign: "left"
-                    }} className={classes.bankInfoDescription}>영업 방법</p>
-                        <p className={classes.bankInfoInfo}  style={{
-                      color: "#5DDEF4",
-                      fontFamily: "Montserrat",
-                      fontStyle: "normal",
-                      fontWeight: "bold",
-                      fontSize: "32px",
-                      lineHeight: "34px",
-                      textAlign: "right",
-                      marginTop: "16px",
-                      textAlign: "left"
                     }}>
-                          {context.getInvestInfo.salesMethod === constant.salesMethod.banto ? "반토 영업망" :(context.getInvestInfo.salesMethod === constant.salesMethod.ownSales ? "자체 영업망" :("추후 선택"))}
+                      영업자
                         </p>
-                      {context.getInvestInfo.salesMethod === constant.salesMethod.ownSales ? 
-                      ( <> <p className={classes.bankInfoDescription} style={{
-                        color: "#5DDEF4",
-                        fontWeight: "400",
-                        fontSize: "16px",
-                        marginTop: "56px",
-                        textAlign: "left"
-                      }}>
-                          영업자 
-                        </p>
-                        <p className={classes.bankInfoInfo}
+                      <p className={classes.bankInfoInfo}
                         style={{
                           color: "#5DDEF4",
                           fontFamily: "Montserrat",
@@ -336,14 +336,14 @@ function InvestFinal(props) {
                           marginTop: "16px",
                           textAlign: "left"
                         }}>
-                          {context.getInvestInfo.preSalesIds.map((value)=>{
-                            return <p>{value} </p>
-                          })}
-                        </p></>):""} 
+                        {context.getInvestInfo.preSalesIds.map((value) => {
+                          return <p>{value} </p>
+                        })}
+                      </p></>) : ""}
 
                 </div>
               </Paper>
-              
+
               <SubTitle title="입금 정보" />
 
               <p className={classes.description}>
@@ -370,7 +370,7 @@ function InvestFinal(props) {
                       <li>
                         <p className={classes.bankInfoDescription}>입금할 금액</p>
                         <p className={classes.bankInfoInfo}>{numberWithCommas(context.getInvestInfo.totalPrice) +
-                      " 원 "}</p>
+                          " 원 "}</p>
                       </li>
                       {/* <li>
                         <p className={classes.bankInfoDescription}>영업 방법</p>
@@ -388,7 +388,7 @@ function InvestFinal(props) {
                           })}
                         </p>
                       </li>):""} */}
-                      
+
                     </ul>
                   </div>
                 </Paper>
@@ -426,10 +426,10 @@ function InvestFinal(props) {
                   />
                   <p style={{ textAlign: "right" }}>
                     <Link
-                    onClick={()=>{
-                      // alert("약관 띄우자")
-                      handleOpen()
-                    }}
+                      onClick={() => {
+                        // alert("약관 띄우자")
+                        handleOpen()
+                      }}
                       style={{
                         marginRight: "24px",
                         textDecoration: "underline"
@@ -458,7 +458,7 @@ function InvestFinal(props) {
                     backgroundColor: "black"
                   }}
                   onClick={async () => {
-                    if(!state.checkedA){
+                    if (!state.checkedA) {
                       alert("약관 동의가 필요합니다")
                       return
                     }
@@ -484,18 +484,18 @@ function InvestFinal(props) {
                     const result = await Axios.post(
                       constant.urls.domain + "/notifications/sendMsgBuyer",
                       {
-                        email:auth.user.email,
-                        amount:context.getInvestInfo.amount,
-                        price:context.getInvestInfo.totalPrice,
-                        
+                        email: auth.user.email,
+                        amount: context.getInvestInfo.amount,
+                        price: context.getInvestInfo.totalPrice,
+
                       }
                     );
                     // console.log("result:", result)
                     // if (result.data.code !== 200) {
                     //   return { code: 400, msg: result.data.msg };
                     // }
-                    await 
-                    props.history.push("/investor/done");
+
+                    window.location.href = "/investor/done"
                   }}
                 >
                   신청 완료
@@ -505,12 +505,12 @@ function InvestFinal(props) {
           </main>
           <footer></footer>
           <Modal
-        open={open}
-        onClose={handleClose}
-       
-      >
-        {body}
-      </Modal>
+            open={open}
+            onClose={handleClose}
+
+          >
+            {body}
+          </Modal>
         </div>
       </Slide>
     </>

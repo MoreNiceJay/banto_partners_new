@@ -10,7 +10,7 @@ import { FormButton } from "../../components/FormButton.js";
 import { useGlobal } from "../../globalContext";
 import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
-import Modal from "@material-ui/core/Modal";
+// import Modal from "@material-ui/core/Modal";
 import * as common from "../../common"
 import ProgressBreadcum from "../../components/ProgressBreadcum"
 import SubTitle from "../../components/SubTitle";
@@ -19,11 +19,17 @@ import firebase from "../../firebaseConfig";
 
 import DescriptionText from "../../components/DescriptionText";
 import SquareButton from "../../components/SquareButton.js";
+import PolicyModal from "../../components/PolicyModal"
+import Modal from "../../components/Modal"
+
+import { Link } from "react-router-dom";
+
+
 
 // import SignaturePad from "signature_pad";
 import SignaturePad from "react-signature-canvas";
-
-
+import CheckIcon from '@material-ui/icons/Check';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import moment from "moment";
 const useStyles = makeStyles((theme) => ({
     addressContainer: {
@@ -53,67 +59,19 @@ function RegistAgreement(props) {
     const [storeName, setStoreName] = React.useState("");
     const [mainAddress, setMainAddress] = React.useState(null);
     const [restAddress, setRestAddress] = React.useState(null);
+    const [signatureOpen, setSignatureOpen] = React.useState(false);
 
     const [imageURL, setImageURl] = useState(null);
     const sigCanvas = React.useRef({});
     const clear = () => sigCanvas.current.clear();
-    const save = () => {
-        setImageURl(sigCanvas.current.getTrimmedCanvas().toDataURL("image/jpg"));
-
-
-        // Upload file and metadata to the object 'images/mountains.jpg'
-        // var uploadTask = storageRef.child('images/' + "hello").put(imageURL, metadata);
-
-        console.log(imageURL)
-
+    const save = async () => {
+        await setImageURl(sigCanvas.current.getTrimmedCanvas().toDataURL("image/jpg"));
     }
-    // var getFileBlob = function (url, cb) {
-    //     var xhr = new XMLHttpRequest();
-    //     xhr.open("GET", url);
-    //     xhr.responseType = "blob";
-    //     xhr.addEventListener('load', function () {
-    //         cb(xhr.response);
-    //     });
-    //     xhr.send();
-    // };
-    // var uploadToStorage = (imageURL) => {
-    //     try {
-    //         getFileBlob(imageURL, blob => {
-    //             common.storage.ref().put(blob).then(function (snapshot) {
-    //                 console.log('Uploaded a blob or file!');
-    //             })
-    //         })
-    //     } catch (e) {
-    //         console.log(e)
-    //     }
-    // }
 
 
-    const handleComplete = (data) => {
-        let fullAddress = data.address;
-        let extraAddress = "";
 
-        if (data.addressType === "R") {
-            if (data.bname !== "") {
-                extraAddress += data.bname;
-            }
-            if (data.buildingName !== "") {
-                extraAddress +=
-                    extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
-            }
-            fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
-        }
-        setMainAddress(fullAddress);
-        setOpen(false);
-        console.log(fullAddress); // e.g. '서울 성동구 왕십리로2길 20 (성수동1가)'
-    };
-    React.useEffect(() => {
-        // console.log(context.salesInfo.storeOwnerPhoneNumber);
-        setStoreName(context.salesInfo.storeName);
-        setMainAddress(context.salesInfo.mainAddress);
-        setRestAddress(context.salesInfo.restAddress);
-        // setStoreContact(context.salesInfo.storePhoneNumber);
-    }, []);
+
+
     function getModalStyle() {
         return {
             top: `0px`,
@@ -121,13 +79,8 @@ function RegistAgreement(props) {
         };
     }
 
-    const onChangeStoreName = (e) => {
-        setStoreName(e.target.value);
-    };
-    const onChangeRestAddress = (e) => {
-        console.log(e.target.value);
-        setRestAddress(e.target.value);
-    };
+
+
     const handleOpen = () => {
         setOpen(true);
     };
@@ -137,20 +90,49 @@ function RegistAgreement(props) {
 
         setOpen(false);
     };
-    function mySubmitHandler() { }
 
-    const body = (
-        <div style={modalStyle} className={classes.paper}>
-            <DaumPostcode onComplete={handleComplete} {...props} />
-            <Button
-                style={{ position: "absolute", marginTop: "5px", right: "5px" }}
-                variant="contained"
-                onClick={handleClose}
-            >
-                취소
-      </Button>
-        </div>
-    );
+    const signatureBody = (<><DescriptionText title={"위 사항에 대해 충분히 이해했습니다"} />
+        <div style={{ width: "calc(100% - 48px", margin: "auto" }} >
+
+            <div style={{
+                width: "100%",
+                border: "1px dashed #666",
+                height: "100px",
+
+            }}>
+                <SignaturePad
+                    ref={sigCanvas}
+                    backgroundColor="white"
+                    // className={classes.sigatureCanvas}
+                    canvasProps={{
+                        // width: "200%",
+                        // height: "200%",
+                        className: "signatureCanvas"
+                    }}
+
+                />
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <button style={{ backgroundColor: "white" }} onClick={clear}>지우기</button>
+                    <button style={{ backgroundColor: "black", color: "white" }} onClick={save}>저장</button>
+                </div>
+                {/* <button onClick={undo}>Undo</button> */}
+            </div>
+            {imageURL ? (
+                <img
+                    src={imageURL}
+                    alt="Sign"
+                    style={{
+                        display: "hidden",
+                        width: "0px",
+                        minHeight: "0px",
+                    }}
+                />
+            ) : null}
+            {imageURL ? (<p style={{ marginTop: "32px", textAlign: "center" }}>완료</p>) : (<p style={{ marginTop: "32px", textAlign: "center" }}>서명 후 저장을 눌러주세요</p>)}
+        </div></>
+    )
+
+
 
     return (
         <>
@@ -164,13 +146,13 @@ function RegistAgreement(props) {
                         actionDescription="로그인"
                         link="/login/login"
                         onClick={() => {
-                            props.history.push("/sales/regist/add-investor");
+                            window.location.href("/login/login");
                         }}
                     ></Alert>
                 </>
             )}
             <header>
-                <NavBar title="" backLink="/salesmenu" />
+                <NavBar title="" backLink="/sales/regist/add-investor" />
                 {/* <HeaderInfo
           title={"등록" + "\u00A0" + "\u00A0" + "\u00A0" + "1/3"}
           description="가맹점을 등록합니다"
@@ -181,147 +163,153 @@ function RegistAgreement(props) {
                 <SubTitle title="가맹점과 계약 체결" />
                 <DescriptionText title={"가맹점주님께 계약 체결정보를 확인드리고 서명을 받아 계약을 완료합니다"} />
                 <section>
-
-
-
                     <EmptySpace />
                     <EmptySpace />
-                    <TextField
-                        title="매장명"
-                        description="예) 스타벅스 구로점"
-                        // label="필수"
-                        placeholder={"필수"}
-                        value={storeName}
-                        onChange={onChangeStoreName}
-                    />
-                    <div className={classes.addressContainer}>
-                        <span className={classes.contactPersonTitle}>매장 주소</span>
+                    <SubTitle title="확인 사항" />
+                    <DescriptionText title={"가맹점주님께  확인 드려야할 사항입니다"} />
+                    <ul style={{
+                        display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start", height: "280px", marginLeft: "24px", marginRight: "24px", marginTop: "24px", lineHeight: "130%"
+                    }} >
+                        <li style={{
+                            display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
+                        }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /><span> 가맹점주님이 받으실 수익은 0% 입니다</span></li>
+                        <li style={{
+                            display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
+                        }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /><span> 계약 기간은 2년 입니다</span></li>
+                        <li style={{
+                            display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
+                        }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /><span> 수익은 파트너스앱을 통해 확인 할 수 있습니다</span></li>
+                        <li style={{
+                            display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
+                        }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /> <span>정산은 매월 15일날 등록하신 계좌로 입금 됩니다</span></li>
+                        <li style={{
+                            display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
+                        }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /><span> 정책에 따라 스테이션은 회수 될 수 있습니다</span></li>
+                        <li style={{
+                            display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
+                        }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /><span> {common.getTodayYear()}년 하반기 가맹점 정책사항에 동의 합니다 </span></li>
 
-                        <MTextField
-                            className={classes.addressTextField}
-                            disabled
-                            id="outlined-basic"
-                            inputProps={{ inputMode: "numeric" }}
-                            variant="outlined"
-                            value={mainAddress}
-                            placeholder={"필수"}
 
+                    </ul>
+
+
+                    <p style={{ textAlign: "right", }}>
+                        <Link
                             onClick={handleOpen}
-                            style={{ marginBottom: "8px" }}
-                        />
-                        <MTextField
-                            className={classes.addressTextField}
-                            id="outlined-basic2"
-                            variant="outlined"
-                            // label="*필수 나머지 주소"
-                            placeholder={"필수 나머지 주소"}
-
-                            value={restAddress}
-                            onChange={onChangeRestAddress}
-                        />
-                    </div>
+                            style={{
+                                marginRight: "24px",
+                                textDecoration: "underline"
+                            }}
+                        >
+                            약관확인
+                    </Link>
+                    </p>
+                    <EmptySpace />
+                    <EmptySpace />
 
 
                     <EmptySpace />
-                    <div style={{ width: "calc(100% - 48px", margin: "auto" }} >
-                        <h3>가맹점주님 서명</h3>
-                        <div style={{
-                            width: "100%",
-                            border: "1px dashed #666",
-                            height: "100px",
+                    <SubTitle title="가맹점주님 서명" />
 
-                        }}>
-                            <SignaturePad
-                                ref={sigCanvas}
-                                backgroundColor="white"
-                                // className={classes.sigatureCanvas}
-                                canvasProps={{
-                                    // width: "200%",
-                                    // height: "200%",
-                                    className: "signatureCanvas"
-                                }}
 
-                            />
-                            <button onClick={clear}>다시 사인</button>
-                            <button onClick={save}>Save</button>
-                            {/* <button onClick={undo}>Undo</button> */}
-                        </div>
-                        {console.log("imageURL", imageURL)}
-                        {imageURL ? (
-                            <img
-                                src={imageURL}
-                                alt="Sign"
-                                style={{
-                                    display: "block",
-                                    width: "150px",
-                                    minHeight: "50px",
-                                    border: "1px solid #000"
-                                }}
-                            />
-                        ) : null}
-                    </div>
+                    <button onClick={() => {
+                        setSignatureOpen(true)
+                    }}>서명하기</button>
 
+
+                    <EmptySpace />
                     <EmptySpace />
 
 
 
                     <SquareButton
                         onClick={async () => {
-                            save()
-                            // // Base64 formatted string
-                            // var message = '5b6p5Y+344GX44G+44GX44Gf77yB44GK44KB44Gn44Go44GG77yB';
-                            // common.storage.ref().putString(message, 'base64').then(function (snapshot) {
-                            //     console.log('Uploaded a base64 string!');
-                            // });
-                            var uploadTask = common.storage.ref().child('sign/name.jpg').putString(imageURL, 'data_url')
-
-                            uploadTask.on('state_changed', function (snapshot) {
-                                // Observe state change events such as progress, pause, and resume
-                                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-                                var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                                console.log('Upload is ' + progress + '% done');
-                                switch (snapshot.state) {
-                                    case firebase.storage.TaskState.PAUSED: // or 'paused'
-                                        console.log('Upload is paused');
-                                        break;
-                                    case firebase.storage.TaskState.RUNNING: // or 'running'
-                                        console.log('Upload is running');
-                                        break;
-                                }
-                            }, function (error) {
-                                // Handle unsuccessful uploads
-                            }, function () {
-                                // Handle successful uploads on complete
-                                // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-                                uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
-                                    console.log('File available at', downloadURL);
-                                });
-                            });
-                            console.log(storeName, mainAddress, restAddress);
-                            if (!storeName || !mainAddress || !restAddress) {
-                                alert("정보를 기입해주세요");
-                                return;
+                            if (!imageURL) {
+                                alert("서명이 필요합니다. 서명하기를 눌러주세요")
+                                return
                             }
+                            // props.history.push("/sales/regist/final")
+                            window.location.href = "/sales/regist/final"
 
-                            context.setSales_storeName(storeName);
-                            context.setSales_storeMainAddress(mainAddress);
-                            context.setSales_storeRestAddress(restAddress);
-                            props.history.push("/sales/regist/final");
+                            // console.log(storeName, mainAddress, restAddress);
+                            // if (!storeName || !mainAddress || !restAddress) {
+                            //     alert("정보를 기입해주세요");
+                            //     return;
+                            // }
+
+
+
                         }}
                         text="다음"
                     />
 
                 </section>
             </main>
-            <footer></footer>
-            <Modal
+
+            <footer>
+
+
+            </footer>
+            {/* <Modal
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
             >
                 {body}
-            </Modal>
+            </Modal> */}
+            {open && (<PolicyModal url="https://bantoservice.xyz/policy" closeModal={() => { setOpen(false) }}></PolicyModal>)}
+            {signatureOpen && (<Modal closeModal={() => {
+                if (!imageURL) {
+                    alert("서명이 필요합니다. 저장을 눌러주세요")
+                    return
+                }
+                // // Base64 formatted string
+                // var message = '5b6p5Y+344GX44G+44GX44Gf77yB44GK44KB44Gn44Go44GG77yB';
+                // common.storage.ref().putString(message, 'base64').then(function (snapshot) {
+                //     console.log('Uploaded a base64 string!');
+                // });
+                var uploadTask = common.storage.ref().child('sign/name.jpg').putString(imageURL, 'data_url')
+
+                uploadTask.on('state_changed', function (snapshot) {
+                    // Observe state change events such as progress, pause, and resume
+                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log('Upload is ' + progress + '% done');
+                    switch (snapshot.state) {
+                        case firebase.storage.TaskState.PAUSED: // or 'paused'
+                            console.log('Upload is paused');
+                            break;
+                        case firebase.storage.TaskState.RUNNING: // or 'running'
+                            console.log('Upload is running');
+                            break;
+                    }
+                }, function (error) {
+                    // Handle unsuccessful uploads
+                }, function () {
+                    // Handle successful uploads on complete
+                    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                    uploadTask.snapshot.ref.getDownloadURL().then(async function (downloadURL) {
+                        console.log('File available at', downloadURL);
+                        context.setSales_storeOwnerSignature(downloadURL)
+                        alert(downloadURL)
+                        return await context.setSales_storeOwnerSignature(downloadURL)
+
+                    }).then(() => {
+                        console.log(context.salesInfo.storeOwnerSignature)
+                        // window.location.href = "/sales/regist/final"
+
+                    })
+
+
+                });
+
+
+
+                setSignatureOpen(false)
+            }}><div>{signatureBody}</div></Modal>
+            )}
+
         </>
     );
 }
