@@ -218,14 +218,7 @@ function LoginPage(props) {
                   {i.status === "WAITING" ? "입금 확인중" : "승인완료"}
 
                 </p>
-                <p
-                  style={{
-                    fontSize: "10px",
-                    fontWeigth: "bold",
-                    verticalAlign: "center"
-                  }}
-                >                {i.status === "WAITING" ? "" : `${common.getMonthDayTimeMinute(i.approvedBy)}`}
-                </p>
+
               </TableCell>
             </TableRow>
           ))}
@@ -263,7 +256,7 @@ function LoginPage(props) {
                 component="th"
                 scope="row"
               >
-                <p>2020.01.23</p>
+                <p>{common.getMonthDayTimeMinute(i.createdBy)}</p>
               </TableCell>
 
               <TableCell
@@ -292,17 +285,18 @@ function LoginPage(props) {
               </p>
               </TableCell>
               <TableCell
-                style={{ height: "60px", verticalAlign: "top" }}
+                style={{ height: "60px", verticalAlign: "center" }}
                 align="right"
               >
+
                 <p
                   style={{
 
                     fontStyle: "normal",
                     fontWeight: "800",
                     fontSize: "18px",
-                    marginTop: "8px",
-                    color: "#00838F",
+                    color: i.status === "WAITING" ? "black" : "#71C848",
+
 
                   }}
                 >

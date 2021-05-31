@@ -269,6 +269,8 @@ function LoginPage(props) {
   ];
 
 
+
+
   const buyerBody = (<><section className={classes.section}>
     {apiData &&
       buyerData.map((value) => {
@@ -416,9 +418,69 @@ function LoginPage(props) {
 
     </section></>)
 
+
+  const salesData = [
+    {
+      title: "신청서 상태",
+      data: apiData && apiData.storeName,
+      link: "/sales/regist/address"
+    },
+    {
+      title: "신청 날짜",
+      data: apiData && common.getMonthDayTimeMinute(apiData.createdBy),
+      link: "/sales/regist/address"
+    },
+    apiData && (apiData.approvedBy !== "") && {
+      title: "승인 날짜",
+      data: apiData && common.getMonthDayTimeMinute(apiData.approvedBy),
+      link: "/sales/regist/address"
+    },
+    {
+      title: "가맹점 이름",
+      data: apiData && apiData.storeName,
+      link: "/sales/regist/address"
+    },
+    {
+      title: "가맹점 주소",
+      data: [
+        apiData && apiData.storeMainAddress,
+        apiData && apiData.storeRestAddress
+      ].join(" "),
+      link: "/sales/regist/address"
+    },
+
+    {
+      title: "가맹점 전화번호",
+      data: apiData && apiData.storePhoneNumber,
+      link: "/sales/regist/contact"
+    },
+    {
+      title: "점주님 연락처",
+      data: apiData && apiData.storeOwnerPhoneNumber,
+      link: "/sales/regist/contact"
+    },
+
+
+    {
+      title: "가맹점 수익",
+      data: apiData && apiData.storePortion + apiData.storeBonusPortion + "%",
+      link: "/sales/regist/portion"
+    },
+    {
+      title: "세일즈 파트너 수익률",
+      data:
+        `${(apiData && apiData.salesPortion) - (apiData && apiData.storePortion)}%`,
+      link: "/sales/regist/portion"
+    },
+
+  ];
+
   const salesBody = (<><section className={classes.section}>
     {apiData &&
-      data.map((value) => {
+      salesData.map((value) => {
+        if (!value) {
+          return
+        }
         return (
           <div>
             <div
@@ -461,7 +523,8 @@ function LoginPage(props) {
                 fontWeight: "bold",
                 fontSize: "24px",
                 margin: "16px 0 60px 24px",
-                color: "#000A12"
+                color: "#000A12",
+                lineHeight: "120%"
               }}
             >
               {value.data}
@@ -554,9 +617,62 @@ function LoginPage(props) {
       </div>
     </section></>)
 
+  const storeData = [
+    {
+      title: "신청서 상태",
+      data: apiData && apiData.storeName,
+      link: "/sales/regist/address"
+    },
+    {
+      title: "신청 날짜",
+      data: apiData && common.getMonthDayTimeMinute(apiData.createdBy),
+      link: "/sales/regist/address"
+    },
+    apiData && (apiData.approvedBy !== "") && {
+      title: "승인 날짜",
+      data: apiData && common.getMonthDayTimeMinute(apiData.approvedBy),
+      link: "/sales/regist/address"
+    },
+    {
+      title: "가맹점 이름",
+      data: apiData && apiData.storeName,
+      link: "/sales/regist/address"
+    },
+    {
+      title: "가맹점 주소",
+      data: [
+        apiData && apiData.storeMainAddress,
+        apiData && apiData.storeRestAddress
+      ].join(" "),
+      link: "/sales/regist/address"
+    },
+
+    {
+      title: "가맹점 전화번호",
+      data: apiData && apiData.storePhoneNumber,
+      link: "/sales/regist/contact"
+    },
+    {
+      title: "점주님 연락처",
+      data: apiData && apiData.storeOwnerPhoneNumber,
+      link: "/sales/regist/contact"
+    },
+
+
+    {
+      title: "가맹점 수익",
+      data: apiData && apiData.storePortion + apiData.storeBonusPortion + "%",
+      link: "/sales/regist/portion"
+    },
+
+
+  ];
   const storeBody = (<><section className={classes.section}>
     {apiData &&
-      data.map((value) => {
+      storeData.map((value) => {
+        if (!value) {
+          return
+        }
         return (
           <div>
             <div
@@ -599,7 +715,8 @@ function LoginPage(props) {
                 fontWeight: "bold",
                 fontSize: "24px",
                 margin: "16px 0 60px 24px",
-                color: "#000A12"
+                color: "#000A12",
+                lineHeight: "120%"
               }}
             >
               {value.data}
