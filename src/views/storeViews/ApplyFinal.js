@@ -83,7 +83,7 @@ function RegistFinal(props) {
       console.log("컨텍스트", context.getStoreInfo);
     })();
   }, []);
-  function mySubmitHandler() {}
+  function mySubmitHandler() { }
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
   };
@@ -188,7 +188,6 @@ function RegistFinal(props) {
                     to={value.link}
                     style={{
                       textDecoration: "underline",
-                      fontFamily: "Noto Sans CJK KR",
                       fontStyle: "normal",
                       fontWeight: "500",
                       fontSize: "12px",
@@ -200,7 +199,6 @@ function RegistFinal(props) {
                 </div>
                 <p
                   style={{
-                    fontFamily: "Montserrat",
                     fontStyle: "normal",
                     fontWeight: "bold",
                     fontSize: "24px",
@@ -249,7 +247,7 @@ function RegistFinal(props) {
                       lineHeight: "21px"
                     }}
                   >
-                    {common.getTodayYear()}년 하반기 정책사항에 동의 합니다
+                    {common.getTodayYear()}년 정책사항을 이해하고 동의 합니다
                   </span>
                 }
               />

@@ -152,7 +152,6 @@ function LoginPage({ props, location }) {
                           </div>
                           <p
                             style={{
-                              fontFamily: "Montserrat",
                               fontStyle: "normal",
                               fontWeight: "500",
                               fontSize: "18px",

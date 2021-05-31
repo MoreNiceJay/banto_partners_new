@@ -132,7 +132,6 @@ function LoginPage(props) {
                     margin: "24px 32px",
                     borderRadius: "15px",
                     border: "2px solid #000A12",
-                    fontFamily: "Montserrat",
                     fontStyle: "normal",
                     fontWeight: "600",
                     fontSize: "12px",

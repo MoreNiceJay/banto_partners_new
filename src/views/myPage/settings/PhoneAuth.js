@@ -113,7 +113,6 @@ function LoginPage(props) {
               <div className={classes.amount}>
                 <p
                   style={{
-                    fontFamily: "Montserrat",
                     fontStyle: "normal",
                     fontWeight: "500",
                     fontSize: "14px",
@@ -156,19 +155,18 @@ function LoginPage(props) {
                     style: {
                       paddingLeft: "0px",
                       fontSize: "26px",
-                      fontFamily: "Montserrat",
                       fontWeight: "bold",
 
                       boxSizing: "border-box",
                       marginTop: "10px"
                     }
                   }}
-                  // FormHelperTextProps={{
-                  //   style: {
-                  //     marginTop: "12px",
-                  //     fontSize: "14px"
-                  //   }
-                  // }}
+                // FormHelperTextProps={{
+                //   style: {
+                //     marginTop: "12px",
+                //     fontSize: "14px"
+                //   }
+                // }}
                 />
                 <div
                   style={{
@@ -205,7 +203,6 @@ function LoginPage(props) {
                       margin: "24px 32px 24px 14px",
                       borderRadius: "8px",
                       border: bPause ? "2px solid silver" : "2px solid #000A12",
-                      fontFamily: "Montserrat",
                       fontStyle: "normal",
                       fontWeight: "normal",
                       fontSize: "12px",
@@ -255,19 +252,18 @@ function LoginPage(props) {
                   style: {
                     paddingLeft: "0px",
                     fontSize: "26px",
-                    fontFamily: "Montserrat",
                     fontWeight: "bold",
 
                     boxSizing: "border-box",
                     marginTop: "10px"
                   }
                 }}
-                // FormHelperTextProps={{
-                //   style: {
-                //     marginTop: "12px",
-                //     fontSize: "14px"
-                //   }
-                // }}
+              // FormHelperTextProps={{
+              //   style: {
+              //     marginTop: "12px",
+              //     fontSize: "14px"
+              //   }
+              // }}
               />
 
               <div

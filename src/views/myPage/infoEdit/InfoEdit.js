@@ -112,7 +112,6 @@ function LoginPage(props) {
                       value={bank}
                       style={{
                         fontSize: "26px",
-                        fontFamily: "Montserrat",
                         fontWeight: "bold",
                         boxSizing: "border-box",
                         marginTop: "10px"
@@ -121,7 +120,6 @@ function LoginPage(props) {
                       inputProps={{
                         style: {
                           fontSize: "26px",
-                          fontFamily: "Montserrat",
                           fontWeight: "bold",
                           boxSizing: "border-box",
                           marginTop: "10px"
@@ -226,19 +224,18 @@ function LoginPage(props) {
                     style: {
                       paddingLeft: "0px",
                       fontSize: "26px",
-                      fontFamily: "Montserrat",
                       fontWeight: "bold",
 
                       boxSizing: "border-box",
                       marginTop: "10px"
                     }
                   }}
-                  // FormHelperTextProps={{
-                  //   style: {
-                  //     marginTop: "12px",
-                  //     fontSize: "14px"
-                  //   }
-                  // }}
+                // FormHelperTextProps={{
+                //   style: {
+                //     marginTop: "12px",
+                //     fontSize: "14px"
+                //   }
+                // }}
                 />
               </div>
               <div className={classes.amount} style={{ marginTop: "60px" }}>
@@ -276,19 +273,18 @@ function LoginPage(props) {
                     style: {
                       paddingLeft: "0px",
                       fontSize: "26px",
-                      fontFamily: "Montserrat",
                       fontWeight: "bold",
 
                       boxSizing: "border-box",
                       marginTop: "10px"
                     }
                   }}
-                  // FormHelperTextProps={{
-                  //   style: {
-                  //     marginTop: "12px",
-                  //     fontSize: "14px"
-                  //   }
-                  // }}
+                // FormHelperTextProps={{
+                //   style: {
+                //     marginTop: "12px",
+                //     fontSize: "14px"
+                //   }
+                // }}
                 />
               </div>
               <div className={classes.amount} style={{ marginTop: "60px" }}>
@@ -326,19 +322,18 @@ function LoginPage(props) {
                     style: {
                       paddingLeft: "0px",
                       fontSize: "26px",
-                      fontFamily: "Montserrat",
                       fontWeight: "bold",
 
                       boxSizing: "border-box",
                       marginTop: "10px"
                     }
                   }}
-                  // FormHelperTextProps={{
-                  //   style: {
-                  //     marginTop: "12px",
-                  //     fontSize: "14px"
-                  //   }
-                  // }}
+                // FormHelperTextProps={{
+                //   style: {
+                //     marginTop: "12px",
+                //     fontSize: "14px"
+                //   }
+                // }}
                 />
               </div>
 
@@ -372,7 +367,6 @@ function LoginPage(props) {
                     margin: "24px 32px",
                     borderRadius: "15px",
                     border: "2px solid #000A12",
-                    fontFamily: "Montserrat",
                     fontStyle: "normal",
                     fontWeight: "600",
                     fontSize: "12px",

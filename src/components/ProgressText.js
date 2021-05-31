@@ -4,7 +4,6 @@ import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
   progressText: {
-    fontFamily: "Montserrat",
     fontStyle: "normal",
     fontWeight: "500",
     fontSize: "14px",

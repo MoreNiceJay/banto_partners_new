@@ -217,7 +217,6 @@ function RegistFinal(props) {
                 </div>
                 <p
                   style={{
-                    fontFamily: "Montserrat",
                     fontStyle: "normal",
                     fontWeight: "bold",
                     fontSize: "24px",

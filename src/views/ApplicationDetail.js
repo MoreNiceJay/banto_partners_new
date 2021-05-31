@@ -257,12 +257,12 @@ function LoginPage(props) {
     {
       title: "스테이션 보유자(스테이션 ID)(수익률%)",
       data: `${apiData && apiData.buyerStatus === "noOwner"
-          ? "반토 무료 스테이션 신청"
-          : apiData && apiData.buyerStatus === "ownBuyer"
-            ? `${auth.user.email} (${apiData && apiData.stationId}) (${apiData && apiData.buyerPortion
-            }%)`
-            : `${apiData && apiData.buyer} (${apiData && apiData.stationId}) (${apiData && apiData.buyerPortion
-            }%)`
+        ? "반토 무료 스테이션 신청"
+        : apiData && apiData.buyerStatus === "ownBuyer"
+          ? `${auth.user.email} (${apiData && apiData.stationId}) (${apiData && apiData.buyerPortion
+          }%)`
+          : `${apiData && apiData.buyer} (${apiData && apiData.stationId}) (${apiData && apiData.buyerPortion
+          }%)`
         }`,
       link: "/sales/regist/portion"
     }
@@ -314,7 +314,6 @@ function LoginPage(props) {
             </div>
             <p
               style={{
-                fontFamily: "Montserrat",
                 fontStyle: "normal",
                 fontWeight: "bold",
                 fontSize: "24px",
@@ -458,7 +457,6 @@ function LoginPage(props) {
             </div>
             <p
               style={{
-                fontFamily: "Montserrat",
                 fontStyle: "normal",
                 fontWeight: "bold",
                 fontSize: "24px",
@@ -597,7 +595,6 @@ function LoginPage(props) {
             </div>
             <p
               style={{
-                fontFamily: "Montserrat",
                 fontStyle: "normal",
                 fontWeight: "bold",
                 fontSize: "24px",

@@ -24,11 +24,14 @@ const NavBar = (props) => {
       <div className={classes.emptySpace} />
       <div className={classes.headerSpace}>
         <Link
-          onClick={() => {
-            console.log("요기야");
-            props.history.push(props.backLink)
-            return;
-          }}
+          // onClick={() => {
+
+
+
+          //   props.history.push(props.backLink)
+          //   return;
+          // }}
+          to={props.backLink}
           className={classes.backButton}
         >
           <img

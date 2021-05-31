@@ -113,8 +113,7 @@ function LoginPage(props) {
           style: {
             // paddingLeft: "0px",
             fontSize: "26px",
-            fontFamily: "Montserrat",
-            fontWeight: "bold"
+            fontWeight: "bold",
 
             // boxSizing: "border-box",
             // marginTop: "10px"
@@ -145,7 +144,7 @@ function LoginPage(props) {
             style={{
               paddingLeft: "0px",
               fontSize: "26px",
-              fontFamily: "Montserrat",
+
               fontWeight: "bold",
               color: "black",
               opacity: "0.4",
@@ -163,7 +162,7 @@ function LoginPage(props) {
             variant="outlined"
             style={{
               fontSize: "26px",
-              fontFamily: "Montserrat",
+
               fontWeight: "bold",
               boxSizing: "border-box",
               marginTop: "10px"
@@ -173,7 +172,7 @@ function LoginPage(props) {
             inputProps={{
               style: {
                 fontSize: "26px",
-                fontFamily: "Montserrat",
+
                 fontWeight: "bold",
                 boxSizing: "border-box",
                 marginTop: "10px"
@@ -269,7 +268,6 @@ function LoginPage(props) {
           style: {
             // paddingLeft: "0px",
             fontSize: "26px",
-            fontFamily: "Montserrat",
             fontWeight: "bold"
 
             // boxSizing: "border-box",
@@ -471,7 +469,6 @@ function LoginPage(props) {
                     margin: "24px 32px",
                     borderRadius: "15px",
                     border: "2px solid #000A12",
-                    fontFamily: "Montserrat",
                     fontStyle: "normal",
                     fontWeight: "600",
                     fontSize: "12px",

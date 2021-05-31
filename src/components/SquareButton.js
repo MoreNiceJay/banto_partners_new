@@ -9,7 +9,6 @@ const useStyles = makeStyles((theme) => ({
     height: "64px",
     margin: "24px 24px",
     borderRadius: "15px",
-    fontFamily: "Montserrat",
     fontStyle: "normal",
     fontWeight: "600",
     fontSize: "12px",
@@ -43,15 +42,15 @@ export default function PTextField(props) {
     </Button>
   ));
   return (
-    
-      <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end"
-                }}
-              >
+
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "flex-end"
+      }}
+    >
       <SquareButton {...props} />
-      </div>
-    
+    </div>
+
   );
 }

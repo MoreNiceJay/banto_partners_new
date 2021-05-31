@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme) => ({
   inputStyle: {
     paddingLeft: "0px",
     fontSize: "26px",
-    fontFamily: "Montserrat",
     fontWeight: "bold",
 
     boxSizing: "border-box",
@@ -73,19 +72,18 @@ export default function PortionTextField(props) {
           style: {
             textAlign: "right",
             fontSize: "50px",
-            fontFamily: "Montserrat",
             fontWeight: "800",
             borderBottom: `5px solid black`,
             paddingRight: "10px",
             boxSizing: "border-box"
           }
         }}
-        // FormHelperTextProps={{
-        //   style: {
-        //     marginTop: "12px",
-        //     fontSize: "14px"
-        //   }
-        // }}
+      // FormHelperTextProps={{
+      //   style: {
+      //     marginTop: "12px",
+      //     fontSize: "14px"
+      //   }
+      // }}
       />
     </>
   );

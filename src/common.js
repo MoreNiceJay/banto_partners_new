@@ -523,3 +523,24 @@ export const checkUserPhoneNumExisted = async (phoneNumber) => {
   }
 
 }
+
+export const updateStationSalesMethod = async (stationDoc, salesMethod, salesPortion, preSalesIds, preSalesManagers) => {
+  let user = firebase.auth().currentUser;
+
+  if (!user) {
+    return { code: 400, msg: "로그인이 필요합니다" };
+  }
+  try {
+    console.log("스테이션 닥", stationDoc)
+    await db
+      .collection(constant.dbCollection.station)
+      .doc(stationDoc)
+      .update({ salesMethod, salesPortion, preSalesIds, preSalesManagers });
+    return { code: 200 };
+
+
+  } catch (e) {
+    console.log(e);
+    return { code: 400, msg: e };
+  }
+};

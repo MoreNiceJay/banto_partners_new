@@ -209,12 +209,13 @@ function LoginPage(props) {
 
                           }}
                         >
-                          {i.storeName ? i.storeName : "(영업 대기중)"}
+                          {i.storeName ? i.storeName : (i.salesMethod === "yet" ? "세일즈 설정필요" : "[세일즈 진행중]")}
                         </p>
                         <p
                           style={{
                             fontWeight: "bold",
                             fontSize: "16px",
+
                           }}
                         >
                           ({i.stationId})
@@ -229,7 +230,8 @@ function LoginPage(props) {
                             fontStyle: "normal",
                             fontWeight: "800",
                             fontSize: "26px",
-                            marginTop: "8px"
+                            marginTop: "8px",
+                            color: (i.isOn ? "green" : "black")
                           }}
                         >
                           {i.isOn ? "On" : "Off"}
@@ -238,7 +240,7 @@ function LoginPage(props) {
                           style={{
                             fontStyle: "normal",
                             fontWeight: "800",
-                            fontSize: "26px",
+                            fontSize: "20px",
                             marginTop: "8px"
                           }}
                         >

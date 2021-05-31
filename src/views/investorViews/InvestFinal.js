@@ -336,8 +336,8 @@ function InvestFinal(props) {
                           marginTop: "16px",
                           textAlign: "left"
                         }}>
-                        {context.getInvestInfo.preSalesIds.map((value) => {
-                          return <p>{value} </p>
+                        {context.getInvestInfo.preSalesManagers.map((value) => {
+                          return <p style={{ lineHeight: "120%" }}>{`${value.id} ${value.portion}`} </p>
                         })}
                       </p></>) : ""}
 
@@ -495,7 +495,7 @@ function InvestFinal(props) {
                     //   return { code: 400, msg: result.data.msg };
                     // }
 
-                    window.location.href = "/investor/done"
+                    props.history.push("/investor/done")
                   }}
                 >
                   신청 완료

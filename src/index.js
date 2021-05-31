@@ -57,6 +57,8 @@ import RegisterTenthPage from "./views/loginViews/RegisterTenthPage.js";
 import EarningTable from "./views/EarningTable.js";
 import StationTable from "./views/StationTable.js";
 import StationDetail from "./views/StationDetail.js";
+import StationSalesMethod from "./views/StationSalesMethod.js";
+
 import ApplicationDetail from "./views/ApplicationDetail.js";
 
 import ApplicationTable from "./views/ApplicationTable.js";
@@ -241,6 +243,12 @@ ReactDOM.render(
                 path="/table/stationdetail"
                 component={StationDetail}
               />
+              <Route
+                exact
+                path="/table/stationsalesmethod"
+                component={StationSalesMethod}
+              />
+
               <Route
                 exact
                 path="/table/applicationdetail"

@@ -11,16 +11,15 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 
 import Slide from "@material-ui/core/Slide";
-import { Link } from "react-router-dom";
-import { withStyles } from "@material-ui/core/styles";
+
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import CircleChecked from "@material-ui/icons/CheckCircleOutline";
+
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
+
 import * as constant from "../../Const";
 import * as common from "../../common";
 import SubTitle from "../../components/SubTitle";
@@ -59,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function LoginPage(props) {
+function InvestMethod(props) {
   const classes = useStyles(props);
   const [value, setValue] = React.useState("banto");
   const [bank, setBank] = React.useState("");
@@ -85,12 +84,12 @@ function LoginPage(props) {
   const bantoBody = (
     <>
 
-<EmptySpace/>
-<EmptySpace/>
+      <EmptySpace />
+      <EmptySpace />
 
-<SubTitle title="수익률 선택" />
+      <SubTitle title="수익률 선택" />
 
-<DescriptionText title=
+      <DescriptionText title=
         "세일즈 파트너에게 분배할 수익률을 선택하세요"
       />
 
@@ -159,7 +158,7 @@ function LoginPage(props) {
         </p>
       </div>
       <DescriptionText title=
-        "*세일즈 파트너는 수익률을 확인해 설치할 기기를 선택합니다 "/>
+        "*세일즈 파트너는 수익률을 확인해 설치할 기기를 선택합니다 " />
       <DescriptionText title="*현재 수익률내에서 세일즈와 가맹점이 수익을 나눕니다"
       />
     </>
@@ -169,12 +168,12 @@ function LoginPage(props) {
   }
   const ownSalesBody = (
     <>
-    <EmptySpace/>
-<EmptySpace/>
+      <EmptySpace />
+      <EmptySpace />
 
-<SubTitle title="세일즈 파트너 등록" />
-<DescriptionText title=
-        "세일즈 파트너의 아이디를 추가해주세요"/>
+      <SubTitle title="세일즈 파트너 등록" />
+      <DescriptionText title=
+        "세일즈 파트너의 아이디를 추가해주세요" />
       {invitations.map((value) => (
         <>
           {" "}
@@ -310,12 +309,12 @@ function LoginPage(props) {
         더하기
       </Button>
       <DescriptionText title=
-        {`*세일즈 파트너의 아이디는 '내정보'에서 확인할 수 있습니다`}/>
+        {`*세일즈 파트너의 아이디는 '내정보'에서 확인할 수 있습니다`} />
     </>
   );
 
   const yetSalesBody = (
-    <DescriptionText title={`*영업 방법은 설치전까지 '구매자' -> '내 스테이션' 에서 수정합니다`}/>);
+    <DescriptionText title={`*영업 방법은 설치전까지 '구매자' -> '내 스테이션' 에서 수정합니다`} />);
 
   return (
     <>
@@ -350,7 +349,6 @@ function LoginPage(props) {
               <div className={classes.amount}>
                 <p
                   style={{
-                    fontFamily: "Montserrat",
                     fontStyle: "normal",
                     fontWeight: "500",
                     fontSize: "14px",
@@ -362,9 +360,9 @@ function LoginPage(props) {
                   3/4
                 </p>
                 <SubTitle title="영업 방법" />
-                <DescriptionText title={"반토 파트너스 영업망을 통해 설치할 수 있습니다"}/>
+                <DescriptionText title={"반토 파트너스 영업망을 통해 설치할 수 있습니다"} />
 
-           
+
               </div>
               <div >
                 <FormControl
@@ -440,14 +438,14 @@ function LoginPage(props) {
                 title={value === constant.salesMethod.banto
                   ? "*파트너스에 가입한 영업자, 가맹점에 의해 자동으로 설치됩니다"
                   : value === constant.salesMethod.ownSales
-                  ? "*지정한 영업자(본인포함)만 해당 스테이션을 설치할 수 있습니다"
-                  : "*영업 방법이 설정되어야만 스테이션이 설치될 수 있습니다"}
+                    ? "*지정한 영업자(본인포함)만 해당 스테이션을 설치할 수 있습니다"
+                    : "*영업 방법이 설정되어야만 스테이션이 설치될 수 있습니다"}
               />
               {value === constant.salesMethod.banto
                 ? bantoBody
                 : value === constant.salesMethod.ownSales
-                ? ownSalesBody
-                : yetSalesBody}
+                  ? ownSalesBody
+                  : yetSalesBody}
 
               <div
                 style={{
@@ -511,4 +509,4 @@ function LoginPage(props) {
   );
 }
 
-export default LoginPage;
+export default InvestMethod;

@@ -494,8 +494,8 @@ function LoginPage(props) {
               {bInvestor === "banto"
                 ? ""
                 : bInvestor === "ownSales"
-                ? otherBody
-                : ownBody}
+                  ? otherBody
+                  : ownBody}
               <div
                 style={{
                   display: "flex",
@@ -551,7 +551,6 @@ function LoginPage(props) {
                     margin: "24px 32px",
                     borderRadius: "15px",
                     border: "2px solid #000A12",
-                    fontFamily: "Montserrat",
                     fontStyle: "normal",
                     fontWeight: "600",
                     fontSize: "12px",

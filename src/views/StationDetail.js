@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function LoginPage(props) {
+function StationDetail(props) {
   const auth = useAuth();
   const [apiData, setApiData] = React.useState(null);
   const [id, setId] = React.useState(null);
@@ -59,11 +59,33 @@ function LoginPage(props) {
 
       const querySnapshot = await applicationRef.get();
       let data;
-      querySnapshot.forEach((doc) => {
-        data = doc.data();
-        console.log("데이터", data);
-        setApiData(data);
-      });
+      let franchiseData = common.ApplicationObject;
+      const result = await Promise.all(
+        querySnapshot.docs.map(async (doc) => {
+          console.log("닥데이터", doc.data())
+          if (doc.data().franchiseDoc !== "") {
+            const franchiseResult = await db
+              .collection("Franchises")
+              .doc(doc.data().franchiseDoc)
+              .get();
+            franchiseData = franchiseResult.data();
+            return { id: doc.id, data: doc.data(), franchise: franchiseData };
+
+          } else {
+            return { id: doc.id, data: doc.data(), franchise: franchiseData };
+          }
+        })
+
+      );
+      setApiData(result[0]);
+
+
+      // querySnapshot.forEach((doc) => {
+      //   data = doc.data();
+      //   const franchiseData =
+      //     console.log("데이터", data);
+      //   setApiData(data);
+      // });
     })();
   }, []);
   const classes = useStyles(props);
@@ -88,81 +110,204 @@ function LoginPage(props) {
       color: "black"
     }
   })((props) => <Checkbox color="default" {...props} />);
-  const data = [
+  const buyerReservedData = [
     {
       title: "매장명",
-      data: apiData && apiData.storeName,
+      data: apiData && apiData.franchise.storeName,
       link: "/sales/regist/address"
     },
     {
       title: "매장 주소",
       data: [
-        apiData && apiData.storeMainAddress,
-        apiData && apiData.storeRestAddress
+        apiData && apiData.franchise.storeMainAddress,
+        apiData && apiData.franchise.storeRestAddress
       ].join(" "),
       link: "/sales/regist/address"
-    },
-    {
-      title: "점주님 연락처",
-      data: apiData && apiData.storeOwnerPhoneNumber,
-      link: "/sales/regist/contact"
     },
 
     {
       title: "매장 연락처",
-      data: apiData && apiData.storePhoneNumber,
+      data: apiData && apiData.franchise.storePhoneNumber,
       link: "/sales/regist/contact"
     },
     {
       title: "설치 날짜",
-      data: apiData && apiData.storePhoneNumber,
-      link: "/sales/regist/contact"
-    },
-    {
-      title: "영업 시간",
-      data: apiData && apiData.storePhoneNumber,
-      link: "/sales/regist/contact"
-    },
-    {
-      title: "상태",
-      data: apiData && apiData.storePhoneNumber,
-      link: "/sales/regist/contact"
-    },
-    {
-      title: "잔여 배터리",
-      data: apiData && apiData.storePhoneNumber,
+      data: apiData && apiData.franchise.approvedBy,
       link: "/sales/regist/contact"
     },
 
     {
       title: "가맹점 수익",
-      data: apiData && apiData.storePortion + "%",
+      data: apiData && (apiData.franchise.storePortion + apiData.franchise.storeBonusPortion) + "%",
       link: "/sales/regist/portion"
     },
     {
-      title: "영업인 (수익률)",
-      data: `${
-        auth.userExtraInfo ? auth.userExtraInfo.id : constant.exampleUserId
-      }(${apiData && apiData.salesPortion}%)`,
+      title: "세일즈 파트너",
+      data: apiData && apiData.data.salesManager,
+      link: "/sales/regist/portion"
+    },
+
+    {
+      title: "세일즈 파트너 수익",
+      data: apiData && apiData.data.salesPortion + "%",
       link: "/sales/regist/portion"
     },
     {
-      title: "스테이션 보유자(스테이션 ID)(수익률%)",
-      data: `${
-        apiData && apiData.buyerStatus === "noOwner"
-          ? "반토 무료 스테이션 신청"
-          : apiData && apiData.buyerStatus === "ownBuyer"
-          ? `${auth.user.email} (${apiData && apiData.stationId}) (${
-              apiData && apiData.buyerPortion
-            }%)`
-          : `${apiData && apiData.buyer} (${apiData && apiData.stationId}) (${
-              apiData && apiData.buyerPortion
-            }%)`
-      }`,
+      title: "구매자 최초 수익률",
+      data:
+        apiData && apiData.data.buyerPortion + "%"
+      ,
       link: "/sales/regist/portion"
     }
   ];
 
+  const salesMethod = (apiData && apiData.data.salesMethod)
+  const buyerUnreservedData = [
+    {
+      title: "스테이션 아이디",
+      data: (apiData && apiData.data.stationId),
+      link: "/sales/regist/contact"
+    },
+    {
+      title: "상태",
+      data: (apiData && apiData.data.bReserved) ? ("[설치승인 대기중]") : ("[세일즈 진행중]"),
+      link: "/sales/regist/contact"
+    },
+    {
+      title: "세일즈 방법",
+      data: salesMethod == "banto" ? ("반토 영업망") : (salesMethod == "ownSales" ? ("자체 영업") : ("미설정")),
+      link: "/sales/regist/contact"
+    },
+
+    (salesMethod === "banto") && ({
+      title: "세일즈 파트너 수익률",
+      data: apiData && apiData.data.salesPortion + "%",
+      link: "/sales/regist/portion"
+    }),
+    (salesMethod === "ownSales") && ({
+      title: "예약된 영업자",
+      data: apiData && apiData.data.preSalesManagers.map(v => {
+        return <p style={{ lineHeight: "120%" }}>{`${v.id}, ${v.portion}%`}</p>
+      })
+      ,
+      link: "/sales/regist/portion"
+    }),
+    {
+      title: "구매자 최초 수익률",
+      data:
+        apiData && apiData.data.buyerPortion + "%"
+      ,
+      link: "/sales/regist/portion"
+    }
+  ];
+
+  const bBuyerReservedData = (apiData && apiData.data.bReserved) ? buyerReservedData : buyerUnreservedData
+  const buyerBody = (<><section className={classes.section}>
+    {bBuyerReservedData.map((value) => {
+      console.log("벨류", value)
+      if (!(value)) {
+        return
+      }
+      return (
+        <div>
+          <div
+            style={{
+              display: "flex",
+              flexDirextion: "rows",
+              alignItems: "center",
+              justifyContent: "space-between",
+              margin: "16px 0 0 24px"
+            }}
+          >
+            <p
+              style={{
+                fontStyle: "normal",
+                fontWeight: "500",
+                fontSize: "16px",
+                color: "#000A12",
+                opacity: "0.4"
+              }}
+            >
+              {value.title}
+            </p>
+
+            {/* <Link
+                style={{
+                  textDecoration: "underline",
+                  fontFamily: "Noto Sans CJK KR",
+                  fontStyle: "normal",
+                  fontWeight: "500",
+                  fontSize: "12px",
+                  marginRight: "24px"
+                }}
+              >
+                수정
+              </Link> */}
+          </div>
+          <p
+            style={{
+              fontStyle: "normal",
+              fontWeight: "bold",
+              fontSize: "24px",
+              margin: "16px 0 60px 24px",
+              color: "#000A12"
+            }}
+          >
+            {value.data}
+          </p>
+        </div>
+      );
+    })}
+  </section>
+    <section>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column"
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "rows",
+            alignItems: "center",
+            justifyContent: "space-between"
+          }}
+        >
+
+        </div>
+
+
+        {(apiData && !apiData.data.bReserved) && (<Button
+          variant="outlined"
+          onClick={async () => {
+
+            props.history.push(`/table/stationsalesmethod?role=${role}&stationId=${stationId}`);
+
+          }}
+          style={{
+            width: "calc(100% - 64px)",
+            height: "64px",
+            margin: "24px 32px",
+            borderRadius: "15px",
+            backgroundColor: "#000A12",
+            border: "2px solid #000A12",
+            fontFamily: "Noto Sans CJK KR",
+            fontStyle: "normal",
+            fontWeight: "500",
+            fontSize: "18px",
+            color: "white"
+          }}
+        >
+          영업방법 설정
+        </Button>)
+        }
+      </div >
+    </section ></>)
+
+
+  const salesBody = (<p>세일즈</p>)
+  const storeBody = (<p>가맹점</p>)
   return (
     <>
       <Slide
@@ -189,144 +334,8 @@ function LoginPage(props) {
           </header>
 
           <main>
-            <section className={classes.section}>
-              {apiData &&
-                data.map((value) => {
-                  return (
-                    <div>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirextion: "rows",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          margin: "16px 0 0 24px"
-                        }}
-                      >
-                        <p
-                          style={{
-                            fontStyle: "normal",
-                            fontWeight: "500",
-                            fontSize: "16px",
-                            color: "#000A12",
-                            opacity: "0.4"
-                          }}
-                        >
-                          {value.title}
-                        </p>
+            {role === "buyer" ? buyerBody : (role === "salesManager" ? salesBody : storeBody)}
 
-                        {/* <Link
-                          style={{
-                            textDecoration: "underline",
-                            fontFamily: "Noto Sans CJK KR",
-                            fontStyle: "normal",
-                            fontWeight: "500",
-                            fontSize: "12px",
-                            marginRight: "24px"
-                          }}
-                        >
-                          수정
-                        </Link> */}
-                      </div>
-                      <p
-                        style={{
-                          fontFamily: "Montserrat",
-                          fontStyle: "normal",
-                          fontWeight: "bold",
-                          fontSize: "24px",
-                          margin: "16px 0 60px 24px",
-                          color: "#000A12"
-                        }}
-                      >
-                        {value.data}
-                      </p>
-                    </div>
-                  );
-                })}
-            </section>
-            <section>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column"
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "rows",
-                    alignItems: "center",
-                    justifyContent: "space-between"
-                  }}
-                >
-                  {/* <FormControlLabel
-                    style={{ marginLeft: "14px" }}
-                    control={
-                      <BlackCheckbox
-                        checked={state.checkedA}
-                        onChange={handleChange}
-                        name="checkedA"
-                        icon={<CircleUnchecked />}
-                        checkedIcon={<CircleCheckedFilled />}
-                      />
-                    }
-                    label={
-                      <span
-                        style={{
-                          fontStyle: "normal",
-                          fontWeight: "normal",
-                          fontSize: "14px",
-                          lineHeight: "21px"
-                        }}
-                      >
-                        2020년 하반기 정책사항에 동의 합니다
-                      </span>
-                    }
-                  />
-                  <p style={{ textAlign: "right" }}>
-                    <Link
-                      style={{
-                        marginRight: "24px",
-                        textDecoration: "underline"
-                      }}
-                    >
-                      약관확인
-                    </Link>
-                  </p> */}
-                </div>
-
-                <Button
-                  variant="outlined"
-                  onClick={async () => {
-                    if (window.confirm("설치된 스테이션을 회수 하시겠습니까")) {
-                      const result = await common.deleteApplication(id);
-                      if (result.code !== 200) {
-                        alert(result.msg);
-                        return;
-                      }
-                      alert("삭제되었습니다");
-                      props.history.push("/table/application?role=sales");
-                    } else {
-                    }
-                  }}
-                  style={{
-                    width: "calc(100% - 64px)",
-                    height: "64px",
-                    margin: "24px 32px",
-                    borderRadius: "15px",
-                    backgroundColor: "#000A12",
-                    border: "2px solid #000A12",
-                    fontFamily: "Noto Sans CJK KR",
-                    fontStyle: "normal",
-                    fontWeight: "500",
-                    fontSize: "18px",
-                    color: "white"
-                  }}
-                >
-                  회수하기
-                </Button>
-              </div>
-            </section>
           </main>
           <footer></footer>
         </div>
@@ -335,4 +344,4 @@ function LoginPage(props) {
   );
 }
 
-export default LoginPage;
+export default StationDetail;

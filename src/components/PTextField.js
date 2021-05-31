@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme) => ({
   inputStyle: {
     paddingLeft: "0px",
     fontSize: "26px",
-    fontFamily: "Montserrat",
     fontWeight: "bold",
 
     boxSizing: "border-box",
@@ -41,7 +40,6 @@ const PtextField = withStyles({
       style: {
         paddingLeft: "0px",
         fontSize: "26px",
-        fontFamily: "Montserrat",
         fontWeight: "bold",
 
         boxSizing: "border-box",
@@ -61,12 +59,12 @@ export default function PTextField(props) {
         {...props}
         className={classes.textField}
 
-        // FormHelperTextProps={{
-        //   style: {
-        //     marginTop: "12px",
-        //     fontSize: "14px"
-        //   }
-        // }}
+      // FormHelperTextProps={{
+      //   style: {
+      //     marginTop: "12px",
+      //     fontSize: "14px"
+      //   }
+      // }}
       />
     </>
   );

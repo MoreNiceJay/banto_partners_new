@@ -21,7 +21,6 @@ function SmallButton(props) {
           borderRadius: "15px",
           whiteSpace: "nowrap",
           border: "2px solid #000A12",
-          fontFamily: "Montserrat",
           fontStyle: "normal",
           fontWeight: "500",
           fontSize: "14px",
