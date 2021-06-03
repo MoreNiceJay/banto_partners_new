@@ -10,13 +10,17 @@ import Button from "@material-ui/core/Button";
 import ProgressText from "../../components/ProgressText.js";
 import InputTitle from "../../components/InputTitle.js";
 import PTextField from "../../components/PTextField.js";
-import SquareButton from "../../components/SquareButton.js";
 import { useGlobal } from "../../globalContext";
 import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
 import * as Yup from "yup";
 import * as constant from "../../Const";
 
+import ProgressBreadcum from "../../components/ProgressBreadcum"
+import SubTitle from "../../components/SubTitle";
+import EmptySpace from "../../components/EmptySpace";
+import DescriptionText from "../../components/DescriptionText";
+import SquareButton from "../../components/SquareButton.js";
 const useStyles = makeStyles((theme) => ({
   contact: { padding: "55px 0 0 25px" },
   contactPerson: { display: "flex", flexDirection: "column" },
@@ -95,7 +99,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "16px",
     color: "white",
     fontSize: "14px"
-  }
+  },
+  addressTextField: { width: "calc(100% - 48px)", marginTop: "10px", marginBottom: "8px" }
+
 }));
 
 function RegistContact(props) {
@@ -165,7 +171,7 @@ function RegistContact(props) {
           className={classes.modalBuyButton}
           onClick={() => {
             // context.setStore_bBuying(false);
-            props.history.push("/store/apply/portion");
+            props.history.push("/store/apply/addinvestor");
           }}
         >
           네 이해했습니다
@@ -203,51 +209,64 @@ function RegistContact(props) {
           </header>
           <main>
             <section>
-              <div className={classes.contact}>
-                <div className={classes.contactPerson}>
-                  <ProgressText text="2/5" />
 
-                  <InputTitle text="연락처 (가맹점주님 연락처)" />
+              <ProgressText text="2/5" />
+              <SubTitle title="가맹점 정보 등록" />
+              <DescriptionText title={"가맹점주님의 연락처는 스테이션 설치 확인시 필요합니다"} />
+              <EmptySpace />
+              <EmptySpace />
 
-                  <PTextField
-                    placeholder="Contact"
-                    type="text"
-                    value={context.getStoreInfo.storeOwnerPhoneNumber}
-                    // autoFocus
-                    error={!!error1}
-                    onChange={(e) => {
-                      if (!e.target.value.match(/^[0-9]{3}[0-9]{4}[0-9]{4}$/)) {
-                        setError1("올바른 전화번호를 입력해 주세요");
-                      } else {
-                        setError1(null);
-                      }
 
-                      context.setStore_storeOwnerPhoneNumber(e.target.value);
-                    }}
-                    helperText={error1}
-                  />
-                </div>
-                <div style={{ marginTop: "44px" }}>
-                  <InputTitle text="매장 연락처" />
-                  <PTextField
-                    placeholder="Store Contact"
-                    type="text"
-                    value={context.getStoreInfo.storePhoneNumber}
-                    // autoFocus
-                    error={!!error2}
-                    onChange={(e) => {
-                      if (!e.target.value.match(/^[0-9]{8,12}$/)) {
-                        setError2("올바른 전화번호를 입력해 주세요");
-                      } else {
-                        setError2(null);
-                      }
+              <InputTitle text="가맹점주님 연락처" placeholder={"예)0104567890"} />
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
 
-                      context.setStore_storePhoneNumber(e.target.value);
-                    }}
-                    helperText={error2}
-                  />
-                </div>
+                <TextField
+                  className={classes.addressTextField}
+                  id="outlined-basic"
+                  variant="outlined"
+                  placeholder="필수"
+                  type="text"
+                  value={context.getStoreInfo.storeOwnerPhoneNumber}
+
+                  // autoFocus
+                  error={!!error1}
+                  onChange={(e) => {
+                    if (!e.target.value.match(/^[0-9]{3}[0-9]{4}[0-9]{4}$/)) {
+                      setError1("올바른 전화번호를 입력해 주세요");
+                    } else {
+                      setError1(null);
+                    }
+
+                    context.setStore_storeOwnerPhoneNumber(e.target.value);
+                  }}
+                  helperText={error1}
+                />
               </div>
+              <InputTitle text="매장 연락처" />
+
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <TextField
+                  className={classes.addressTextField}
+                  id="outlined-basic"
+                  variant="outlined"
+                  placeholder="Store Contact"
+                  type="text"
+                  value={context.getStoreInfo.storePhoneNumber}
+                  // autoFocus
+                  error={!!error2}
+                  onChange={(e) => {
+                    if (!e.target.value.match(/^[0-9]{8,12}$/)) {
+                      setError2("올바른 전화번호를 입력해 주세요");
+                    } else {
+                      setError2(null);
+                    }
+
+                    context.setStore_storePhoneNumber(e.target.value);
+                  }}
+                  helperText={error2}
+                />
+              </div>
+
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <SquareButton
                   onClick={mySubmitHandler}

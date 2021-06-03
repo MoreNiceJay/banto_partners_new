@@ -539,7 +539,6 @@ function StationSalesMethod(props) {
 
                     <main>
 
-                        {/* {role === "buyer" ? buyerBody : (role === "salesManager" ? salesBody : storeBody)} */}
 
                         <EmptySpace />
 

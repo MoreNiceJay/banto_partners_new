@@ -24,7 +24,6 @@ import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import ProgressText from "../../components/ProgressText.js";
 import InputTitle from "../../components/InputTitle.js";
 import PTextField from "../../components/PTextField.js";
-import SquareButton from "../../components/SquareButton.js";
 import PRadio from "../../components/PRadio.js";
 import Select from "@material-ui/core/Select";
 import InputBase from "@material-ui/core/InputBase";
@@ -32,6 +31,12 @@ import PortionTextField from "../../components/PortionTextField.js";
 import InputLabel from "@material-ui/core/InputLabel";
 import * as common from "../../common";
 import * as constant from "../../Const";
+
+import ProgressBreadcum from "../../components/ProgressBreadcum"
+import SubTitle from "../../components/SubTitle";
+import EmptySpace from "../../components/EmptySpace";
+import DescriptionText from "../../components/DescriptionText";
+import SquareButton from "../../components/SquareButton.js";
 
 var _ = require("lodash");
 
@@ -333,16 +338,19 @@ function LoginPage(props) {
           </div>
         </div>
       </div>
+      <DescriptionText title={"*계약기간은 1년이며 해지 요청이 없을시 매년 자동 갱신됩니다"} ></DescriptionText>
     </>
   );
 
+  const bantoBody = (<><DescriptionText title={"*매달 20%의 수익을 정산 받을 수 있습니다"} ></DescriptionText>
+    <DescriptionText title={"*계약기간은 1년이며 해지 요청이 없을시 매년 자동 갱신됩니다"} ></DescriptionText></>)
   const otherBody = (
     <>
       {/* <hr style={{ borderStyle: "dotted", marginBottom: "20px" }} /> */}
       <div className={classes.contact}>
         <div className={classes.contactPerson}>
           <div className={classes.contactTexts}>
-            <span className={classes.contactPersonTitle}>내 스테이션</span>
+            <span className={classes.contactPersonTitle}>협의된 스테이션</span>
             <span className={classes.contactPersonDescription}></span>
           </div>
           <div style={{ width: "100%" }}>
@@ -385,8 +393,11 @@ function LoginPage(props) {
               </Select>
             </FormControl>
           </div>
+
         </div>
+
       </div>
+      <DescriptionText title={"*계약기간은 1년이며 해지 요청이 없을시 매년 자동 갱신됩니다"} ></DescriptionText>
     </>
   );
 
@@ -415,14 +426,16 @@ function LoginPage(props) {
             </>
           )}
           <header>
-            <NavBar title="추가정보 입력" backLink="/store/apply/portion" />
+            <NavBar title="추가정보 입력" backLink="/store/apply/contact" />
           </header>
 
           <main>
             <section className={classes.section}>
               <ProgressText text="4/5" />
-              <InputTitle text="등록할 스테이션이 있으신가요?" />
-              <div style={{ marginLeft: "8px" }}>
+              <SubTitle title="반토 스테이션 선택" />
+              <DescriptionText title={"반토에 등록되어있는 스테이션을 선택해 무료로 설치하고 수익을 얻을 수 있습니다"} />
+
+              <div >
                 <FormControl
                   component="fieldset"
                   style={{ margin: "28px 0 0 24px" }}
@@ -449,10 +462,9 @@ function LoginPage(props) {
                           }}
                         />
                       }
-                      label="아니오. 반토 본사를 통해 무료로 신청하겠습니다"
+                      label="반토 파트너스 프로그램을 통해 무료로 신청하겠습니다"
                       checked={bInvestor === "banto"}
                     />
-                    <span>수익의 20%를 매달 정산받습니다</span>
                     <FormControlLabel
                       value="mine"
                       control={
@@ -468,7 +480,7 @@ function LoginPage(props) {
                           }}
                         />
                       }
-                      label="네. 구매한 스테이션이 있습니다"
+                      label="구매한 스테이션이 있습니다"
                     />
                     <FormControlLabel
                       value="ownSales"
@@ -486,13 +498,13 @@ function LoginPage(props) {
                           }}
                         />
                       }
-                      label="네 다른분의 스테이션을 설치하기로 협의했습니다"
+                      label="다른 구매자의 스테이션을 설치하기로 협의했습니다"
                     />
                   </RadioGroup>
                 </FormControl>
               </div>
               {bInvestor === "banto"
-                ? ""
+                ? bantoBody
                 : bInvestor === "ownSales"
                   ? otherBody
                   : ownBody}
@@ -502,9 +514,11 @@ function LoginPage(props) {
                   justifyContent: "flex-end"
                 }}
               >
-                <Button
-                  variant="outlined"
+                <SquareButton
+                  // variant="outlined"
+                  text="다음"
                   onClick={async () => {
+
                     const id = auth.userExtraInfo
                       ? auth.userExtraInfo.id
                       : constant.exampleUserId;
@@ -513,52 +527,57 @@ function LoginPage(props) {
                       const salesPortion = choosedStation.data.preSalesManagers.find(
                         (e) => e.id === id
                       ).portion;
-                      context.setStore_storeOwner(id);
+                      context.setStore_stationMethod("ownSales");
                       context.setStore_stationDoc(choosedStation.id);
-                      context.setStore_stationId(choosedStation.data.stationId);
-                      context.setStore_buyer(choosedStation.data.buyer);
-                      context.setStore_buyerPortion(
-                        choosedStation.data.buyerPortion
-                      );
+                      // context.setStore_stationId(choosedStation.data.stationId);
+                      // context.setStore_buyer(choosedStation.data.buyer);
+                      // context.setStore_buyerPortion(
+                      //   choosedStation.data.buyerPortion
+                      // );
+
+
+                      context.setStore_contractYear(1)
+                      context.setStore_storeOwner(id);
                       context.setStore_storePortion(salesPortion);
                     } else if (bInvestor === "banto") {
                       //todo 바꿔야할꺼
-                      context.setStore_stationId("");
+                      context.setStore_stationMethod("banto");
+                      // context.setStore_stationId("");
                       context.setStore_stationDoc("");
 
-                      context.setStore_buyer("");
-                      context.setStore_buyerPortion(0);
                       context.setStore_storePortion(defaultStorePortion);
                       context.setStore_storeOwner(id);
+                      context.setStore_contractYear(1)
+
                     } else if (bInvestor === "mine") {
                       const choosedStation = JSON.parse(ownStation);
-                      context.setSales_salesPortion(
-                        choosedStation.data.buyerPortion
-                      );
+                      context.setStore_stationMethod("mine");
                       context.setStore_storeOwner(id);
                       context.setStore_stationDoc(choosedStation.id);
-                      context.setStore_stationId(choosedStation.data.stationId);
-                      context.setStore_buyer(choosedStation.data.buyer);
-                      context.setStore_buyerPortion(
-                        choosedStation.data.buyerPortion
-                      );
+                      // context.setStore_stationId(choosedStation.data.stationId);
+                      // context.setStore_buyer(choosedStation.data.buyer);
+                      // context.setStore_buyerPortion(
+                      //   choosedStation.data.buyerPortion
+                      // );
+                      context.setStore_contractYear(1)
+
                     }
                     props.history.push("/store/apply/final");
                   }}
-                  style={{
-                    width: "64px",
-                    height: "64px",
-                    margin: "24px 32px",
-                    borderRadius: "15px",
-                    border: "2px solid #000A12",
-                    fontStyle: "normal",
-                    fontWeight: "600",
-                    fontSize: "12px",
-                    alignText: "right"
-                  }}
+                // style={{
+                //   width: "64px",
+                //   height: "64px",
+                //   margin: "24px 32px",
+                //   borderRadius: "15px",
+                //   border: "2px solid #000A12",
+                //   fontStyle: "normal",
+                //   fontWeight: "600",
+                //   fontSize: "12px",
+                //   alignText: "right"
+                // }}
                 >
-                  next
-                </Button>
+
+                </SquareButton>
               </div>
             </section>
           </main>

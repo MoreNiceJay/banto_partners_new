@@ -4,13 +4,17 @@ import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
   inputTitle: {
-    fontFamily: "Noto Sans CJK KR",
     fontStyle: "normal",
     fontWeight: "bold",
     fontSize: "16px",
     margin: "0 24px",
     paddingTop: "16px"
     // textAlign: "left"
+  },
+  inputPlaceholder: {
+    fontWeight: "normal",
+    fontSize: "14px",
+
   }
 }));
 export default function InputTitle(props) {
@@ -18,7 +22,7 @@ export default function InputTitle(props) {
 
   return (
     <>
-      <p className={classes.inputTitle}>{props.text}</p>
+      <p className={classes.inputTitle}>{props.text} {" "}<span className={classes.inputPlaceholder}>{props.placeholder}</span></p>
     </>
   );
 }

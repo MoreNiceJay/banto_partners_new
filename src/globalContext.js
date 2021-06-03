@@ -40,66 +40,63 @@ export function GlobalProvider({ children }) {
     businessLicenseImg: ""
   });
   const [invest, setInvest] = React.useState({
-    applicationId: "",
+
+
+
     status: "WAITING",
     stationId: "",
     salesMethod: "",
     salesPortion: 0,
+
+    //없어도 됌
     salesManager: "",
+
     preSalesIds: [],
     preSalesManagers: [],
     buyer: "",
     buyerPortion: 0,
+
+    franchiseDoc: "",
+
+    //없어도 됌
     storeOwner: "",
     storePortion: "",
     storeBonusPortion: "",
+
+    bReserved: false,
+
+    createdBy: "",
+    approvedBy: "",
+    sendBy: "",
+    reservedBy: "",
+
     amount: 0,
     totalPrice: 0,
-    bReserved: false,
     depositor: "",
     bank: "",
     bankAccount: "",
-    createdBy: "",
-    approvedBy: "",
-    installedBy: "",
-    franchiseDoc: "",
+
     bIsOn: false,
+    lastUpdated: "",
+
+
     bNeedToSend: false,
     bNeedToRetrieve: false,
     retrievingAskedBy: "",
-    registeredBy: "",
-    lastUpdated: "",
+
     postCode: "",
   });
 
   const [store, setStore] = React.useState({
-    applicationId: "",
+
+
+    //어레이로 돌려야할듯
     stationDoc: "",
-    status: "WAITING",
-    storeName: "",
-    storeMainAddress: "",
-    storeRestAddress: "",
-    storeOwnerPhoneNumber: "",
-    storePhoneNumber: "",
-    storeOwner: "",
-    storePortion: 0,
-    storeBonusPortion: 0,
-    salesManager: "",
-    salesPortion: 0,
-    buyer: "",
-    buyerPortion: 0,
+
     stationId: [],
-    storePhoto: [],
-    naverStoreUrl: "",
-    createdBy: "",
-    approvedBy: "",
-    contractYear: 0
-  });
+    stationMethod: "",
 
-  const [salesRegisterationInfo, setSalesRegisterationInfo] = React.useState({
-    applicationId: "",
-    stationDoc: "",
-
+    apply: "store",
     status: "WAITING",
     rejectedReason: "",
     storeName: "",
@@ -107,19 +104,66 @@ export function GlobalProvider({ children }) {
     storeRestAddress: "",
     storeOwnerPhoneNumber: "",
     storePhoneNumber: "",
+
     storeOwner: "",
-    storeOwnerSignature: "",
     storePortion: 0,
     storeBonusPortion: 0,
+
     salesManager: "",
     salesPortion: 0,
+
+    // 없어도 될듯
     buyer: "",
     buyerPortion: 0,
-    stationId: [],
+
     storePhoto: [],
     naverStoreUrl: "",
-    createdBy: "",
+    lat: 0,
+    longi: 0,
 
+    createdBy: "",
+    approvedBy: "",
+    contractYear: 0
+  });
+
+  const [salesRegisterationInfo, setSalesRegisterationInfo] = React.useState({
+
+
+
+    //어레이로 돌려야할듯
+    stationDoc: "",
+
+    stationId: [],
+    stationMethod: "",
+
+    apply: "sales",
+    status: "WAITING",
+    rejectedReason: "",
+    storeName: "",
+    storeMainAddress: "",
+    storeRestAddress: "",
+    storeOwnerPhoneNumber: "",
+    storePhoneNumber: "",
+
+    storeOwnerSignature: "",
+
+    storeOwner: "",
+    storePortion: 0,
+    storeBonusPortion: 0,
+
+    salesManager: "",
+    salesPortion: 0,
+
+    // 없어도 될듯
+    buyer: "",
+    buyerPortion: 0,
+
+    storePhoto: [],
+    naverStoreUrl: "",
+    lat: 0,
+    longi: 0,
+
+    createdBy: "",
     approvedBy: "",
     contractYear: 0
   });
@@ -163,10 +207,14 @@ export function GlobalProvider({ children }) {
         .where(role, "==", userId);
 
       const querySnapshot = await applicationRef.get();
-
+      // 여기서 투두닷
+      // 여기서 투두닷
       querySnapshot.forEach((doc) => {
-        dataArray.push(doc.data());
+        dataArray.push({ id: doc.id, data: doc.data() });
       });
+
+      console.log("데이터어레이", dataArray[0])
+      console.log("데이터어레이", dataArray[0].data)
 
       return {
         code: 200,
@@ -282,6 +330,7 @@ export function GlobalProvider({ children }) {
       return { ...prevState, businessLicenseImg: a };
     });
   }
+
 
   // invest
   async function setInvest_salesMethod(a) {
@@ -458,6 +507,16 @@ export function GlobalProvider({ children }) {
       return { ...prevState, stationDoc: a };
     });
   }
+  async function setStore_stationMethod(a) {
+    await setStore((prevState) => {
+      return { ...prevState, stationMethod: a };
+    });
+  }
+  async function setStore_contractYear(a) {
+    await setStore((prevState) => {
+      return { ...prevState, contractYear: a };
+    });
+  }
 
   // sales
   async function setSales_storeName(a) {
@@ -532,6 +591,11 @@ export function GlobalProvider({ children }) {
   async function setSales_stationId(a) {
     await setSalesRegisterationInfo((prevState) => {
       return { ...prevState, stationId: a };
+    });
+  }
+  async function setSales_stationMethod(a) {
+    await setRegister((prevState) => {
+      return { ...prevState, stationMethod: a };
     });
   }
   async function setSales_storePhoto(a) {
@@ -613,7 +677,7 @@ export function GlobalProvider({ children }) {
           setSales_storeBonusPortion,
           setSales_buyer,
           setSales_buyerPortion,
-
+          setSales_stationMethod,
           setSales_stationId,
           setSales_storePhoto,
           setSales_naverStoreUrl,
@@ -634,6 +698,7 @@ export function GlobalProvider({ children }) {
           setStore_buyer,
           setStore_buyerPortion,
           setStore_stationId,
+          setStore_stationMethod,
           setStore_storePhoto,
           setStore_naverStoreUrl,
           setStore_contractYear,

@@ -90,7 +90,7 @@ function LoginPage(props) {
           : constant.exampleUserId,
         query.role
       );
-
+      console.log(result.id)
       if (result.code !== 200) {
         alert(result.msg);
         return;
@@ -154,6 +154,8 @@ function LoginPage(props) {
         </TableRow>
       </TableHead>
       <TableBody>
+
+        {/* Todo api data 어플리케이션 아이디 넣기 넣기 */}
         {apiData.data &&
           // apiData.data.userId &&
           apiData.data.map((i, index) => (
@@ -161,7 +163,7 @@ function LoginPage(props) {
               key={index}
               style={{ height: "90px" }}
               onClick={() => {
-                props.history.push(`/table/applicationdetail?applicationId=${i.applicationId}&role=${query.role}`)
+                props.history.push(`/table/applicationdetail?applicationId=${i.id}&role=${query.role}`)
               }}
             >
               <TableCell
@@ -173,7 +175,7 @@ function LoginPage(props) {
                 component="th"
                 scope="row"
               >
-                <p>{common.getMonthDayTimeMinute(i.createdBy)}</p>
+                <p>{common.getMonthDayTimeMinute(i.data.createdBy)}</p>
               </TableCell>
 
               <TableCell
@@ -198,7 +200,7 @@ function LoginPage(props) {
 
                   }}
                 >
-                  {i.amount}대
+                  {i.data.amount}대
               </p>
               </TableCell>
               <TableCell
@@ -211,11 +213,11 @@ function LoginPage(props) {
                     fontStyle: "normal",
                     fontWeight: "800",
                     fontSize: "18px",
-                    color: i.status === "WAITING" ? "black" : "#71C848",
+                    color: i.data.status === "WAITING" ? "black" : "#71C848",
 
                   }}
                 >
-                  {i.status === "WAITING" ? "입금 확인중" : "승인완료"}
+                  {i.data.status === "WAITING" ? "입금 확인중" : "승인완료"}
 
                 </p>
 
@@ -244,7 +246,7 @@ function LoginPage(props) {
               key={index}
               style={{ height: "90px" }}
               onClick={() => {
-                props.history.push(`/table/applicationdetail?applicationId=${i.applicationId}&role=${query.role}`)
+                props.history.push(`/table/applicationdetail?applicationId=${i.id}&role=${query.role}`)
               }}
             >
               <TableCell
@@ -256,7 +258,7 @@ function LoginPage(props) {
                 component="th"
                 scope="row"
               >
-                <p>{common.getMonthDayTimeMinute(i.createdBy)}</p>
+                <p>{common.getMonthDayTimeMinute(i.data.createdBy)}</p>
               </TableCell>
 
               <TableCell
@@ -271,7 +273,7 @@ function LoginPage(props) {
                     textAlign: "center"
                   }}
                 >
-                  {i.storeName}
+                  {i.data.storeName}
                 </p>
                 <p
                   style={{
@@ -281,7 +283,7 @@ function LoginPage(props) {
 
                   }}
                 >
-                  ({i.stationId})
+                  ({i.data.stationId})
               </p>
               </TableCell>
               <TableCell
@@ -295,12 +297,12 @@ function LoginPage(props) {
                     fontStyle: "normal",
                     fontWeight: "800",
                     fontSize: "18px",
-                    color: i.status === "WAITING" ? "black" : "#71C848",
+                    color: i.data.status === "WAITING" ? "black" : "#71C848",
 
 
                   }}
                 >
-                  {i.status === "WAITING" ? "승인 대기중" : "승인완료"}
+                  {i.data.status === "WAITING" ? "승인 대기중" : "승인완료"}
                 </p>
               </TableCell>
             </TableRow>
@@ -327,7 +329,7 @@ function LoginPage(props) {
               key={index}
               style={{ height: "90px" }}
               onClick={() => {
-                props.history.push(`/table/applicationdetail?applicationId=${i.applicationId}&role=${query.role}`)
+                props.history.push(`/table/applicationdetail?applicationId=${i.id}&role=${query.role}`)
               }}
             >
               <TableCell
@@ -354,7 +356,7 @@ function LoginPage(props) {
                     textAlign: "center"
                   }}
                 >
-                  {i.storeName}
+                  {i.data.storeName}
                 </p>
                 <p
                   style={{
@@ -364,7 +366,7 @@ function LoginPage(props) {
 
                   }}
                 >
-                  ({i.stationId})
+                  ({i.data.stationId})
               </p>
               </TableCell>
               <TableCell
@@ -382,7 +384,7 @@ function LoginPage(props) {
 
                   }}
                 >
-                  {i.status === "WAITING" ? "승인 대기중" : "승인완료"}
+                  {i.data.status === "WAITING" ? "승인 대기중" : "승인완료"}
                 </p>
               </TableCell>
             </TableRow>

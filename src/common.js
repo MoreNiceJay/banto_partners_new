@@ -167,8 +167,7 @@ export async function deleteApplication(applicationId) {
     const querySnapshot = await db
       .collection("Users")
       .doc(user.email)
-      .collection("Applications")
-      .where("applicationId", "==", applicationId)
+      .collection("Applications").doc(applicationId)
       .get();
     querySnapshot.forEach(function (doc) {
       doc.ref.delete();

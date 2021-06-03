@@ -18,8 +18,16 @@ import * as constant from "../../Const.js";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import * as common from "../../common"
+
+import ProgressText from "../../components/ProgressText.js";
+import PolicyModal from "../../components/PolicyModal"
+
+import SubTitle from "../../components/SubTitle";
+import EmptySpace from "../../components/EmptySpace";
+import DescriptionText from "../../components/DescriptionText";
+import SquareButton from "../../components/SquareButton.js";
 const useStyles = makeStyles((theme) => ({
-  section: { padding: "55px 0 0 30px" },
+  section: { padding: "55px 0 0 24px" },
   infoTitle: { fontSize: "25px", fontWeight: "700" },
   dataUnlistOrder: { margin: "5px auto", "& li ": { padding: "5px 0 5px 0" } },
   dataTitleSpan: { fontSize: "14px", fontWeight: "600" },
@@ -69,9 +77,11 @@ function RegistFinal(props) {
   const classes = useStyles(props);
   const context = useGlobal();
   const auth = useAuth();
+  const [open, setOpen] = React.useState(false);
+
   const [buyer, setBuyer] = React.useState({ email: "naver", portion: 0 });
   const [state, setState] = React.useState({
-    checkedA: true,
+    checkedA: false,
     checkedB: true,
     checkedF: true,
     checkedG: true
@@ -86,6 +96,9 @@ function RegistFinal(props) {
   function mySubmitHandler() { }
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
+  };
+  const handleOpen = () => {
+    setOpen(true);
   };
   const data = [
     {
@@ -114,10 +127,17 @@ function RegistFinal(props) {
     },
 
     {
+      title: "계약 기간",
+      data: context.getStoreInfo.contractYear + "년",
+      link: "/sales/regist/contact"
+    },
+    {
       title: "가맹점 수익",
       data: context.getStoreInfo.storePortion + "%",
       link: "/sales/regist/portion"
     }
+
+
     // {
     //   title: "영업인 (수익률)",
     //   data: `${auth.user.email}(${context.getStoreInfo.salesPortion}%)`,
@@ -152,13 +172,18 @@ function RegistFinal(props) {
         </>
       )}
       <header>
-        <NavBar title="" backLink="/sales/regist/add-investor" />
-        <HeaderInfo
+        <NavBar title="" backLink="/store/apply/addinvestor" />
+        {/* <HeaderInfo
           title={"신청"}
           description="기입된 정보를 확인하고 신청 완료해주세요"
-        />
+        /> */}
       </header>
+
       <main>
+        <ProgressText text="5/5" />
+
+        <SubTitle title="신청 등록" />
+        <DescriptionText title={"기입된 정보를 확인하고 신청을 완료해주세요"} />
         <section className={classes.section}>
           {data.map((value) => {
             return (
@@ -169,7 +194,7 @@ function RegistFinal(props) {
                     flexDirextion: "rows",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    margin: "16px 0 0 24px"
+                    margin: "16px 0 0 0px"
                   }}
                 >
                   <p
@@ -202,7 +227,7 @@ function RegistFinal(props) {
                     fontStyle: "normal",
                     fontWeight: "bold",
                     fontSize: "24px",
-                    margin: "16px 0 60px 24px",
+                    margin: "16px 0 60px 0px",
                     color: "#000A12"
                   }}
                 >
@@ -256,6 +281,8 @@ function RegistFinal(props) {
                   style={{
                     marginRight: "24px",
                   }}
+                  onClick={handleOpen}
+
                 >
                   약관확인
                 </Link>
@@ -276,6 +303,20 @@ function RegistFinal(props) {
                 }
 
                 try {
+                  if (!state.checkedA) {
+                    alert("약관을 읽고 동의해주세요")
+                    return
+                  }
+
+
+
+
+                  if (!!!context.getStoreInfo.storeName || !!!context.getStoreInfo.storeMainAddress || !!!context.getStoreInfo.storeOwnerPhoneNumber ||
+                    !!!context.getStoreInfo.contractYear) {
+                    alert("빠진 정보가 있는지 확인 후 신청 완료해 주세요")
+                    return
+                  }
+
                   const result = await auth.updateApplication(
                     constant.role.store,
                     context.getStoreInfo
@@ -283,7 +324,7 @@ function RegistFinal(props) {
 
                   console.log(result);
                   if (result.code === 200) {
-                    alert("가맹점이 등록되었습니다.");
+                    alert("가맹점 신청이 완료되었습니다.");
                     props.history.push("/main");
                   }
                 } catch (e) {
@@ -309,6 +350,8 @@ function RegistFinal(props) {
           </div>
         </section>
       </main>
+      {open && (<PolicyModal url="https://bantoservice.xyz/policy" closeModal={() => { setOpen(false) }}></PolicyModal>)}
+
       <footer></footer>
     </>
   );

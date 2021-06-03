@@ -13,9 +13,15 @@ import { useAuth } from "../../AuthContext";
 import ProgressText from "../../components/ProgressText.js";
 import InputTitle from "../../components/InputTitle.js";
 import PTextField from "../../components/PTextField.js";
-import SquareButton from "../../components/SquareButton.js";
 import Modal from "@material-ui/core/Modal";
 import * as constant from "../../Const";
+
+import ProgressBreadcum from "../../components/ProgressBreadcum"
+import SubTitle from "../../components/SubTitle";
+import EmptySpace from "../../components/EmptySpace";
+import DescriptionText from "../../components/DescriptionText";
+import SquareButton from "../../components/SquareButton.js";
+import MTextField from "@material-ui/core/TextField";
 
 const useStyles = makeStyles((theme) => ({
   contact: { padding: "55px 0 0 25px" },
@@ -95,7 +101,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "16px",
     color: "white",
     fontSize: "14px"
-  }
+  },
+  addressTextField: { width: "calc(100% - 48px)", marginTop: "10px", marginBottom: "8px" }
+
 }));
 
 function RegistContact(props) {
@@ -200,51 +208,72 @@ function RegistContact(props) {
           </header>
           <main>
             <section>
-              <div className={classes.contact}>
-                <div className={classes.contactPerson}>
-                  <ProgressText text="1/5" />
+              <ProgressText text="1/5" />
+              <SubTitle title="가맹점 정보 등록" />
+              <DescriptionText title={"설치할 매장명과 매장주소를 입력합니다"} />
+              <EmptySpace />
+              <EmptySpace />
 
-                  <InputTitle text="매장명  예)반토카페 일산점" />
-                  <PTextField
-                    placeholder="Store"
-                    type="Contact"
-                    value={context.getStoreInfo.storeName}
-                    error={!!error1}
-                    onChange={(e) => {
-                      if (e.target.value.length < 1) {
-                        setError1("올바른 상호명을 입력해 주세요");
-                      } else {
-                        setError1(null);
-                      }
+              <InputTitle text="매장명" placeholder="예)반토카페 일산점" />
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <MTextField
+                  className={classes.addressTextField}
 
-                      context.setStore_storeName(e.target.value);
-                    }}
-                    helperText={error1}
-                  />
-                </div>
-                <div style={{ marginTop: "44px" }}>
-                  <InputTitle text="매장 주소" />
-                  <PTextField
-                    disabled
-                    placeholder="Address"
-                    type="Contact"
-                    value={context.getStoreInfo.storeMainAddress}
-                    onClick={() => {
-                      setDaumOpen(true);
-                    }}
-                    // autoFocus
-                  />
-                  <PTextField
-                    placeholder="상세주소"
-                    type="Contact"
-                    // value={storeOwnerContact}
-                    value={context.getStoreInfo.storeRestAddress}
-                    // autoFocus
-                    onChange={(e) => {
-                      context.setStore_storeRestAddress(e.target.value);
-                    }}
-                  />
-                </div>
+                  placeholder="필수"
+                  id="outlined-basic"
+                  variant="outlined"
+                  value={context.getStoreInfo.storeName}
+                  error={!!error1}
+                  onChange={(e) => {
+                    if (e.target.value.length < 1) {
+                      setError1("올바른 상호명을 입력해 주세요");
+                    } else {
+                      setError1(null);
+                    }
+
+                    context.setStore_storeName(e.target.value);
+                  }}
+                  helperText={error1}
+                />
+              </div>
+              <EmptySpace />
+
+              <InputTitle text="매장 주소" />
+
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <MTextField
+                  className={classes.addressTextField}
+                  id="outlined-basic"
+                  variant="outlined"
+                  disabled
+                  placeholder="매장주소"
+
+                  placeholder="주소"
+                  type="Contact"
+                  value={context.getStoreInfo.storeMainAddress}
+                  onClick={() => {
+                    setDaumOpen(true);
+                  }}
+                // autoFocus
+                />
+              </div>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+
+                <MTextField
+                  placeholder="상세주소"
+                  className={classes.addressTextField}
+
+                  id="outlined-basic"
+                  variant="outlined"
+
+                  type="Contact"
+                  // value={storeOwnerContact}
+                  value={context.getStoreInfo.storeRestAddress}
+                  // autoFocus
+                  onChange={(e) => {
+                    context.setStore_storeRestAddress(e.target.value);
+                  }}
+                />
               </div>
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <SquareButton

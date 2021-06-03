@@ -24,13 +24,17 @@ import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import ProgressText from "../../components/ProgressText.js";
 import InputTitle from "../../components/InputTitle.js";
 import PTextField from "../../components/PTextField.js";
-import SquareButton from "../../components/SquareButton.js";
 import PRadio from "../../components/PRadio.js";
 import Select from "@material-ui/core/Select";
 import PortionTextField from "../../components/PortionTextField.js";
 import InputBase from "@material-ui/core/InputBase";
 import * as constant from "../../Const";
 
+import ProgressBreadcum from "../../components/ProgressBreadcum"
+import SubTitle from "../../components/SubTitle";
+import EmptySpace from "../../components/EmptySpace";
+import DescriptionText from "../../components/DescriptionText";
+import SquareButton from "../../components/SquareButton.js";
 var _ = require("lodash");
 
 const useStyles = makeStyles((theme) => ({
@@ -173,12 +177,12 @@ function LoginPage(props) {
   let percentage = _.range(0, 26);
 
   React.useEffect(() => {
-    if (context.getStoreInfo.setStore_salesManager !== "") {
-      setBSales("true");
-    } else {
-      setBSales("false");
-    }
-    console.log("hi");
+    // if (context.getStoreInfo.setStore_salesManager !== "") {
+    //   setBSales("true");
+    // } else {
+    //   setBSales("false");
+    // }
+    // console.log("hi");
   }, []);
 
   return (
@@ -309,7 +313,7 @@ function LoginPage(props) {
                   variant="outlined"
                   onClick={() => {
                     if (context.getInvestInfo.depositor === "") {
-                      context.setInvest_depositor("유저");
+                      // context.setInvest_depositor("유저");
                     }
                     props.history.push("/store/apply/addinvestor");
                   }}

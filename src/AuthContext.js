@@ -274,12 +274,10 @@ export const AuthProvider = ({ children }) => {
     try {
       if (role === constant.role.buyer) {
         let today = String(new Date());
-        application.applicationId = uuidv4();
         application.createdBy = today;
         await db
           .collection("BuyerApplications")
-          .doc(`${application.buyer}_${today}`)
-          .set(application);
+          .add(application);
         return { code: 200 };
       }
       if (role === constant.role.sales) {
@@ -297,12 +295,10 @@ export const AuthProvider = ({ children }) => {
         }
 
         let today = String(new Date());
-        application.applicationId = uuidv4();
         application.createdBy = today;
         await db
           .collection("SalesApplications")
-          .doc(`${application.storeName}_${today}`)
-          .set(application);
+          .add(application);
 
         await db
           .collection(constant.dbCollection.station)
@@ -327,7 +323,6 @@ export const AuthProvider = ({ children }) => {
         }
 
         let today = String(new Date());
-        application.applicationId = uuidv4();
         application.createdBy = today;
         if (application.stationDoc !== "") {
           await db
@@ -338,8 +333,7 @@ export const AuthProvider = ({ children }) => {
 
         await db
           .collection("StoreApplications")
-          .doc(`${application.storeName}_${today}`)
-          .set(application);
+          .add(application);
 
         return { code: 200 };
       }
