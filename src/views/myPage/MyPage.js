@@ -16,7 +16,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import CircleChecked from "@material-ui/icons/CheckCircleOutline";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
-import { MenuList } from "../../components/MenuList.js";
+import SettingMenuList from "../../components/SettingMenuList.js";
 import { BlackBackgroundLgButton } from "../../components/BlackBackgroundLgButton.js";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import Divider from "../../components/Divider.js";
@@ -106,14 +106,31 @@ function LoginPage(props) {
   })((props) => <Checkbox color="default" {...props} />);
   const data = [
     {
-      titleBold: "알림",
+      titleBold: "내 메세지",
       titleRegular: "",
       link: "/mypage/message"
     },
+
     {
-      titleBold: "설정",
+      titleBold: "알람세팅",
       titleRegular: "",
-      link: "/mypage/settings"
+      link: "/mypage/settings/alarmsetting"
+    },
+    {
+      titleBold: "고객센터",
+      titleRegular: "",
+      link: "/mypage/settings/customercenter"
+    },
+
+    {
+      titleBold: "공지",
+      titleRegular: " ",
+      link: "/mypage/settings/notice"
+    },
+    {
+      titleBold: "정책",
+      titleRegular: " ",
+      link: "/mypage/settings/policies"
     }
   ];
   if (!auth.user) {
@@ -177,7 +194,7 @@ function LoginPage(props) {
           width: "100%",
           alignItems: "center",
           backgroundColor: "white",
-          height: "120px"
+          height: "120px",
         }}
       >
         <div
@@ -238,7 +255,10 @@ function LoginPage(props) {
         mountOnEnter
         unmountOnExit
       >
+
         <div className={classes.container}>
+          <NavBar title="마이페이지" backLink={`main`} />
+
           <LogoHeader />
           <Divider />
 
@@ -249,8 +269,8 @@ function LoginPage(props) {
 
           <main>
             <section className={classes.section}>
-              <MenuList
-                style={{ paddingTop: "40px", backgroundColor: "white" }}
+              <SettingMenuList
+                style={{ backgroundColor: "white" }}
                 menuList={data}
               />
             </section>

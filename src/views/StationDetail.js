@@ -60,9 +60,9 @@ function StationDetail(props) {
         .doc(stationId)
 
       const querySnapshot = await applicationRef.get();
+      console.log("querySnapshot.data()", querySnapshot.data())
 
-
-      if (typeof querySnapshot.data().contractDoc === "undefined" || querySnapshot.data().contractDoc === "") {
+      if (typeof querySnapshot.data().contractDoc === "undefined") {
         return { id: querySnapshot.id, data: querySnapshot.data() };
 
       }
@@ -409,7 +409,7 @@ function StationDetail(props) {
 
 
       return buyerBody
-    } else if (role === "salesManger") {
+    } else if (role === "salesManager") {
 
       const salesData = [
 
@@ -447,13 +447,13 @@ function StationDetail(props) {
 
         {
           title: "가맹점 수익",
-          data: apiData && apiData.data.storePortion + apiData.data.storeBonusPortion + "%",
+          data: apiData && apiData.contract.storePortion + apiData.contract.storeBonusPortion + "%",
           link: "/sales/regist/portion"
         },
         {
           title: "세일즈 파트너 수익률",
           data:
-            `${(apiData && apiData.data.salesPortion) - (apiData && apiData.data.storePortion)}%`,
+            `${(apiData && apiData.contract.salesPortion) - (apiData && apiData.contract.storePortion)}%`,
           link: "/sales/regist/portion"
         },
 

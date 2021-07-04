@@ -224,7 +224,7 @@ export async function getStationId(stationDoc) {
 
 export async function fetchStations(userId, role) {
   try {
-    console.log("롤", role === constant.role.store)
+    console.log("롤", role === constant.role.sales)
     console.log("롤", userId)
     console.log("롤", constant.role.storeOwner)
 
@@ -237,12 +237,17 @@ export async function fetchStations(userId, role) {
       const querySnapshot = await stationnRef.get();
 
       querySnapshot.forEach((doc) => {
-        (dataArray.push({ id: doc.id, data: doc.data() }))
+        console.log("닥닥", doc.data())
+        let data = doc.data()
+        let stationRefId = doc.id
+        data.stationDoc = stationRefId
+        dataArray.push({ id: doc.id, data: data })
 
       })
 
       await Promise.all(dataArray.map(async (value, index) => {
-        if (value.data.contractDoc === "") {
+        console.log("벨류", value)
+        if (typeof value.data.contractDoc === "undefined" || value.data.contractDoc === "") {
           return
         }
 
@@ -263,13 +268,12 @@ export async function fetchStations(userId, role) {
       //함수 getFranchises(userId,role) 
       //프렌차이즈의 스테이션 닥으로
       //함수 getStations([docs],doctype,)   
-      console.log("못들어옴?")
+      console.log("못들어옴?1")
       const contractQs = await db.collection(constant.dbCollection.contract)
-        .where("salesManger", "==", userId)
+        .where("salesManager", "==", userId)
         .where("status", "==", constant.applicationStatus.approve).get()
       contractQs.forEach((doc) => {
         (dataArray.push({ id: doc.id, data: doc.data() }))
-        console.log(dataArray)
       })
       await Promise.all(dataArray.map(async (value, index) => {
         if (value.data.stationDoc === "") {
@@ -299,7 +303,6 @@ export async function fetchStations(userId, role) {
       //프렌차이즈를 가지고 있는 아이디 getFranchises(userId,role)
       //프렌차이즈의 스테이션 닥으로
       //함수 getStations([docs],doctype,)   
-      console.log("못들어옴?")
 
       const contractQs = await db.collection(constant.dbCollection.contract)
         .where("storeOwner", "==", userId)
