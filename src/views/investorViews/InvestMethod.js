@@ -72,13 +72,13 @@ function InvestMethod(props) {
   const handleChange = (event) => {
     setValue(event.target.value);
 
-    context.setInvest_salesMethod(event.target.value);
+    context.setStation_salesMethod(event.target.value);
 
-    console.log(context.getInvestInfo);
+    console.log(context.getStationObj);
   };
   const handleSlectChange = (event) => {
     console.log(event.target.value);
-    context.setInvest_salesPortion(event.target.value);
+    context.setStation_salesPortion(event.target.value);
   };
 
   const bantoBody = (
@@ -119,7 +119,7 @@ function InvestMethod(props) {
             className={classes.select}
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value={context.getInvestInfo.salesPortion}
+            value={context.getStationObj.salesPortion}
             placeholder="Bank"
             variant="outlined"
             style={{
@@ -139,7 +139,7 @@ function InvestMethod(props) {
             }}
           >
             {common.percentArray(0, maxPortion).map((value) => {
-              return <MenuItem value={value}>{value} % </MenuItem>;
+              return <MenuItem key={value} value={value}>{value} % </MenuItem>;
             })}
           </Select>
         </FormControl>
@@ -154,7 +154,7 @@ function InvestMethod(props) {
           }}
         >
           내 수익 계산기 :{" "}
-          {myPortionCalculater(maxPortion, context.getInvestInfo.salesPortion)}%
+          {myPortionCalculater(maxPortion, context.getStationObj.salesPortion)}%
         </p>
       </div>
       <DescriptionText title=
@@ -277,7 +277,7 @@ function InvestMethod(props) {
               }}
             >
               {common.percentArray(0, maxPortion).map((value) => {
-                return <MenuItem value={value}>{value} % </MenuItem>;
+                return <MenuItem key={value} value={value}>{value} % </MenuItem>;
               })}
             </Select>
           </FormControl>
@@ -321,7 +321,7 @@ function InvestMethod(props) {
       <Slide
         direction="left"
         in={true}
-        timeout={{ enter: "0.15s", exit: "5s" }}
+        timeout={{ enter: 0.15, exit: 5 }}
         mountOnEnter
         unmountOnExit
       >
@@ -357,7 +357,7 @@ function InvestMethod(props) {
                     margin: "16px 0 0 24px"
                   }}
                 >
-                  3/4
+                  3/3
                 </p>
                 <SubTitle title="영업 방법" />
                 <DescriptionText title={"반토 파트너스 영업망을 통해 설치할 수 있습니다"} />
@@ -457,30 +457,38 @@ function InvestMethod(props) {
                   variant="outlined"
                   onClick={() => {
                     if (value === constant.salesMethod.banto) {
-                      context.setInvest_salesMethod(constant.salesMethod.banto);
-                      context.setInvest_preSalesIds([]);
-                      context.setInvest_preSalesManagers([]);
+                      console.log("반토")
+                      context.setStation_salesMethod(constant.salesMethod.banto);
+                      // 세일즈 포션 자동 할당됌
+
+                      context.setStation_preSalesIds([]);
+                      context.setStation_preSalesManagers([]);
                     } else if (value === constant.salesMethod.ownSales) {
-                      context.setInvest_salesMethod(
+                      console.log("오운")
+                      context.setStation_salesMethod(
                         constant.salesMethod.ownSales
                       );
-                      context.setInvest_salesPortion(0);
+                      context.setStation_salesPortion(0);
                       const managersId = invitations.map((value) => value.id);
-                      context.setInvest_preSalesIds(managersId);
-                      context.setInvest_preSalesManagers(invitations);
+                      context.setStation_preSalesIds(managersId);
+                      context.setStation_preSalesManagers(invitations);
                     }
                     // 설정안함
                     else {
-                      context.setInvest_salesMethod(constant.salesMethod.yet);
-                      context.setInvest_salesPortion(0);
+                      console.log("옛옛")
+                      context.setStation_salesMethod(constant.salesMethod.yet);
+                      context.setStation_salesPortion(0);
+
+                      context.setStation_preSalesIds([]);
+                      context.setStation_preSalesManagers([]);
                     }
-                    console.log(context.getInvestInfo);
+                    console.log(context.getStationObj);
                     if (auth.userExtraInfo) {
-                      context.setInvest_buyer(auth.userExtraInfo.id);
-                      context.setInvest_buyerPortion(70);
+                      context.setStation_buyer(auth.userExtraInfo.id);
+                      context.setStation_buyerPortion(70);
                     } else {
-                      context.setInvest_buyer("example114");
-                      context.setInvest_buyerPortion(70);
+                      context.setStation_buyer("example114");
+                      context.setStation_buyerPortion(70);
                     }
                     props.history.push("/investor/final");
                   }}

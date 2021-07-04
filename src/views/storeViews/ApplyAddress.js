@@ -144,7 +144,7 @@ function RegistContact(props) {
       }
       fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
       console.log(fullAddress);
-      context.setStore_storeMainAddress(fullAddress);
+      context.setFranchise_storeMainAddress(fullAddress);
       setDaumOpen(false);
     }
   };
@@ -184,7 +184,7 @@ function RegistContact(props) {
       <Slide
         direction="left"
         in={true}
-        timeout={{ enter: "0.15s", exit: "5s" }}
+        timeout={{ enter: 0.15, exit: 5 }}
         mountOnEnter
         unmountOnExit
       >
@@ -222,7 +222,7 @@ function RegistContact(props) {
                   placeholder="필수"
                   id="outlined-basic"
                   variant="outlined"
-                  value={context.getStoreInfo.storeName}
+                  value={context.getFranchiseObj.storeName}
                   error={!!error1}
                   onChange={(e) => {
                     if (e.target.value.length < 1) {
@@ -231,7 +231,7 @@ function RegistContact(props) {
                       setError1(null);
                     }
 
-                    context.setStore_storeName(e.target.value);
+                    context.setFranchise_storeName(e.target.value);
                   }}
                   helperText={error1}
                 />
@@ -250,7 +250,7 @@ function RegistContact(props) {
 
                   placeholder="주소"
                   type="Contact"
-                  value={context.getStoreInfo.storeMainAddress}
+                  value={context.getFranchiseObj.storeMainAddress}
                   onClick={() => {
                     setDaumOpen(true);
                   }}
@@ -267,11 +267,10 @@ function RegistContact(props) {
                   variant="outlined"
 
                   type="Contact"
-                  // value={storeOwnerContact}
-                  value={context.getStoreInfo.storeRestAddress}
+                  value={context.getFranchiseObj.storeRestAddress}
                   // autoFocus
                   onChange={(e) => {
-                    context.setStore_storeRestAddress(e.target.value);
+                    context.setFranchise_storeRestAddress(e.target.value);
                   }}
                 />
               </div>
@@ -280,9 +279,9 @@ function RegistContact(props) {
                   onClick={handleOpen}
                   disabled={
                     !(
-                      !!context.getStoreInfo.storeRestAddress &&
-                      !!context.getStoreInfo.storeMainAddress &&
-                      !!context.getStoreInfo.storeName
+                      !!context.getFranchiseObj.storeRestAddress &&
+                      !!context.getFranchiseObj.storeMainAddress &&
+                      !!context.getFranchiseObj.storeName
                     )
                   }
                   text="다음"

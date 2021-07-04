@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import NavBar from "../../components/NavBar.js";
 import TextField from "@material-ui/core/TextField";
@@ -59,22 +59,22 @@ function LoginPage(props) {
     if (event.target.value === "yes") {
       console.log(auth.userExtraInfo);
       if (auth.userExtraInfo) {
-        context.setInvest_bank(auth.userExtraInfo.bank);
-        context.setInvest_bankAccount(auth.userExtraInfo.accountNumber);
-        context.setInvest_depositor(auth.userExtraInfo.depositor);
+        context.setStation_bank(auth.userExtraInfo.bank);
+        context.setStation_bankAccount(auth.userExtraInfo.accountNumber);
+        context.setStation_depositor(auth.userExtraInfo.depositor);
       }
     }
   };
   const handleSlectChange = (event) => {
     console.log(event.target.value);
-    console.log(context.getInvestInfo);
-    context.setInvest_bank(event.target.value);
+    console.log(context.getStationObj);
+    context.setStation_bank(event.target.value);
   };
   React.useEffect(() => {
     if (auth.userExtraInfo) {
-      context.setInvest_bank(auth.userExtraInfo.bank);
-      context.setInvest_bankAccount(auth.userExtraInfo.accountNumber);
-      context.setInvest_depositor(auth.userExtraInfo.depositor);
+      context.setStation_bank(auth.userExtraInfo.bank);
+      context.setStation_bankAccount(auth.userExtraInfo.accountNumber);
+      context.setStation_depositor(auth.userExtraInfo.depositor);
     }
   }, []);
   const textFieldsBody = (
@@ -97,9 +97,9 @@ function LoginPage(props) {
         className={classes.textField}
         placeholder="Name"
         // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-        value={context.getInvestInfo.depositor}
+        value={context.getStationObj.depositor}
         onChange={(e) => {
-          context.setInvest_depositor(e.target.value);
+          context.setStation_depositor(e.target.value);
         }}
         style={{
           margin: "0 24px",
@@ -157,7 +157,7 @@ function LoginPage(props) {
             className={classes.select}
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value={context.getInvestInfo.bank}
+            value={context.getStationObj.bank}
             placeholder="Bank"
             variant="outlined"
             style={{
@@ -252,9 +252,9 @@ function LoginPage(props) {
         className={classes.textField}
         placeholder="Bank Account"
         // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-        value={context.getInvestInfo.bankAccount}
+        value={context.getStationObj.bankAccount}
         onChange={(e) => {
-          context.setInvest_bankAccount(e.target.value);
+          context.setStation_bankAccount(e.target.value);
         }}
         style={{
           margin: "0 24px",
@@ -283,7 +283,7 @@ function LoginPage(props) {
       <Slide
         direction="left"
         in={true}
-        timeout={{ enter: "0.15s", exit: "5s" }}
+        timeout={{ enter: 0.15, exit: 5 }}
         mountOnEnter
         unmountOnExit
       >
@@ -319,7 +319,7 @@ function LoginPage(props) {
                     margin: "16px 0 0 24px"
                   }}
                 >
-                  2/4
+                  2/3
                 </p>
                 <SubTitle title="계좌정보" />
                 <p
@@ -447,18 +447,18 @@ function LoginPage(props) {
                   onClick={() => {
                     if (value === "yes") {
                       if (!auth.userExtraInfo) {
-                        context.setInvest_bank("반토은행");
-                        context.setInvest_bankAccount("12312312345");
-                        context.setInvest_depositor("홍길동");
+                        context.setStation_bank("반토은행");
+                        context.setStation_bankAccount("12312312345");
+                        context.setStation_depositor("홍길동");
                         props.history.push("/investor/method");
 
                         return;
                       }
-                      context.setInvest_bank(auth.userExtraInfo.bank);
-                      context.setInvest_bankAccount(
+                      context.setStation_bank(auth.userExtraInfo.bank);
+                      context.setStation_bankAccount(
                         auth.userExtraInfo.accountNumber
                       );
-                      context.setInvest_depositor(auth.userExtraInfo.name);
+                      context.setStation_depositor(auth.userExtraInfo.name);
                     }
 
                     props.history.push("/investor/method");

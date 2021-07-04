@@ -2,20 +2,25 @@
 export const messageCategory = Object.freeze({ info: "INFO" });
 
 export const role = Object.freeze({
-  sales: "SALES",
-  buyer: "BUYER",
-  store: "STORE"
+  sales: "salesManager",
+  buyer: "buyer",
+  store: "storeOwner"
 });
 export const dbCollection = Object.freeze({
   station: "Stations",
+  contract: "Contracts",
   franchise: "Franchises",
   buyerApplication: "BuyerApplications",
-  salesApplication: "SalesApplications",
-  storeApplication: "StoreApplications"
+
+});
+
+export const contractType = Object.freeze({
+  sales: "SALES",
+  franchise: "FRANCHISE",
 });
 
 export const applicationStatus = Object.freeze({
-  approve: "APPROVE",
+  approve: "APPROVED",
   waiting: "WAITING",
   rejected: "REJECTED"
 });

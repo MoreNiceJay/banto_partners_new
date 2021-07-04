@@ -4,6 +4,7 @@ import Button from "@material-ui/core/Button";
 import Modal from "@material-ui/core/Modal";
 import { HeaderInfo } from "../../components/HeaderInfo.js";
 import NavBar from "../../components/NavBar.js";
+import Slide from "@material-ui/core/Slide";
 
 import { useGlobal } from "../../globalContext";
 import Alert from "../../components/Alert";
@@ -128,7 +129,7 @@ function RegistPortion(props) {
 
 
   const [buyerInviType, setBuyerInviType] = React.useState("id");
-
+  const [storeOwnerPhoneNumber, setStoreOwnerPhoneNumber] = React.useState("")
 
 
   const handleRadioChange = (event) => {
@@ -140,12 +141,12 @@ function RegistPortion(props) {
   const handleOpen = async () => {
 
     if (buyerInviType === "id") {
-      if (context.salesInfo.storeOwner === "") {
+      if (context.getContractObj.storeOwner === "") {
         alert("가맹점주님의 ID를 입력해 주세요")
         return
       }
 
-      const result = await common.checkUserIdExisted(context.salesInfo.storeOwner)
+      const result = await common.checkUserIdExisted(context.getContractObj.storeOwner)
       if (result.code !== 200) {
         alert(result.msg)
         return
@@ -154,16 +155,18 @@ function RegistPortion(props) {
         alert("가맹점주님의 계정이 없습니다. 전화번호로 초대링크를 보내세요")
         return
       }
+      context.setContract_bStoreOwnerRegistered(true)
+
       //TODO 
       // 내용 푸시및 알림으로 보내기
 
 
     } else {
-      if (context.salesInfo.storeOwnerPhoneNumber === "") {
+      if (storeOwnerPhoneNumber === "") {
         alert("가맹점주님의 휴대폰 번호를 입력해 주세요")
         return
       }
-      const result = await common.checkUserPhoneNumExisted(context.salesInfo.storeOwnerPhoneNumber)
+      const result = await common.checkUserPhoneNumExisted(storeOwnerPhoneNumber)
       console.log(result)
       if (result.code !== 200) {
         alert(result.msg)
@@ -173,6 +176,10 @@ function RegistPortion(props) {
         alert(`이미 가입된 계정입니다. 계정 아이디 ${result.email}`)
         return
       }
+      context.setContract_bStoreOwnerRegistered(false)
+      context.setFranchise_storeOwnerPhoneNumber(storeOwnerPhoneNumber)
+      context.setContract_storeOwner("")
+
       //TODO 핸드폰이면 이미 가입됐는지 체크하고
       //없으면 디비에 가맹점 인비테이션 만들고 문자보내기
       //인비테이션
@@ -181,16 +188,16 @@ function RegistPortion(props) {
     }
 
     if (portion === 0) {
-      context.setSales_storeBonusPortion(0);
-      context.setSales_storePortion(0);
-    } else if (0 < portion && portion <= 10) {
-      context.setSales_storeBonusPortion(portion);
-      context.setSales_storePortion(0);
-    } else if (portion > 10) {
-      context.setSales_storeBonusPortion(10);
-      context.setSales_storePortion(portion - 10);
+      context.setContract_storeBonusPortion(0);
+      context.setContract_storePortion(0);
+    } else if (0 < portion && portion <= bonus) {
+      context.setContract_storeBonusPortion(portion);
+      context.setContract_storePortion(0);
+    } else if (portion > bonus) {
+      context.setContract_storeBonusPortion(bonus);
+      context.setContract_storePortion(portion - bonus);
     }
-    context.setSales_salesPortion(calcSalesPortion(portion));
+    // context.setContract_salesPortion(calcSalesPortion(portion));
     setOpen(true);
   };
   React.useEffect(() => {
@@ -198,16 +205,16 @@ function RegistPortion(props) {
   }, []);
 
   const calcSalesPortion = (storePortion) => {
-    const copySalesInfo = context.salesInfo.salesPortion;
+    const copySalesInfo = context.getContractObj.salesPortion;
 
     if (storePortion === 0) {
-      // context.setSales_storeBonusPortion(0);
+      // context.setFranchise_storeBonusPortion(0);
       return copySalesInfo;
     } else if (0 < storePortion && storePortion <= 10) {
-      // context.setSales_storeBonusPortion(storePortion);
+      // context.setFranchise_storeBonusPortion(storePortion);
       return copySalesInfo;
     } else if (storePortion > 10) {
-      // context.setSales_storeBonusPortion(10);
+      // context.setFranchise_storeBonusPortion(10);
       console.log(storePortion);
       return copySalesInfo + bonus - storePortion;
     }
@@ -222,9 +229,11 @@ function RegistPortion(props) {
       description="예)vx39ad"
       // label="필수"
       placeholder={"필수"}
-      value={context.salesInfo.storeOwner}
+      value={context.getContractObj.storeOwner}
       onChange={(e) => {
-        context.setSales_storeOwner(e.target.value)
+        console.log(e.target.value)
+        context.setContract_storeOwner(e.target.value)
+
       }}
     />
 
@@ -238,9 +247,10 @@ function RegistPortion(props) {
       // label="필수"
       placeholder={"필수"}
       inputProps={{ inputMode: "numeric", maxLength: 11 }}
-      value={context.salesInfo.storeOwnerPhoneNumber}
+      value={storeOwnerPhoneNumber}
       onChange={(e) => {
-        context.setSales_storeOwnerPhoneNumber(e.target.value)
+        setStoreOwnerPhoneNumber(e.target.value)
+
       }}
     /></>)
 
@@ -295,196 +305,183 @@ function RegistPortion(props) {
     handleOpen();
     return;
   }
-  const copySalesPortion = context.salesInfo.salesPortion;
+  const copySalesPortion = context.getContractObj.salesPortion;
   const bonus = 10;
   let percentage = _.range(0, copySalesPortion + bonus + 1);
-
+  // console.log("세일즈", context.getContractObj)
+  // console.log("스토어", context.getFranchiseObj)
   return (
     <>
-      {!auth.userExtraInfo && (
-        <>
-          <Alert
-            type="info"
-            title="체험하기"
-            description="현재 체험히기를 이용중입니다"
-            actionDescription="로그인"
-            link="/login/login"
-            onClick={() => {
-              props.history.push("/login/login");
-            }}
-          ></Alert>
-        </>
-      )}
-      <header>
-        <NavBar title="" backLink="/sales/regist/add-investor" />
-        {/* <HeaderInfo
+      <Slide
+        direction="left"
+        in={true}
+        timeout={{ enter: 0.15, exit: 5 }}
+        mountOnEnter
+        unmountOnExit
+      >
+        <div>
+
+          {!auth.userExtraInfo && (
+            <>
+              <Alert
+                type="info"
+                title="체험하기"
+                description="현재 체험히기를 이용중입니다"
+                actionDescription="로그인"
+                link="/login/login"
+                onClick={() => {
+                  props.history.push("/login/login");
+                }}
+              ></Alert>
+            </>
+          )}
+          <header>
+            <NavBar title="" backLink="/sales/regist/add-investor" />
+            {/* <HeaderInfo
           title={"등록" + "\u00A0" + "\u00A0" + "\u00A0" + "3/3"}
           description="가맹점에게 수익을 나눌시, 가맹점 계약 체결시 본사에서 검수 후 반토 스테이션을 보내드립니다"
         /> */}
-      </header>
-      <main>
-        <section>
-          <ProgressBreadcum title="3/4" />
-          <SubTitle title="가맹점 협의 사항" />
-          <DescriptionText title={"가맹점과 협의한 사항을 기록합니다"} />
-          <div className={classes.contact}>
-            <div className={classes.contactPerson}>
-              <div className={classes.contactTexts}>
-                <span className={classes.contactPersonTitle}>가맹점 수익</span>
-                <span className={classes.contactPersonDescription}>
-                  가맹점에 분배될 수익
-                </span>
-              </div>
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel
-                  className={classes.portionSelectInputLabel}
-                  htmlFor="outlined-age-native-simple"
-                >
-                  분배율
-                </InputLabel>
-                <Select
-                  native
-                  value={portion}
-                  className={classes.portionSelect}
-                  onChange={handleChange}
-                  label="비율"
-                  inputProps={{
-                    id: "outlined-age-native-simple"
-                  }}
-                >
-                  <option aria-label="None" value="" />
-                  {percentage.map((value) => {
-                    return <option value={value}>{value} %</option>;
-                  })}
-                </Select>
-              </FormControl>
-              <span className={classes.portionSelectDescription}>
-                세일즈님의 수익은 {calcSalesPortion(portion)}%입니다
-              </span>
-            </div>
-            <div className={classes.contactPerson}>
-              <div className={classes.contactTexts}>
-                <span className={classes.contactPersonTitle}>계약 기간</span>
-                <span className={classes.contactPersonDescription}>
-                  스테이션 설치 기간
-                </span>
-              </div>
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel
-                  className={classes.portionSelectInputLabel}
-                  htmlFor="outlined-age-native-simple"
-                >
-                  기간
-                </InputLabel>
-                <Select
-                  native
-                  value={context.salesInfo.contractYear}
-                  className={classes.portionSelect}
-                  onChange={(e) => {
-                    console.log(e.target.value)
-                    context.setSales_contractYear(e.target.value)
-                  }}
-                  label="비율"
-                  inputProps={{
-                    id: "outlined-age-native-simple"
-                  }}
-                >
-                  <option aria-label="None" value={0} >기간 없음</option>
-                  <option value={1}>{"1"} 년</option>
-                  <option value={2}>{"2"} 년</option>
-                  <option value={3}>{"3"} 년</option>
-                  <option value={4}>{"4"} 년</option>
-                  <option value={5}>{"5"} 년</option>
-
-                </Select>
-              </FormControl>
-
-            </div>
-          </div>
-
-          {/* <div className={classes.contact}>
-              <div className={classes.contactPerson}>
-                <div className={classes.contactTexts}>
-                  <span className={classes.contactPersonTitle}>
-                    가맹점주님 연락처
-                  </span>
-                  <span className={classes.contactPersonDescription}>
-                    예) 0104567890
+          </header>
+          <main>
+            <section>
+              <ProgressBreadcum title="3/4" />
+              <SubTitle title="가맹점 협의 사항" />
+              <DescriptionText title={"가맹점과 협의한 사항을 기록합니다"} />
+              <div className={classes.contact}>
+                <div className={classes.contactPerson}>
+                  <div className={classes.contactTexts}>
+                    <span className={classes.contactPersonTitle}>가맹점 수익</span>
+                    <span className={classes.contactPersonDescription}>
+                      가맹점에 분배될 수익
+                    </span>
+                  </div>
+                  <FormControl variant="outlined" className={classes.formControl}>
+                    <InputLabel
+                      className={classes.portionSelectInputLabel}
+                      htmlFor="outlined-age-native-simple"
+                    >
+                      분배율
+                    </InputLabel>
+                    <Select
+                      native
+                      value={portion}
+                      className={classes.portionSelect}
+                      onChange={handleChange}
+                      label="비율"
+                      inputProps={{
+                        id: "outlined-age-native-simple"
+                      }}
+                    >
+                      <option aria-label="None" value="" />
+                      {percentage.map((value) => {
+                        return <option value={value}>{value} %</option>;
+                      })}
+                    </Select>
+                  </FormControl>
+                  <span className={classes.portionSelectDescription}>
+                    세일즈님의 수익은 {calcSalesPortion(portion)}%입니다
                   </span>
                 </div>
-                <TextField
-                  className={classes.contactPersonTextField}
-                  id="outlined-basic"
-                  inputProps={{ inputMode: "numeric", maxLength: 11 }}
-                  label="*필수"
-                  variant="outlined"
-                  value={context.salesInfo.storeOwner}
-                  // autoFocus
-                  onChange={(e) => {
-                    context.setSales_storeOwner(e.target.value);
-                  }}
-                />
-              </div>
-            </div> */}
-          <EmptySpace />
-          <EmptySpace />
-          <SubTitle title="가맹점주님 초대방법" />
-          <DescriptionText title={"수익정산과 계약내용 공유를 위해 가맹점주님을 초대합니다"} />
-          <div className={classes.radioButtonGroup}>
-            <FormControl
-              component="fieldset"
-
-              className={classes.formControl}
-            >
-
-              <RadioGroup
-                aria-label="quiz"
-                name="quiz"
-                value={buyerInviType}
-                onChange={handleRadioChange}
-                style={{ marginLeft: "24px", marginTop: "24px" }}
-              >
-                <FormControlLabel
-                  value="id"
-                  control={
-                    <Radio
-                      icon={<CircleUnchecked />}
-                      checkedIcon={<CircleCheckedFilled />}
-                      style={{
-                        color: "black",
-                        "&$checked": {
-                          color: "black"
-                        },
-
-                        checked: {}
+                <div className={classes.contactPerson}>
+                  <div className={classes.contactTexts}>
+                    <span className={classes.contactPersonTitle}>계약 기간</span>
+                    <span className={classes.contactPersonDescription}>
+                      스테이션 설치 기간
+                    </span>
+                  </div>
+                  <FormControl variant="outlined" className={classes.formControl}>
+                    <InputLabel
+                      className={classes.portionSelectInputLabel}
+                      htmlFor="outlined-age-native-simple"
+                    >
+                      기간
+                    </InputLabel>
+                    <Select
+                      native
+                      value={context.getFranchiseObj.contractYear}
+                      className={classes.portionSelect}
+                      onChange={(e) => {
+                        console.log(e.target.value)
+                        context.setContract_contractYear(e.target.value)
                       }}
+                      label="비율"
+                      inputProps={{
+                        id: "outlined-age-native-simple"
+                      }}
+                    >
+                      <option aria-label="None" value={0} >기간 없음</option>
+                      <option value={1}>{"1"} 년</option>
+                      <option value={2}>{"2"} 년</option>
+                      <option value={3}>{"3"} 년</option>
+                      <option value={4}>{"4"} 년</option>
+                      <option value={5}>{"5"} 년</option>
 
+                    </Select>
+                  </FormControl>
+
+                </div>
+              </div>
+
+
+              <EmptySpace />
+              <EmptySpace />
+              <SubTitle title="가맹점주님 초대방법" />
+              <DescriptionText title={"수익정산과 계약내용 공유를 위해 가맹점주님을 초대합니다"} />
+              <div className={classes.radioButtonGroup}>
+                <FormControl
+                  component="fieldset"
+
+                  className={classes.formControl}
+                >
+
+                  <RadioGroup
+                    aria-label="quiz"
+                    name="quiz"
+                    value={buyerInviType}
+                    onChange={handleRadioChange}
+                    style={{ marginLeft: "24px", marginTop: "24px" }}
+                  >
+                    <FormControlLabel
+                      value="id"
+                      control={
+                        <Radio
+                          icon={<CircleUnchecked />}
+                          checkedIcon={<CircleCheckedFilled />}
+                          style={{
+                            color: "black",
+                            "&$checked": {
+                              color: "black"
+                            },
+
+                            checked: {}
+                          }}
+
+                        />
+                      }
+                      label="가맹점주님이 이미 파트너스 계정이 있으십니다"
+                      checked={buyerInviType === "id"}
                     />
-                  }
-                  label="가맹점주님이 이미 파트너스 계정이 있으십니다"
-                  checked={buyerInviType === "id"}
-                />
-                <FormControlLabel
-                  value="phone"
-                  control={
-                    <Radio
-                      icon={<CircleUnchecked />}
-                      checkedIcon={<CircleCheckedFilled />}
-                      style={{
-                        color: "black",
-                        "&$checked": {
-                          color: "black"
-                        },
+                    <FormControlLabel
+                      value="phone"
+                      control={
+                        <Radio
+                          icon={<CircleUnchecked />}
+                          checkedIcon={<CircleCheckedFilled />}
+                          style={{
+                            color: "black",
+                            "&$checked": {
+                              color: "black"
+                            },
 
-                        checked: {}
-                      }} />
-                  }
-                  label="문자로 계약내용과 초대링크를 보냅니다"
-                />
+                            checked: {}
+                          }} />
+                      }
+                      label="문자로 계약내용과 초대링크를 보냅니다"
+                    />
 
-              </RadioGroup>
-              {/* <FormHelperText>{helperText}</FormHelperText> */}
-              {/* <Button
+                  </RadioGroup>
+                  {/* <FormHelperText>{helperText}</FormHelperText> */}
+                  {/* <Button
               type="submit"
               variant="outlined"
               color="primary"
@@ -492,35 +489,36 @@ function RegistPortion(props) {
             >
               Check Answer
             </Button> */}
-            </FormControl>
-          </div>
-          {buyerInviType === "id"
-            ? idBody : phoneBody}
+                </FormControl>
+              </div>
+              {buyerInviType === "id"
+                ? idBody : phoneBody}
 
 
 
 
-          <SquareButton
-            // className={classes.nextButton}
-            type="button"
-            onClick={handleOpen}
-            text="다음"
-          />
+              <SquareButton
+                // className={classes.nextButton}
+                type="button"
+                onClick={handleOpen}
+                text="다음"
+              />
 
 
 
 
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-          >
-            {body}
-          </Modal>
-        </section>
-      </main>
-      <footer></footer>
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+              >
+                {body}
+              </Modal>
+            </section>
+          </main>
+          <footer></footer>
+        </div></Slide>
     </>
   );
 }

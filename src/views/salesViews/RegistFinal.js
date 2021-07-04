@@ -17,6 +17,7 @@ import { useAuth } from "../../AuthContext";
 import * as constant from "../../Const.js";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
+import Slide from "@material-ui/core/Slide";
 
 import PolicyModal from "../../components/PolicyModal"
 import DescriptionText from "../../components/DescriptionText";
@@ -88,7 +89,9 @@ function RegistFinal(props) {
   const handleOpen = () => {
     setOpen(true);
   };
-  console.log("ㅍㅏ이널 세일즈 인포: ", context.salesInfo);
+  console.log("ㅍㅏ이널 세일즈 인포: ", context.getFranchiseObj);
+  console.log("ㅍㅏ이널 세일즈 인포: ", context.getContractObj);
+
   function mySubmitHandler() { }
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
@@ -96,46 +99,47 @@ function RegistFinal(props) {
   const data = [
     {
       title: "매장명",
-      data: context.salesInfo.storeName,
+      data: context.getFranchiseObj.storeName,
       link: "/sales/regist/address"
     },
     {
       title: "매장 주소",
       data: [
-        context.salesInfo.storeMainAddress,
-        context.salesInfo.storeRestAddress
+        context.getFranchiseObj.storeMainAddress,
+        context.getFranchiseObj.storeRestAddress
       ].join(" "),
       link: "/sales/regist/address"
     },
     {
       title: "점주님 연락처",
-      data: context.salesInfo.storeOwnerPhoneNumber,
+      data: context.getFranchiseObj.storeOwnerPhoneNumber,
       link: "/sales/regist/contact"
     },
 
     {
       title: "매장 연락처",
-      data: context.salesInfo.storePhoneNumber,
+      data: context.getFranchiseObj.storePhoneNumber,
       link: "/sales/regist/contact"
     },
     {
-      title: "세일즈 파트너 수익 수익",
-      data: `${context.salesInfo.salesPortion}%`,
+      title: "세일즈 파트너 수익",
+      data: `${context.getContractObj.salesPortion}%`,
       link: "/sales/regist/portion"
     },
 
     {
       title: "가맹점 수익",
       data:
-        context.salesInfo.storePortion +
-        context.salesInfo.storeBonusPortion +
+        context.getContractObj.storePortion +
+        context.getContractObj.storeBonusPortion +
         "%",
       link: "/sales/regist/portion"
     },
 
     {
       title: "스테이션ID",
-      data: context.salesInfo.stationId,
+      data: context.getContractObj.stationId
+      ,
       link: "/sales/regist/portion"
     }
   ];
@@ -152,199 +156,213 @@ function RegistFinal(props) {
   })((props) => <Checkbox color="default" {...props} />);
   return (
     <>
-      {!auth.userExtraInfo && (
-        <>
-          <Alert
-            type="info"
-            title="체험하기"
-            description="현재 체험히기를 이용중입니다"
-            actionDescription="로그인"
-            link="/login/login"
-            onClick={() => {
-              props.history.push("/login/login");
-            }}
-          ></Alert>
-        </>
-      )}
-      <header>
-        <NavBar title="" backLink="/sales/regist/agreement" />
-        {/* <HeaderInfo
+      <Slide
+        direction="left"
+        in={true}
+        timeout={{ enter: 0.15, exit: 5 }}
+        mountOnEnter
+        unmountOnExit
+      >
+        <div>
+
+          {!auth.userExtraInfo && (
+            <>
+              <Alert
+                type="info"
+                title="체험하기"
+                description="현재 체험히기를 이용중입니다"
+                actionDescription="로그인"
+                link="/login/login"
+                onClick={() => {
+                  props.history.push("/login/login");
+                }}
+              ></Alert>
+            </>
+          )}
+          <header>
+            <NavBar title="" backLink="/sales/regist/agreement" />
+            {/* <HeaderInfo
           title={"등록"}
           description="기입된 정보를 확인하고 신청 완료해주세요"
         /> */}
-        <SubTitle title="등록" />
-        <DescriptionText title={"기입된 정보를 확인하고 신청 완료해주세요"} />
-      </header>
-      <main>
-        <section className={classes.section}>
-          {data.map((value) => {
-            return (
-              <div>
+            <SubTitle title="등록" />
+            <DescriptionText title={"기입된 정보를 확인하고 신청 완료해주세요"} />
+          </header>
+          <main>
+            <section className={classes.section}>
+              {data.map((value) => {
+                return (
+                  <div>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirextion: "rows",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        margin: "16px 0 0 24px"
+                      }}
+                    >
+                      <p
+                        style={{
+                          fontStyle: "normal",
+                          fontWeight: "500",
+                          fontSize: "16px",
+                          color: "#000A12",
+                          opacity: "0.4"
+                        }}
+                      >
+                        {value.title}
+                      </p>
+
+                      <Link
+                        to={value.link}
+                        style={{
+                          textDecoration: "underline",
+                          fontFamily: "Noto Sans CJK KR",
+                          fontStyle: "normal",
+                          fontWeight: "500",
+                          fontSize: "12px",
+                          marginRight: "24px"
+                        }}
+                      >
+                        수정
+                      </Link>
+                    </div>
+                    <p
+                      style={{
+                        fontStyle: "normal",
+                        fontWeight: "bold",
+                        fontSize: "24px",
+                        margin: "16px 0 60px 24px",
+                        color: "#000A12"
+                      }}
+                    >
+                      {value.data}
+                    </p>
+                  </div>
+                );
+              })}
+            </section>
+            <section>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column"
+                }}
+              >
                 <div
                   style={{
                     display: "flex",
-                    flexDirextion: "rows",
+                    flexDirection: "rows",
                     alignItems: "center",
-                    justifyContent: "space-between",
-                    margin: "16px 0 0 24px"
+                    justifyContent: "space-between"
                   }}
                 >
-                  <p
-                    style={{
-                      fontStyle: "normal",
-                      fontWeight: "500",
-                      fontSize: "16px",
-                      color: "#000A12",
-                      opacity: "0.4"
-                    }}
-                  >
-                    {value.title}
-                  </p>
-
-                  <Link
-                    to={value.link}
-                    style={{
-                      textDecoration: "underline",
-                      fontFamily: "Noto Sans CJK KR",
-                      fontStyle: "normal",
-                      fontWeight: "500",
-                      fontSize: "12px",
-                      marginRight: "24px"
-                    }}
-                  >
-                    수정
-                  </Link>
-                </div>
-                <p
-                  style={{
-                    fontStyle: "normal",
-                    fontWeight: "bold",
-                    fontSize: "24px",
-                    margin: "16px 0 60px 24px",
-                    color: "#000A12"
-                  }}
-                >
-                  {value.data}
-                </p>
-              </div>
-            );
-          })}
-        </section>
-        <section>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column"
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "rows",
-                alignItems: "center",
-                justifyContent: "space-between"
-              }}
-            >
-              <FormControlLabel
-                style={{ marginLeft: "14px" }}
-                control={
-                  <BlackCheckbox
-                    checked={state.checkedA}
-                    onChange={handleChange}
-                    name="checkedA"
-                    icon={<CircleUnchecked />}
-                    checkedIcon={<CircleCheckedFilled />}
+                  <FormControlLabel
+                    style={{ marginLeft: "14px" }}
+                    control={
+                      <BlackCheckbox
+                        checked={state.checkedA}
+                        onChange={handleChange}
+                        name="checkedA"
+                        icon={<CircleUnchecked />}
+                        checkedIcon={<CircleCheckedFilled />}
+                      />
+                    }
+                    label={
+                      <span
+                        style={{
+                          fontStyle: "normal",
+                          fontWeight: "normal",
+                          fontSize: "14px",
+                          lineHeight: "21px"
+                        }}
+                      >
+                        {common.getTodayYear()}년 정책사항에 동의 합니다
+                      </span>
+                    }
                   />
-                }
-                label={
-                  <span
-                    style={{
-                      fontStyle: "normal",
-                      fontWeight: "normal",
-                      fontSize: "14px",
-                      lineHeight: "21px"
-                    }}
-                  >
-                    {common.getTodayYear()}년 정책사항에 동의 합니다
-                  </span>
-                }
-              />
-              <p style={{ textAlign: "right" }}>
-                <Link
-                  onClick={handleOpen}
+                  <p style={{ textAlign: "right" }}>
+                    <Link
+                      onClick={handleOpen}
 
+                      style={{
+                        marginRight: "24px",
+                        textDecoration: "underline"
+                      }}
+                    >
+                      약관확인
+                    </Link>
+                  </p>
+                </div>
+
+                <Button
+                  variant="outlined"
+                  onClick={async () => {
+                    if (!auth.userExtraInfo) {
+                      if (
+                        window.confirm("로그인이 필요합니다. 지금 로그인 해보세요")
+                      ) {
+                        props.history.push("/login/login");
+                        return;
+                      }
+                      return;
+                    }
+                    if (!!!context.getFranchiseObj.storeName || !!!context.getFranchiseObj.storeMainAddress || !!!context.getFranchiseObj.storeOwnerPhoneNumber) {
+                      alert("입력되지 않은 정보가 있습니다. 확인 후 수정해주세요")
+                      return
+                    }
+
+                    if (!state.checkedA) {
+                      alert("정책을 확인 후 동의해 주세요")
+                      return
+                    }
+
+                    try {
+                      //ㅅㅡ테이션 나갔는지 마지막 체크
+                      const result = await common.createSalesContract(
+                        context.getContractObj,
+                        context.getFranchiseObj
+                      );
+
+                      console.log(result);
+                      if (result.code === 200) {
+                        alert("가맹점이 등록되었습니다.");
+                        context.setStation_initialize()
+                        context.setContract_initialize()
+
+                        props.history.push("/main");
+                      }
+                    } catch (e) {
+                      alert(e.message);
+                    }
+                  }}
                   style={{
-                    marginRight: "24px",
-                    textDecoration: "underline"
+                    width: "calc(100% - 64px)",
+                    height: "64px",
+                    margin: "24px 32px",
+                    borderRadius: "15px",
+                    backgroundColor: "#000A12",
+                    border: "2px solid #000A12",
+                    fontFamily: "Noto Sans CJK KR",
+                    fontStyle: "normal",
+                    fontWeight: "500",
+                    fontSize: "18px",
+                    color: "white"
                   }}
                 >
-                  약관확인
-                </Link>
-              </p>
-            </div>
+                  가입완료
+                </Button>
+              </div>
 
-            <Button
-              variant="outlined"
-              onClick={async () => {
-                if (!auth.userExtraInfo) {
-                  if (
-                    window.confirm("로그인이 필요합니다. 지금 로그인 해보세요")
-                  ) {
-                    props.history.push("/login/login");
-                    return;
-                  }
-                  return;
-                }
-                if (!!!context.salesInfo.storeName || !!!context.salesInfo.storeMainAddress || !!!context.salesInfo.storeOwnerPhoneNumber || !!!context.salesInfo.stationId) {
-                  alert("입력되지 않은 정보가 있습니다. 확인 후 수정해주세요")
-                  return
-                }
+            </section>
+            {open && (<PolicyModal url="https://bantoservice.xyz/policy" closeModal={() => { setOpen(false) }}></PolicyModal>)}
 
-                if (!state.checkedA) {
-                  alert("정책을 확인 후 동의해 주세요")
-                  return
-                }
+          </main>
 
-                try {
-                  //ㅅㅡ테이션 나갔는지 마지막 체크
-                  const result = await auth.updateApplication(
-                    constant.role.sales,
-                    context.salesInfo
-                  );
-
-                  console.log(result);
-                  if (result.code === 200) {
-                    alert("가맹점이 등록되었습니다.");
-                    props.history.push("/main");
-                  }
-                } catch (e) {
-                  alert(e.message);
-                }
-              }}
-              style={{
-                width: "calc(100% - 64px)",
-                height: "64px",
-                margin: "24px 32px",
-                borderRadius: "15px",
-                backgroundColor: "#000A12",
-                border: "2px solid #000A12",
-                fontFamily: "Noto Sans CJK KR",
-                fontStyle: "normal",
-                fontWeight: "500",
-                fontSize: "18px",
-                color: "white"
-              }}
-            >
-              가입완료
-            </Button>
-          </div>
-
-        </section>
-        {open && (<PolicyModal url="https://bantoservice.xyz/policy" closeModal={() => { setOpen(false) }}></PolicyModal>)}
-
-      </main>
-
-      <footer></footer>
+          <footer></footer>
+        </div>
+      </Slide>
     </>
   );
 }

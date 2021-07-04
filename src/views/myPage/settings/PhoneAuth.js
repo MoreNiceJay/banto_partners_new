@@ -59,7 +59,7 @@ function LoginPage(props) {
     const result = await Axios.post(
       constant.urls.domain + "/users/initPhoneAuth",
       {
-        phoneNumber: context.getRegisterInfo.phoneNumber
+        phoneNumber: context.getRegisterObj.phoneNumber
       }
     );
     console.log(result);
@@ -139,7 +139,7 @@ function LoginPage(props) {
                   className={classes.textField}
                   placeholder="Phone Number"
                   // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                  value={context.getRegisterInfo.phoneNumber}
+                  value={context.getRegisterObj.phoneNumber}
                   onChange={(e) => {
                     context.setRegister_phoneNumber(e.target.value);
                   }}
@@ -187,7 +187,7 @@ function LoginPage(props) {
                     variant="outlined"
                     onClick={async () => {
                       console.log("눌림");
-                      if (!!!context.getRegisterInfo.phoneNumber) {
+                      if (!!!context.getRegisterObj.phoneNumber) {
                         window.alert("전화번호를 입력해주세요");
                         return;
                       }
@@ -276,7 +276,7 @@ function LoginPage(props) {
 
                 <SquareButton
                   disabled={
-                    !(!!certNum && !!context.getRegisterInfo.phoneNumber)
+                    !(!!certNum && !!context.getRegisterObj.phoneNumber)
                   }
                   onClick={async () => {
                     // todo
@@ -297,7 +297,7 @@ function LoginPage(props) {
                     }
                     const result2 = await auth.updateUserPhoneNumber(
                       auth.user.email,
-                      context.getRegisterInfo.phoneNumber
+                      context.getRegisterObj.phoneNumber
                     );
                     if (result2.code !== 200) {
                       alert(result2.msg);

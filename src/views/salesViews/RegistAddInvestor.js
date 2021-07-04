@@ -15,6 +15,7 @@ import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
 import * as common from "../../common";
 import * as constant from "../../Const";
+import Slide from "@material-ui/core/Slide";
 
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
@@ -362,106 +363,115 @@ function RegistAddInvestor(props) {
   );
   return (
     <>
-      {!auth.userExtraInfo && (
-        <>
-          <Alert
-            type="info"
-            title="체험하기"
-            description="현재 체험히기를 이용중입니다"
-            actionDescription="로그인"
-            link="/login/login"
-            onClick={() => {
-              props.history.push("/login/login");
-            }}
-          ></Alert>
-        </>
-      )}
-      <header>
-        <NavBar title="" backLink="/sales/regist/contact" />
-        {/* <HeaderInfo
+      <Slide
+        direction="left"
+        in={true}
+        timeout={{ enter: 0.15, exit: 5 }}
+        mountOnEnter
+        unmountOnExit
+      >
+        <div>
+
+          {!auth.userExtraInfo && (
+            <>
+              <Alert
+                type="info"
+                title="체험하기"
+                description="현재 체험히기를 이용중입니다"
+                actionDescription="로그인"
+                link="/login/login"
+                onClick={() => {
+                  props.history.push("/login/login");
+                }}
+              ></Alert>
+            </>
+          )}
+          <header>
+            <NavBar title="" backLink="/sales/regist/contact" />
+            {/* <HeaderInfo
           title={"등록할 스테이션이 있으신가요"}
           description="내가 구매한 스테이션이나 미리 협의된 구매자의 스테이션을 설치 할수 있습니다"
         /> */}
-      </header>
-      <main>
-        <ProgressBreadcum title="3/4" />
-        <SubTitle title="반토 스테이션 선택" />
-        <DescriptionText title={"반토에 등록되어있는 스테이션을 선택해 무료로 설치하고 수익을 얻을 수 있습니다"} />
-        <div className={classes.radioButtonGroup}>
-          <FormControl
-            component="fieldset"
-            error={error}
-            className={classes.formControl}
-          >
+          </header>
+          <main>
+            <ProgressBreadcum title="3/4" />
+            <SubTitle title="반토 스테이션 선택" />
+            <DescriptionText title={"반토에 등록되어있는 스테이션을 선택해 무료로 설치하고 수익을 얻을 수 있습니다"} />
             <EmptySpace />
-            <EmptySpace />
-            <SubTitle title="스테이션" />
 
-            <RadioGroup
-              aria-label="quiz"
-              name="quiz"
-              value={bInvestor}
-              onChange={handleRadioChange}
-              style={{ marginLeft: "24px", marginTop: "24px" }}
-            >
-              <FormControlLabel
-                value="banto"
-                control={
-                  <Radio
-                    icon={<CircleUnchecked />}
-                    checkedIcon={<CircleCheckedFilled />}
-                    style={{
-                      color: "black",
-                      "&$checked": {
-                        color: "black"
-                      },
+            <div className={classes.radioButtonGroup}>
+              <FormControl
+                component="fieldset"
+                error={error}
+                className={classes.formControl}
+              >
 
-                      checked: {}
-                    }}
 
+                <RadioGroup
+                  aria-label="quiz"
+                  name="quiz"
+                  value={bInvestor}
+                  onChange={handleRadioChange}
+                  style={{ marginLeft: "24px", marginTop: "24px" }}
+                >
+                  <FormControlLabel
+                    value="banto"
+                    control={
+                      <Radio
+                        icon={<CircleUnchecked />}
+                        checkedIcon={<CircleCheckedFilled />}
+                        style={{
+                          color: "black",
+                          "&$checked": {
+                            color: "black"
+                          },
+
+                          checked: {}
+                        }}
+
+                      />
+                    }
+                    label="반토 파트너스 프로그램을 통해 무료로 신청하겠습니다"
+                    checked={bInvestor === "banto"}
                   />
-                }
-                label="반토 파트너스 프로그램을 통해 무료로 신청하겠습니다"
-                checked={bInvestor === "banto"}
-              />
-              <FormControlLabel
-                value="mine"
-                control={
-                  <Radio
-                    icon={<CircleUnchecked />}
-                    checkedIcon={<CircleCheckedFilled />}
-                    style={{
-                      color: "black",
-                      "&$checked": {
-                        color: "black"
-                      },
+                  <FormControlLabel
+                    value="mine"
+                    control={
+                      <Radio
+                        icon={<CircleUnchecked />}
+                        checkedIcon={<CircleCheckedFilled />}
+                        style={{
+                          color: "black",
+                          "&$checked": {
+                            color: "black"
+                          },
 
-                      checked: {}
-                    }} />
-                }
-                label="구매한 스테이션이 있습니다"
-              />
-              <FormControlLabel
-                value="ownSales"
-                control={
-                  <Radio
-                    icon={<CircleUnchecked />}
-                    checkedIcon={<CircleCheckedFilled />}
-                    style={{
-                      color: "black",
-                      "&$checked": {
-                        color: "black"
-                      },
-
-                      checked: {}
-                    }}
+                          checked: {}
+                        }} />
+                    }
+                    label="구매한 스테이션이 있습니다"
                   />
-                }
-                label="다른 구매자의 스테이션을 설치하기로 협의했습니다"
-              />
-            </RadioGroup>
-            {/* <FormHelperText>{helperText}</FormHelperText> */}
-            {/* <Button
+                  <FormControlLabel
+                    value="ownSales"
+                    control={
+                      <Radio
+                        icon={<CircleUnchecked />}
+                        checkedIcon={<CircleCheckedFilled />}
+                        style={{
+                          color: "black",
+                          "&$checked": {
+                            color: "black"
+                          },
+
+                          checked: {}
+                        }}
+                      />
+                    }
+                    label="다른 구매자의 스테이션을 설치하기로 협의했습니다"
+                  />
+                </RadioGroup>
+                {/* <FormHelperText>{helperText}</FormHelperText> */}
+                {/* <Button
               type="submit"
               variant="outlined"
               color="primary"
@@ -469,70 +479,67 @@ function RegistAddInvestor(props) {
             >
               Check Answer
             </Button> */}
-          </FormControl>
-        </div>
-        {bInvestor === "banto"
-          ? bantoBody
-          : bInvestor === "ownSales"
-            ? ownSalesBody
-            : ownBody}
+              </FormControl>
+            </div>
+            {bInvestor === "banto"
+              ? bantoBody
+              : bInvestor === "ownSales"
+                ? ownSalesBody
+                : ownBody}
 
-        <SquareButton
-          // className={classes.nextButton}
-          // size="large"
-          // variant="outlined"
-          // type="submit"
-          text="다음"
-          style={{ marginBottom: "40px" }}
-          onClick={() => {
-            console.log("비인베스터", bInvestor);
-            const choosedStation = JSON.parse(ownStation);
-            if (!!!choosedStation) {
-              alert("스테이션을 선택해주세요");
-              return;
-              console.log("추스드", choosedStation);
-            }
-            const id = auth.userExtraInfo
-              ? auth.userExtraInfo.id
-              : constant.exampleUserId;
-            if (bInvestor === "ownSales") {
-              // TODO 여기서 otherBuyer.stationId 스테이션 아이디로 가져오기
-              context.setSales_salesManager(id);
-              context.setSales_stationDoc(choosedStation.id);
+            <SquareButton
+              // className={classes.nextButton}
+              // size="large"
+              // variant="outlined"
+              // type="submit"
+              text="다음"
+              style={{ marginBottom: "40px" }}
+              onClick={() => {
+                console.log("비인베스터", bInvestor);
+                const choosedStation = JSON.parse(ownStation);
+                if (!!!choosedStation) {
+                  alert("스테이션을 선택해주세요");
+                  return;
+                  console.log("추스드", choosedStation);
+                }
+                const id = auth.userExtraInfo
+                  ? auth.userExtraInfo.id
+                  : constant.exampleUserId;
+                if (bInvestor === "ownSales") {
+                  const salesPortion = choosedStation.data.preSalesManagers.find(
+                    (e) => e.id === id
+                  ).portion;
 
-              const salesPortion = choosedStation.data.preSalesManagers.find(
-                (e) => e.id === id
-              ).portion;
-              context.setSales_salesPortion(salesPortion);
-              context.setSales_stationId(choosedStation.data.stationId);
-              context.setSales_buyer(choosedStation.data.buyer);
-              context.setSales_buyerPortion(choosedStation.data.buyerPortion);
+                  context.setContract_stationMethod("ownSales");
+                  context.setContract_salesPortion(salesPortion);
 
-              //TODO 바이어 포션 비율 함수
-            } else if (bInvestor === "banto") {
-              context.setSales_salesManager(id);
-              context.setSales_stationDoc(choosedStation.id);
+                } else if (bInvestor === "banto") {
+                  context.setContract_stationMethod("banto");
+                  context.setContract_salesPortion(choosedStation.data.salesPortion);
 
-              context.setSales_salesPortion(choosedStation.data.salesPortion);
-              context.setSales_stationId(choosedStation.data.stationId);
-              context.setSales_buyer(choosedStation.data.buyer);
-              context.setSales_buyerPortion(choosedStation.data.buyerPortion);
-            } else if (bInvestor === "mine") {
-              context.setSales_salesManager(id);
-              context.setSales_stationDoc(choosedStation.id);
 
-              context.setSales_salesPortion(choosedStation.data.buyerPortion);
-              context.setSales_stationId(choosedStation.data.stationId);
-              context.setSales_buyer(choosedStation.data.buyer);
-              context.setSales_buyerPortion(choosedStation.data.buyerPortion);
-            }
-            props.history.push("/sales/regist/portion");
-          }}
-        >
-          다음
+                } else if (bInvestor === "mine") {
+                  context.setContract_stationMethod("mine");
+                  context.setContract_salesPortion(choosedStation.data.salesPortion);
+
+                }
+                context.setContract_salesManager(id);
+                context.setFranchise_stationDocs([{ [choosedStation.data.stationId]: choosedStation.id, }]);
+                context.setContract_stationDoc(choosedStation.id)
+                context.setContract_stationId(choosedStation.data.stationId)
+                context.setContract_buyer(choosedStation.data.buyer)
+                context.setContract_buyerPortion(choosedStation.data.buyerPortion)
+
+                props.history.push("/sales/regist/portion");
+              }}
+            >
+              다음
         </SquareButton>
-      </main>
-      <footer></footer>
+            {console.log("세일즈", context.getContractObj)}
+          </main>
+          <footer></footer>
+        </div>
+      </Slide>
     </>
   );
 }

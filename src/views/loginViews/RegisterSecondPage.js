@@ -83,7 +83,7 @@ function LoginPage(props) {
                   className={classes.textField}
                   placeholder="E-mail"
                   // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                  value={context.getRegisterInfo.email}
+                  value={context.getRegisterObj.email}
                   onChange={(e) => {
                     context.setRegister_email(e.target.value.toLowerCase());
                   }}
@@ -106,12 +106,12 @@ function LoginPage(props) {
                       marginTop: "10px"
                     }
                   }}
-                  // FormHelperTextProps={{
-                  //   style: {
-                  //     marginTop: "12px",
-                  //     fontSize: "14px"
-                  //   }
-                  // }}
+                // FormHelperTextProps={{
+                //   style: {
+                //     marginTop: "12px",
+                //     fontSize: "14px"
+                //   }
+                // }}
                 />
               </div>
 
@@ -123,9 +123,9 @@ function LoginPage(props) {
               >
                 <SquareButton
                   variant="outlined"
-                  disabled={!!!context.getRegisterInfo.email}
+                  disabled={!!!context.getRegisterObj.email}
                   onClick={async () => {
-                    if (!validateEmail(context.getRegisterInfo.email)) {
+                    if (!validateEmail(context.getRegisterObj.email)) {
                       window.alert("이메일 형식을 확인해 주세요");
                       return;
                     }

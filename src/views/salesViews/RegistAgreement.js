@@ -16,6 +16,7 @@ import ProgressBreadcum from "../../components/ProgressBreadcum"
 import SubTitle from "../../components/SubTitle";
 import EmptySpace from "../../components/EmptySpace";
 import firebase from "../../firebaseConfig";
+import Slide from "@material-ui/core/Slide";
 
 import DescriptionText from "../../components/DescriptionText";
 import SquareButton from "../../components/SquareButton.js";
@@ -78,7 +79,7 @@ function RegistAgreement(props) {
 
     }, [imageURL])
 
-    const isStorePortion = context.salesInfo.storePortion !== 0 && context.salesInfo.storeBonusPortion !== 0
+    const isStorePortion = context.getContractObj.storePortion !== 0 && context.getContractObj.storeBonusPortion !== 0
 
     function getModalStyle() {
         return {
@@ -104,201 +105,207 @@ function RegistAgreement(props) {
 
 
     return (
-        <>
+        <><Slide
+            direction="left"
+            in={true}
+            timeout={{ enter: 0.15, exit: 5 }}
+            mountOnEnter
+            unmountOnExit
+        >
+            <div>
 
-            {!auth.userExtraInfo && (
-                <>
-                    <Alert
-                        type="info"
-                        title="체험하기"
-                        description="현재 체험히기를 이용중입니다"
-                        actionDescription="로그인"
-                        link="/login/login"
-                        onClick={() => {
-                            props.history.push("/login/login")
 
-                        }}
-                    ></Alert>
-                </>
-            )}
-            <header>
-                <NavBar title="" backLink="/sales/regist/add-investor" />
-                {/* <HeaderInfo
+                {!auth.userExtraInfo && (
+                    <>
+                        <Alert
+                            type="info"
+                            title="체험하기"
+                            description="현재 체험히기를 이용중입니다"
+                            actionDescription="로그인"
+                            link="/login/login"
+                            onClick={() => {
+                                props.history.push("/login/login")
+
+                            }}
+                        ></Alert>
+                    </>
+                )}
+                <header>
+                    <NavBar title="" backLink="/sales/regist/add-investor" />
+                    {/* <HeaderInfo
           title={"등록" + "\u00A0" + "\u00A0" + "\u00A0" + "1/3"}
           description="가맹점을 등록합니다"
         /> */}
-            </header>
-            <main style={{ width: "100%", height: "100vh" }}>
-                <ProgressBreadcum title="1/4" />
-                <SubTitle title="가맹점과 계약 체결" />
-                <DescriptionText title={"가맹점주님께 계약 체결정보를 확인드리고 서명을 받아 계약을 완료합니다"} />
-                <section>
-                    <EmptySpace />
-                    <EmptySpace />
-                    <SubTitle title="확인 사항" />
-                    <DescriptionText title={"가맹점주님께  확인 드려야할 사항입니다"} />
-                    <ul style={{
-                        display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start", height: "280px", marginLeft: "24px", marginRight: "24px", marginTop: "40px", lineHeight: "130%"
-                    }} >
-                        {(isStorePortion) && (<li style={{
-                            display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
-                        }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /><span style={{ marginLeft: "8px" }}> 가맹점주님이 받으실 수익은 {context.salesInfo.storePortion + context.salesInfo.storeBonusPortion}% 입니다</span></li>)}
-                        {context.salesInfo.contractYear === 0 ?
-                            (<li style={{
+                </header>
+                <main style={{ width: "100%", height: "100vh" }}>
+                    <ProgressBreadcum title="1/4" />
+                    <SubTitle title="가맹점과 계약 체결" />
+                    <DescriptionText title={"가맹점주님께 계약 체결정보를 확인드리고 서명을 받아 계약을 완료합니다"} />
+                    <section>
+                        <EmptySpace />
+                        <EmptySpace />
+                        <SubTitle title="확인 사항" />
+                        <DescriptionText title={"가맹점주님께  확인 드려야할 사항입니다"} />
+                        <ul style={{
+                            display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start", height: "280px", marginLeft: "24px", marginRight: "24px", marginTop: "40px", lineHeight: "130%"
+                        }} >
+                            {(isStorePortion) && (<li style={{
                                 display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
-                            }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /><span style={{ marginLeft: "8px" }}> 언제든 계약을 해지 할 수 있는 임시 계약 입니다</span></li>)
-                            :
-                            (<li style={{
+                            }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /><span style={{ marginLeft: "8px" }}> 가맹점주님이 받으실 수익은 {context.getContractObj.storePortion + context.getContractObj.storeBonusPortion}% 입니다</span></li>)}
+                            {context.getContractObj.contractYear === 0 ?
+                                (<li style={{
+                                    display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
+                                }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /><span style={{ marginLeft: "8px" }}> 언제든 계약을 해지 할 수 있는 임시 계약 입니다</span></li>)
+                                :
+                                (<li style={{
+                                    display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
+                                }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /><span style={{ marginLeft: "8px" }}> 계약 기간은 {context.getContractObj.contractYear}년 입니다</span></li>)}
+                            {(isStorePortion) && (<li style={{
                                 display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
-                            }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /><span style={{ marginLeft: "8px" }}> 계약 기간은 {context.salesInfo.contractYear}년 입니다</span></li>)}
-                        {(isStorePortion) && (<li style={{
-                            display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
-                        }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /><span style={{ marginLeft: "8px" }}> 수익은 파트너스앱을 통해 확인 할 수 있습니다</span></li>)}
-                        {(isStorePortion) && (<li style={{
-                            display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
-                        }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /> <span style={{ marginLeft: "8px" }}>정산은 매월 15일날 등록하신 계좌로 입금 됩니다</span></li>)}
-                        <li style={{
-                            display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
-                        }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /><span style={{ marginLeft: "8px" }}> 정책에 따라 스테이션은 회수 될 수 있습니다</span></li>
-                        <li style={{
-                            display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
-                        }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /><span style={{ marginLeft: "8px" }}> {common.getTodayYear()}년 하반기 가맹점 정책사항에 동의 합니다 </span></li>
+                            }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /><span style={{ marginLeft: "8px" }}> 수익은 파트너스앱을 통해 확인 할 수 있습니다</span></li>)}
+                            {(isStorePortion) && (<li style={{
+                                display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
+                            }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /> <span style={{ marginLeft: "8px" }}>정산은 매월 15일날 등록하신 계좌로 입금 됩니다</span></li>)}
+                            <li style={{
+                                display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
+                            }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /><span style={{ marginLeft: "8px" }}> 정책에 따라 스테이션은 회수 될 수 있습니다</span></li>
+                            <li style={{
+                                display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"
+                            }}> <CheckCircleOutlineIcon style={{ color: "green", fontSize: "28px" }} /><span style={{ marginLeft: "8px" }}> {common.getTodayYear()}년 하반기 가맹점 정책사항에 동의 합니다 </span></li>
 
 
-                    </ul>
+                        </ul>
 
 
-                    <p style={{ textAlign: "right", }}>
-                        <Link
-                            onClick={handleOpen}
-                            style={{
-                                marginRight: "24px",
-                                textDecoration: "underline"
-                            }}
-                        >
-                            약관확인
-                    </Link>
-                    </p>
-                    <EmptySpace />
-                    <EmptySpace />
-
-
-                    <EmptySpace />
-                    <SubTitle title="가맹점주님 서명" />
-                    <DescriptionText title={"위 사항에 대해 충분히 이해했습니다"} />
-                    <div style={{ width: "calc(100% - 48px", margin: "auto" }} >
-
-                        <div style={{
-                            width: "100%",
-                            border: "1px dashed #666",
-                            height: "100px",
-
-                        }}>
-                            <SignaturePad
-                                ref={sigCanvas}
-                                backgroundColor="white"
-                                // className={classes.sigatureCanvas}
-                                canvasProps={{
-                                    // width: "200%",
-                                    // height: "200%",
-                                    className: "signatureCanvas"
-                                }}
-
-                            />
-                            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                                <button style={{ backgroundColor: "white" }} onClick={clear}>지우기</button>
-                                <button style={{ backgroundColor: "black", color: "white" }} onClick={save}>저장</button>
-                            </div>
-                            {/* <button onClick={undo}>Undo</button> */}
-                        </div>
-                        {console.log("imageURL", imageURL)}
-                        {imageURL ? (
-                            <img
-                                src={imageURL}
-                                alt="Sign"
+                        <p style={{ textAlign: "right", }}>
+                            <Link
+                                onClick={handleOpen}
                                 style={{
-                                    display: "hidden",
-                                    width: "0px",
-                                    minHeight: "0px",
+                                    marginRight: "24px",
+                                    textDecoration: "underline"
                                 }}
-                            />
-                        ) : null}
-                        {imageURL ? (<p style={{ marginTop: "32px", textAlign: "center" }}>완료</p>) : (<p style={{ marginTop: "32px", textAlign: "center" }}>서명 후 저장을 눌러주세요</p>)}
-                    </div>
-
-                    <EmptySpace />
-                    <EmptySpace />
-
+                            >
+                                약관확인
+                    </Link>
+                        </p>
+                        <EmptySpace />
+                        <EmptySpace />
 
 
-                    <SquareButton
-                        onClick={async () => {
-                            if (!imageURL) {
-                                alert("서명이 필요합니다. 저장을 눌러주세요")
-                                return
-                            }
-                            // // Base64 formatted string
-                            // var message = '5b6p5Y+344GX44G+44GX44Gf77yB44GK44KB44Gn44Go44GG77yB';
-                            // common.storage.ref().putString(message, 'base64').then(function (snapshot) {
-                            //     console.log('Uploaded a base64 string!');
-                            // });
-                            var name = context.salesInfo.storePhoneNumber + "_" + String(new Date())
-                            var uploadTask = common.storage.ref().child(`sign/${name}.jpg`).putString(imageURL, 'data_url')
+                        <EmptySpace />
+                        <SubTitle title="가맹점주님 서명" />
+                        <DescriptionText title={"위 사항에 대해 충분히 이해했습니다"} />
+                        <div style={{ width: "calc(100% - 48px", margin: "auto" }} >
 
-                            uploadTask.on('state_changed', function (snapshot) {
-                                // Observe state change events such as progress, pause, and resume
-                                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-                                var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                                setImageUploadLoding(true)
-                                console.log('Upload is ' + progress + '% done');
-                                switch (snapshot.state) {
-                                    case firebase.storage.TaskState.PAUSED: // or 'paused'
-                                        console.log('Upload is paused');
-                                        break;
-                                    case firebase.storage.TaskState.RUNNING: // or 'running'
-                                        console.log('Upload is running');
-                                        break;
+                            <div style={{
+                                width: "100%",
+                                border: "1px dashed #666",
+                                height: "100px",
+
+                            }}>
+                                <SignaturePad
+                                    ref={sigCanvas}
+                                    backgroundColor="white"
+                                    // className={classes.sigatureCanvas}
+                                    canvasProps={{
+                                        // width: "200%",
+                                        // height: "200%",
+                                        className: "signatureCanvas"
+                                    }}
+
+                                />
+                                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                                    <button style={{ backgroundColor: "white" }} onClick={clear}>지우기</button>
+                                    <button style={{ backgroundColor: "black", color: "white" }} onClick={save}>저장</button>
+                                </div>
+                                {/* <button onClick={undo}>Undo</button> */}
+                            </div>
+                            {console.log("imageURL", imageURL)}
+                            {imageURL ? (
+                                <img
+                                    src={imageURL}
+                                    alt="Sign"
+                                    style={{
+                                        display: "hidden",
+                                        width: "0px",
+                                        minHeight: "0px",
+                                    }}
+                                />
+                            ) : null}
+                            {imageURL ? (<p style={{ marginTop: "32px", textAlign: "center" }}>완료</p>) : (<p style={{ marginTop: "32px", textAlign: "center" }}>서명 후 저장을 눌러주세요</p>)}
+                        </div>
+
+                        <EmptySpace />
+                        <EmptySpace />
+
+
+
+                        <SquareButton
+                            onClick={async () => {
+                                if (!imageURL) {
+                                    alert("서명이 필요합니다. 저장을 눌러주세요")
+                                    return
                                 }
-                            }, function (error) {
-                                // Handle unsuccessful uploads
-                            }, function () {
-                                // Handle successful uploads on complete
-                                // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-                                uploadTask.snapshot.ref.getDownloadURL().then(async function (downloadURL) {
-                                    console.log('File available at', downloadURL);
-                                    context.setSales_storeOwnerSignature("downloadURL")
-                                    alert(downloadURL)
-                                    setImageUploadLoding(false)
+                                // // Base64 formatted string
+                                // var message = '5b6p5Y+344GX44G+44GX44Gf77yB44GK44KB44Gn44Go44GG77yB';
+                                // common.storage.ref().putString(message, 'base64').then(function (snapshot) {
+                                //     console.log('Uploaded a base64 string!');
+                                // });
+                                var name = context.getFranchiseObj.storePhoneNumber + "_" + String(new Date())
+                                var uploadTask = common.storage.ref().child(`sign/${name}.jpg`).putString(imageURL, 'data_url')
 
-                                    return await context.setSales_storeOwnerSignature(downloadURL)
+                                uploadTask.on('state_changed', function (snapshot) {
+                                    // Observe state change events such as progress, pause, and resume
+                                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                                    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                    setImageUploadLoding(true)
+                                    console.log('Upload is ' + progress + '% done');
+                                    switch (snapshot.state) {
+                                        case firebase.storage.TaskState.PAUSED: // or 'paused'
+                                            console.log('Upload is paused');
+                                            break;
+                                        case firebase.storage.TaskState.RUNNING: // or 'running'
+                                            console.log('Upload is running');
+                                            break;
+                                    }
+                                }, function (error) {
+                                    // Handle unsuccessful uploads
+                                }, function () {
+                                    // Handle successful uploads on complete
+                                    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                                    uploadTask.snapshot.ref.getDownloadURL().then(async function (downloadURL) {
+                                        console.log('File available at', downloadURL);
+                                        setImageUploadLoding(false)
 
-                                }).then(() => {
-                                    // props.history.push("/sales/regist/final")
-                                    props.history.push("/sales/regist/final");
-                                })
+                                        return await context.setContract_storeOwnerSignature(downloadURL)
+
+                                    }).then(() => {
+                                        // props.history.push("/sales/regist/final")
+                                        props.history.push("/sales/regist/final");
+                                    })
 
 
-                            });
-                            // console.log(storeName, mainAddress, restAddress);
-                            // if (!storeName || !mainAddress || !restAddress) {
-                            //     alert("정보를 기입해주세요");
-                            //     return;
-                            // }
+                                });
+                                // console.log(storeName, mainAddress, restAddress);
+                                // if (!storeName || !mainAddress || !restAddress) {
+                                //     alert("정보를 기입해주세요");
+                                //     return;
+                                // }
 
 
 
-                        }}
-                        text="다음"
-                    />
+                            }}
+                            text="다음"
+                        />
 
-                </section>
-            </main>
+                    </section>
+                </main>
 
-            <footer>
+                <footer>
 
 
-            </footer>
-            {/* <Modal
+                </footer>
+                {/* <Modal
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="simple-modal-title"
@@ -306,8 +313,11 @@ function RegistAgreement(props) {
             >
                 {body}
             </Modal> */}
-            {open && (<PolicyModal url="https://bantoservice.xyz/policy" closeModal={() => { setOpen(false) }}></PolicyModal>)}
-            {/* { <div style={{ position: "absolute", backgroundColor: "black", top: "0px", width: "100%", height: "100%" }}>로딩중</div>} */}
+                {open && (<PolicyModal url="https://bantoservice.xyz/policy" closeModal={() => { setOpen(false) }}></PolicyModal>)}
+                {/* { <div style={{ position: "absolute", backgroundColor: "black", top: "0px", width: "100%", height: "100%" }}>로딩중</div>} */}
+            </div>
+        </Slide>
+
         </>
     );
 }

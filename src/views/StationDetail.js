@@ -49,35 +49,50 @@ function StationDetail(props) {
   const stationId = query.stationId;
 
   React.useEffect(() => {
+
     (async () => {
+
       setId(stationId);
       console.log("스테이션 아이디", stationId);
       let db = firebase.firestore();
-      const applicationRef = db
-        .collection("Stations")
-        .where("stationId", "==", stationId);
+      const applicationRef = await db
+        .collection(constant.dbCollection.station)
+        .doc(stationId)
 
       const querySnapshot = await applicationRef.get();
-      let data;
-      let franchiseData = common.ApplicationObject;
-      const result = await Promise.all(
-        querySnapshot.docs.map(async (doc) => {
-          console.log("닥데이터", doc.data())
-          if (doc.data().franchiseDoc !== "") {
-            const franchiseResult = await db
-              .collection("Franchises")
-              .doc(doc.data().franchiseDoc)
-              .get();
-            franchiseData = franchiseResult.data();
-            return { id: doc.id, data: doc.data(), franchise: franchiseData };
 
-          } else {
-            return { id: doc.id, data: doc.data(), franchise: franchiseData };
-          }
-        })
 
-      );
-      setApiData(result[0]);
+      if (typeof querySnapshot.data().contractDoc === "undefined" || querySnapshot.data().contractDoc === "") {
+        return { id: querySnapshot.id, data: querySnapshot.data() };
+
+      }
+
+      const contractRef = await db.collection(constant.dbCollection.contract).doc(querySnapshot.data().contractDoc).get();
+
+      console.log(contractRef.data())
+
+      let franchiseData = {}
+
+
+      const result = async () => {
+        if (typeof contractRef.data().franchiseDoc !== "undefined" && contractRef.data().franchiseDoc !== "") {
+
+          console.log("스테이션 디테일", constant.dbCollection.franchise);
+          console.log("스테이션 디테일", contractRef.data().franchiseDoc);
+
+          const franchiseResult = await db
+            .collection(constant.dbCollection.franchise)
+            .doc(contractRef.data().franchiseDoc)
+            .get();
+          franchiseData = franchiseResult.data();
+          return { id: querySnapshot.id, data: querySnapshot.data(), contract: contractRef.data(), franchise: franchiseData };
+
+        } else {
+          return { id: querySnapshot.id, data: querySnapshot.data(), contract: contractRef.data(), franchise: franchiseData };
+        }
+      }
+      console.log(await result())
+      setApiData(await result());
 
 
       // querySnapshot.forEach((doc) => {
@@ -110,458 +125,563 @@ function StationDetail(props) {
       color: "black"
     }
   })((props) => <Checkbox color="default" {...props} />);
-  const buyerReservedData = [
-    {
-      title: "매장명",
-      data: apiData && apiData.franchise.storeName,
-      link: "/sales/regist/address"
-    },
-    {
-      title: "매장 주소",
-      data: [
-        apiData && apiData.franchise.storeMainAddress,
-        apiData && apiData.franchise.storeRestAddress
-      ].join(" "),
-      link: "/sales/regist/address"
-    },
+  const bCheckNull = (value) => typeof value === "object" && value === null
+  const infoBody = (role, stationObj) => {
+    let hasFranchiseInfo = bCheckNull(stationObj.franchise)
+    console.log("hasFranchise", hasFranchiseInfo)
+    console.log(role)
+    if (role === "buyer") {
+      if (!hasFranchiseInfo) {
+        const buyerUnreservedData = [
+          {
+            title: "스테이션 아이디",
+            data: (stationObj && stationObj.data.stationId),
+            link: "/sales/regist/contact"
+          },
+          {
+            title: "상태",
+            data: (stationObj && stationObj.data.bReserved) ? ("[설치승인 대기중]") : ("[세일즈 진행중]"),
+            link: "/sales/regist/contact"
+          },
+          {
+            title: "세일즈 방법",
+            data: salesMethod == "banto" ? ("반토 영업망") : (salesMethod == "ownSales" ? ("자체 영업") : ("미설정")),
+            link: "/sales/regist/contact"
+          },
 
-    {
-      title: "매장 연락처",
-      data: apiData && apiData.franchise.storePhoneNumber,
-      link: "/sales/regist/contact"
-    },
-    {
-      title: "설치 날짜",
-      data: apiData && apiData.franchise.approvedBy,
-      link: "/sales/regist/contact"
-    },
+          (salesMethod === "banto") && ({
+            title: "세일즈 파트너 수익률",
+            data: stationObj && stationObj.data.salesPortion + "%",
+            link: "/sales/regist/portion"
+          }),
+          (salesMethod === "ownSales") && ({
+            title: "예약된 영업자",
+            data: stationObj && stationObj.data.preSalesManagers.map(v => {
+              return <p style={{ lineHeight: "120%" }}>{`${v.id}, ${v.portion}%`}</p>
+            })
+            ,
+            link: "/sales/regist/portion"
+          }),
+          {
+            title: "구매자 최초 수익률",
+            data:
+              stationObj && stationObj.data.buyerPortion + "%"
+            ,
+            link: "/sales/regist/portion"
+          }
+        ];
+        //franchise 없음
+        //return without franchise
+        const buyerBody = (<><section className={classes.section}>
+          {buyerUnreservedData.map((value) => {
+            if (!(value)) {
+              return
+            }
+            return (
+              <div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirextion: "rows",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    margin: "16px 0 0 24px"
+                  }}
+                >
+                  <p
+                    style={{
+                      fontStyle: "normal",
+                      fontWeight: "500",
+                      fontSize: "16px",
+                      color: "#000A12",
+                      opacity: "0.4"
+                    }}
+                  >
+                    {value.title}
+                  </p>
 
-    {
-      title: "가맹점 수익",
-      data: apiData && (apiData.franchise.storePortion + apiData.franchise.storeBonusPortion) + "%",
-      link: "/sales/regist/portion"
-    },
-    {
-      title: "세일즈 파트너",
-      data: apiData && apiData.data.salesManager,
-      link: "/sales/regist/portion"
-    },
+                </div>
+                <p
+                  style={{
+                    fontStyle: "normal",
+                    fontWeight: "bold",
+                    fontSize: "24px",
+                    margin: "16px 0 60px 24px",
+                    color: "#000A12"
+                  }}
+                >
+                  {value.data}
+                </p>
+              </div>
+            );
+          })}
+        </section>
+          <section>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column"
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "rows",
+                  alignItems: "center",
+                  justifyContent: "space-between"
+                }}
+              >
 
-    {
-      title: "세일즈 파트너 수익",
-      data: apiData && apiData.data.salesPortion + "%",
-      link: "/sales/regist/portion"
-    },
-    {
-      title: "구매자 최초 수익률",
-      data:
-        apiData && apiData.data.buyerPortion + "%"
-      ,
-      link: "/sales/regist/portion"
-    }
-  ];
+              </div>
 
-  const salesMethod = (apiData && apiData.data.salesMethod)
-  const buyerUnreservedData = [
-    {
-      title: "스테이션 아이디",
-      data: (apiData && apiData.data.stationId),
-      link: "/sales/regist/contact"
-    },
-    {
-      title: "상태",
-      data: (apiData && apiData.data.bReserved) ? ("[설치승인 대기중]") : ("[세일즈 진행중]"),
-      link: "/sales/regist/contact"
-    },
-    {
-      title: "세일즈 방법",
-      data: salesMethod == "banto" ? ("반토 영업망") : (salesMethod == "ownSales" ? ("자체 영업") : ("미설정")),
-      link: "/sales/regist/contact"
-    },
 
-    (salesMethod === "banto") && ({
-      title: "세일즈 파트너 수익률",
-      data: apiData && apiData.data.salesPortion + "%",
-      link: "/sales/regist/portion"
-    }),
-    (salesMethod === "ownSales") && ({
-      title: "예약된 영업자",
-      data: apiData && apiData.data.preSalesManagers.map(v => {
-        return <p style={{ lineHeight: "120%" }}>{`${v.id}, ${v.portion}%`}</p>
-      })
-      ,
-      link: "/sales/regist/portion"
-    }),
-    {
-      title: "구매자 최초 수익률",
-      data:
-        apiData && apiData.data.buyerPortion + "%"
-      ,
-      link: "/sales/regist/portion"
-    }
-  ];
+              {(stationObj && !stationObj.data.bReserved) && (<Button
+                variant="outlined"
+                onClick={async () => {
 
-  const bBuyerReservedData = (apiData && apiData.data.bReserved) ? buyerReservedData : buyerUnreservedData
-  const buyerBody = (<><section className={classes.section}>
-    {bBuyerReservedData.map((value) => {
-      console.log("벨류", value)
-      if (!(value)) {
-        return
+                  props.history.push(`/table/stationsalesmethod?role=${role}&stationId=${stationId}`);
+
+                }}
+                style={{
+                  width: "calc(100% - 64px)",
+                  height: "64px",
+                  margin: "24px 32px",
+                  borderRadius: "15px",
+                  backgroundColor: "#000A12",
+                  border: "2px solid #000A12",
+                  fontFamily: "Noto Sans CJK KR",
+                  fontStyle: "normal",
+                  fontWeight: "500",
+                  fontSize: "18px",
+                  color: "white"
+                }}
+              >
+                영업방법 설정
+              </Button>)
+              }
+            </div >
+          </section ></>)
+        return buyerBody
+
+
       }
-      return (
-        <div>
+      //franchise 있음
+      const buyerReservedData = [
+        {
+          title: "매장명",
+          data: stationObj && stationObj.franchise && stationObj.franchise.storeName,
+          link: "/sales/regist/address"
+        },
+        {
+          title: "매장 주소",
+          data: [
+            stationObj && stationObj.franchise.storeMainAddress,
+            stationObj && stationObj.franchise.storeRestAddress
+          ].join(" "),
+          link: "/sales/regist/address"
+        },
+
+        {
+          title: "매장 연락처",
+          data: stationObj && stationObj.franchise.storePhoneNumber,
+          link: "/sales/regist/contact"
+        },
+        {
+          title: "설치 날짜",
+          data: stationObj && stationObj.franchise.approvedBy,
+          link: "/sales/regist/contact"
+        },
+
+        {
+          title: "가맹점 수익",
+          data: stationObj && (stationObj.contract.storePortion + stationObj.contract.storeBonusPortion) + "%",
+          link: "/sales/regist/portion"
+        },
+        {
+          title: "세일즈 파트너",
+          data: stationObj && stationObj.contract.salesManager,
+          link: "/sales/regist/portion"
+        },
+
+        {
+          title: "세일즈 파트너 수익",
+          data: stationObj && stationObj.contract.salesPortion + "%",
+          link: "/sales/regist/portion"
+        },
+        {
+          title: "구매자 최초 수익률",
+          data:
+            stationObj && stationObj.data.buyerPortion + "%"
+          ,
+          link: "/sales/regist/portion"
+        }
+      ];
+      const buyerBody = (<><section className={classes.section}>
+        {buyerReservedData.map((value) => {
+          if (!(value)) {
+            return
+          }
+          return (
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirextion: "rows",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  margin: "16px 0 0 24px"
+                }}
+              >
+                <p
+                  style={{
+                    fontStyle: "normal",
+                    fontWeight: "500",
+                    fontSize: "16px",
+                    color: "#000A12",
+                    opacity: "0.4"
+                  }}
+                >
+                  {value.title}
+                </p>
+
+              </div>
+              <p
+                style={{
+                  fontStyle: "normal",
+                  fontWeight: "bold",
+                  fontSize: "24px",
+                  margin: "16px 0 60px 24px",
+                  color: "#000A12"
+                }}
+              >
+                {value.data}
+              </p>
+            </div>
+          );
+        })}
+      </section>
+        <section>
           <div
             style={{
               display: "flex",
-              flexDirextion: "rows",
-              alignItems: "center",
-              justifyContent: "space-between",
-              margin: "16px 0 0 24px"
+              flexDirection: "column"
             }}
           >
-            <p
-              style={{
-                fontStyle: "normal",
-                fontWeight: "500",
-                fontSize: "16px",
-                color: "#000A12",
-                opacity: "0.4"
-              }}
-            >
-              {value.title}
-            </p>
-
-          </div>
-          <p
-            style={{
-              fontStyle: "normal",
-              fontWeight: "bold",
-              fontSize: "24px",
-              margin: "16px 0 60px 24px",
-              color: "#000A12"
-            }}
-          >
-            {value.data}
-          </p>
-        </div>
-      );
-    })}
-  </section>
-    <section>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column"
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "rows",
-            alignItems: "center",
-            justifyContent: "space-between"
-          }}
-        >
-
-        </div>
-
-
-        {(apiData && !apiData.data.bReserved) && (<Button
-          variant="outlined"
-          onClick={async () => {
-
-            props.history.push(`/table/stationsalesmethod?role=${role}&stationId=${stationId}`);
-
-          }}
-          style={{
-            width: "calc(100% - 64px)",
-            height: "64px",
-            margin: "24px 32px",
-            borderRadius: "15px",
-            backgroundColor: "#000A12",
-            border: "2px solid #000A12",
-            fontFamily: "Noto Sans CJK KR",
-            fontStyle: "normal",
-            fontWeight: "500",
-            fontSize: "18px",
-            color: "white"
-          }}
-        >
-          영업방법 설정
-        </Button>)
-        }
-      </div >
-    </section ></>)
-
-
-  const salesData = [
-
-
-    apiData && (apiData.approvedBy !== "") && {
-      title: "승인 날짜",
-      data: apiData && common.getMonthDayTimeMinute(apiData.data.approvedBy),
-      link: "/sales/regist/address"
-    },
-    {
-      title: "가맹점 이름",
-      data: apiData && apiData.franchise.storeName,
-      link: "/sales/regist/address"
-    },
-    {
-      title: "가맹점 주소",
-      data: [
-        apiData && apiData.franchise.storeMainAddress,
-        apiData && apiData.franchise.storeRestAddress
-      ].join(" "),
-      link: "/sales/regist/address"
-    },
-
-    {
-      title: "가맹점 전화번호",
-      data: apiData && apiData.franchise.storePhoneNumber,
-      link: "/sales/regist/contact"
-    },
-    {
-      title: "점주님 연락처",
-      data: apiData && apiData.franchise.storeOwnerPhoneNumber,
-      link: "/sales/regist/contact"
-    },
-
-
-    {
-      title: "가맹점 수익",
-      data: apiData && apiData.data.storePortion + apiData.data.storeBonusPortion + "%",
-      link: "/sales/regist/portion"
-    },
-    {
-      title: "세일즈 파트너 수익률",
-      data:
-        `${(apiData && apiData.data.salesPortion) - (apiData && apiData.data.storePortion)}%`,
-      link: "/sales/regist/portion"
-    },
-
-  ];
-
-  const salesBody = (<><section className={classes.section}>
-    {apiData &&
-      salesData.map((value) => {
-        if (!value) {
-          return
-        }
-        return (
-          <div>
             <div
               style={{
                 display: "flex",
-                flexDirextion: "rows",
+                flexDirection: "rows",
                 alignItems: "center",
-                justifyContent: "space-between",
-                margin: "16px 0 0 24px"
+                justifyContent: "space-between"
               }}
             >
-              <p
-                style={{
-                  fontStyle: "normal",
-                  fontWeight: "500",
-                  fontSize: "16px",
-                  color: "#000A12",
-                  opacity: "0.4"
-                }}
-              >
-                {value.title}
-              </p>
 
-              {/* <Link
+            </div>
+
+
+            {(stationObj && !stationObj.data.bReserved) && (<Button
+              variant="outlined"
+              onClick={async () => {
+
+                props.history.push(`/table/stationsalesmethod?role=${role}&stationId=${stationId}`);
+
+              }}
               style={{
-                textDecoration: "underline",
+                width: "calc(100% - 64px)",
+                height: "64px",
+                margin: "24px 32px",
+                borderRadius: "15px",
+                backgroundColor: "#000A12",
+                border: "2px solid #000A12",
                 fontFamily: "Noto Sans CJK KR",
                 fontStyle: "normal",
                 fontWeight: "500",
-                fontSize: "12px",
-                marginRight: "24px"
+                fontSize: "18px",
+                color: "white"
               }}
             >
-              수정
-            </Link> */}
-            </div>
-            <p
-              style={{
-                fontStyle: "normal",
-                fontWeight: "bold",
-                fontSize: "24px",
-                margin: "16px 0 60px 24px",
-                color: "#000A12",
-                lineHeight: "120%"
-              }}
-            >
-              {value.data}
-            </p>
-          </div>
-        );
-      })}
-  </section>
-    <section>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column"
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "rows",
-            alignItems: "center",
-            justifyContent: "space-between"
-          }}
-        >
-          {/* <FormControlLabel
-        style={{ marginLeft: "14px" }}
-        control={
-          <BlackCheckbox
-            checked={state.checkedA}
-            onChange={handleChange}
-            name="checkedA"
-            icon={<CircleUnchecked />}
-            checkedIcon={<CircleCheckedFilled />}
-          />
-        }
-        label={
-          <span
+              영업방법 설정
+            </Button>)
+            }
+          </div >
+        </section ></>)
+
+
+
+      return buyerBody
+    } else if (role === "salesManger") {
+
+      const salesData = [
+
+
+        apiData && (apiData.approvedBy !== "") && {
+          title: "승인 날짜",
+          data: apiData && common.getMonthDayTimeMinute(apiData.data.approvedBy),
+          link: "/sales/regist/address"
+        },
+        {
+          title: "가맹점 이름",
+          data: apiData && apiData.franchise && apiData.franchise.storeName,
+          link: "/sales/regist/address"
+        },
+        {
+          title: "가맹점 주소",
+          data: [
+            apiData && apiData.franchise.storeMainAddress,
+            apiData && apiData.franchise.storeRestAddress
+          ].join(" "),
+          link: "/sales/regist/address"
+        },
+
+        {
+          title: "가맹점 전화번호",
+          data: apiData && apiData.franchise.storePhoneNumber,
+          link: "/sales/regist/contact"
+        },
+        {
+          title: "점주님 연락처",
+          data: apiData && apiData.franchise.storeOwnerPhoneNumber,
+          link: "/sales/regist/contact"
+        },
+
+
+        {
+          title: "가맹점 수익",
+          data: apiData && apiData.data.storePortion + apiData.data.storeBonusPortion + "%",
+          link: "/sales/regist/portion"
+        },
+        {
+          title: "세일즈 파트너 수익률",
+          data:
+            `${(apiData && apiData.data.salesPortion) - (apiData && apiData.data.storePortion)}%`,
+          link: "/sales/regist/portion"
+        },
+
+      ];
+
+      const salesBody = (<><section className={classes.section}>
+        {apiData &&
+          salesData.map((value) => {
+            if (!value) {
+              return
+            }
+            return (
+              <div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirextion: "rows",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    margin: "16px 0 0 24px"
+                  }}
+                >
+                  <p
+                    style={{
+                      fontStyle: "normal",
+                      fontWeight: "500",
+                      fontSize: "16px",
+                      color: "#000A12",
+                      opacity: "0.4"
+                    }}
+                  >
+                    {value.title}
+                  </p>
+
+                  {/* <Link
+                  style={{
+                    textDecoration: "underline",
+                    fontFamily: "Noto Sans CJK KR",
+                    fontStyle: "normal",
+                    fontWeight: "500",
+                    fontSize: "12px",
+                    marginRight: "24px"
+                  }}
+                >
+                  수정
+                </Link> */}
+                </div>
+                <p
+                  style={{
+                    fontStyle: "normal",
+                    fontWeight: "bold",
+                    fontSize: "24px",
+                    margin: "16px 0 60px 24px",
+                    color: "#000A12",
+                    lineHeight: "120%"
+                  }}
+                >
+                  {value.data}
+                </p>
+              </div>
+            );
+          })}
+      </section>
+        <section>
+          <div
             style={{
-              fontStyle: "normal",
-              fontWeight: "normal",
-              fontSize: "14px",
-              lineHeight: "21px"
+              display: "flex",
+              flexDirection: "column"
             }}
           >
-            2020년 하반기 정책사항에 동의 합니다
-          </span>
-        }
-      />
-      <p style={{ textAlign: "right" }}>
-        <Link
-          style={{
-            marginRight: "24px",
-            textDecoration: "underline"
-          }}
-        >
-          약관확인
-        </Link>
-      </p> */}
-        </div>
-
-        {/* <Button
-          variant="outlined"
-          onClick={async () => {
-            if (window.confirm("신청서를 삭제하시겠습니까")) {
-              const result = await common.deleteApplication(id);
-              if (result.code !== 200) {
-                alert(result.msg);
-                return;
-              }
-              alert("삭제되었습니다");
-              props.history.push("/table/application?role=sales");
-            } else {
-            }
-          }}
-          style={{
-            width: "calc(100% - 64px)",
-            height: "64px",
-            margin: "24px 32px",
-            borderRadius: "15px",
-            backgroundColor: "#000A12",
-            border: "2px solid #000A12",
-            fontFamily: "Noto Sans CJK KR",
-            fontStyle: "normal",
-            fontWeight: "500",
-            fontSize: "18px",
-            color: "white"
-          }}
-        >
-          삭제하기
-    </Button> */}
-      </div>
-    </section></>)
-
-  const storeData = [
-
-    apiData && (apiData.approvedBy !== "") && {
-      title: "승인 날짜",
-      data: apiData && common.getMonthDayTimeMinute(apiData.data.approvedBy),
-      link: "/sales/regist/address"
-    },
-    {
-      title: "가맹점 이름",
-      data: apiData && apiData.franchise.storeName,
-      link: "/sales/regist/address"
-    },
-    {
-      title: "가맹점 주소",
-      data: [
-        apiData && apiData.franchise.storeMainAddress,
-        apiData && apiData.franchise.storeRestAddress
-      ].join(" "),
-      link: "/sales/regist/address"
-    },
-
-    {
-      title: "가맹점 전화번호",
-      data: apiData && apiData.franchise.storePhoneNumber,
-      link: "/sales/regist/contact"
-    },
-    {
-      title: "점주님 연락처",
-      data: apiData && apiData.franchise.storeOwnerPhoneNumber,
-      link: "/sales/regist/contact"
-    },
-
-
-    {
-      title: "가맹점 수익",
-      data: apiData && apiData.data.storePortion + apiData.data.storeBonusPortion + "%",
-      link: "/sales/regist/portion"
-    },
-    {
-      title: "세일즈 파트너 수익률",
-      data:
-        `${(apiData && apiData.data.salesPortion) - (apiData && apiData.data.storePortion)}%`,
-      link: "/sales/regist/portion"
-    },
-
-
-
-  ];
-  const storeBody = (<><section className={classes.section}>
-    {apiData &&
-      storeData.map((value) => {
-        if (!value) {
-          return
-        }
-        return (
-          <div>
             <div
               style={{
                 display: "flex",
-                flexDirextion: "rows",
+                flexDirection: "rows",
                 alignItems: "center",
-                justifyContent: "space-between",
-                margin: "16px 0 0 24px"
+                justifyContent: "space-between"
               }}
             >
-              <p
+              {/* <FormControlLabel
+            style={{ marginLeft: "14px" }}
+            control={
+              <BlackCheckbox
+                checked={state.checkedA}
+                onChange={handleChange}
+                name="checkedA"
+                icon={<CircleUnchecked />}
+                checkedIcon={<CircleCheckedFilled />}
+              />
+            }
+            label={
+              <span
                 style={{
                   fontStyle: "normal",
-                  fontWeight: "500",
-                  fontSize: "16px",
-                  color: "#000A12",
-                  opacity: "0.4"
+                  fontWeight: "normal",
+                  fontSize: "14px",
+                  lineHeight: "21px"
                 }}
               >
-                {value.title}
-              </p>
+                2020년 하반기 정책사항에 동의 합니다
+              </span>
+            }
+          />
+          <p style={{ textAlign: "right" }}>
+            <Link
+              style={{
+                marginRight: "24px",
+                textDecoration: "underline"
+              }}
+            >
+              약관확인
+            </Link>
+          </p> */}
+            </div>
 
-              {/* <Link
+            {/* <Button
+              variant="outlined"
+              onClick={async () => {
+                if (window.confirm("신청서를 삭제하시겠습니까")) {
+                  const result = await common.deleteApplication(id);
+                  if (result.code !== 200) {
+                    alert(result.msg);
+                    return;
+                  }
+                  alert("삭제되었습니다");
+                  props.history.push("/table/application?role=sales");
+                } else {
+                }
+              }}
+              style={{
+                width: "calc(100% - 64px)",
+                height: "64px",
+                margin: "24px 32px",
+                borderRadius: "15px",
+                backgroundColor: "#000A12",
+                border: "2px solid #000A12",
+                fontFamily: "Noto Sans CJK KR",
+                fontStyle: "normal",
+                fontWeight: "500",
+                fontSize: "18px",
+                color: "white"
+              }}
+            >
+              삭제하기
+        </Button> */}
+          </div>
+        </section></>)
+
+      return salesBody
+    } else if (role === "storeOwner") {
+      const storeData = [
+
+        apiData && (apiData.approvedBy !== "") && {
+          title: "승인 날짜",
+          data: apiData && common.getMonthDayTimeMinute(apiData.data.approvedBy),
+          link: "/sales/regist/address"
+        },
+        {
+          title: "가맹점 이름",
+          data: apiData && apiData.franchise.storeName,
+          link: "/sales/regist/address"
+        },
+        {
+          title: "가맹점 주소",
+          data: [
+            apiData && apiData.franchise.storeMainAddress,
+            apiData && apiData.franchise.storeRestAddress
+          ].join(" "),
+          link: "/sales/regist/address"
+        },
+
+        {
+          title: "가맹점 전화번호",
+          data: apiData && apiData.franchise.storePhoneNumber,
+          link: "/sales/regist/contact"
+        },
+        {
+          title: "점주님 연락처",
+          data: apiData && apiData.franchise.storeOwnerPhoneNumber,
+          link: "/sales/regist/contact"
+        },
+
+
+        {
+          title: "가맹점 수익",
+          data: apiData && apiData.contract.storePortion + apiData.contract.storeBonusPortion + "%",
+          link: "/sales/regist/portion"
+        },
+        {
+          title: "세일즈 파트너 수익률",
+          data:
+            `${(apiData && apiData.contract.salesPortion) - (apiData && apiData.contract.storePortion)}%`,
+          link: "/sales/regist/portion"
+        },
+
+
+
+      ];
+      const storeBody = (<><section className={classes.section}>
+        {console.log("apiData", apiData)}
+        {apiData &&
+          storeData.map((value) => {
+            if (!value) {
+              return
+            }
+            return (
+              <div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirextion: "rows",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    margin: "16px 0 0 24px"
+                  }}
+                >
+                  <p
+                    style={{
+                      fontStyle: "normal",
+                      fontWeight: "500",
+                      fontSize: "16px",
+                      color: "#000A12",
+                      opacity: "0.4"
+                    }}
+                  >
+                    {value.title}
+                  </p>
+
+                  {/* <Link
             style={{
               textDecoration: "underline",
               fontFamily: "Noto Sans CJK KR",
@@ -573,74 +693,41 @@ function StationDetail(props) {
           >
             수정
           </Link> */}
-            </div>
-            <p
+                </div>
+                <p
+                  style={{
+                    fontStyle: "normal",
+                    fontWeight: "bold",
+                    fontSize: "24px",
+                    margin: "16px 0 60px 24px",
+                    color: "#000A12",
+                    lineHeight: "120%"
+                  }}
+                >
+                  {value.data}
+                </p>
+              </div>
+            );
+          })}
+      </section>
+        <section>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column"
+            }}
+          >
+            <div
               style={{
-                fontStyle: "normal",
-                fontWeight: "bold",
-                fontSize: "24px",
-                margin: "16px 0 60px 24px",
-                color: "#000A12",
-                lineHeight: "120%"
+                display: "flex",
+                flexDirection: "rows",
+                alignItems: "center",
+                justifyContent: "space-between"
               }}
             >
-              {value.data}
-            </p>
-          </div>
-        );
-      })}
-  </section>
-    <section>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column"
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "rows",
-            alignItems: "center",
-            justifyContent: "space-between"
-          }}
-        >
-          {/* <FormControlLabel
-      style={{ marginLeft: "14px" }}
-      control={
-        <BlackCheckbox
-          checked={state.checkedA}
-          onChange={handleChange}
-          name="checkedA"
-          icon={<CircleUnchecked />}
-          checkedIcon={<CircleCheckedFilled />}
-        />
-      }
-      label={
-        <span
-          style={{
-            fontStyle: "normal",
-            fontWeight: "normal",
-            fontSize: "14px",
-            lineHeight: "21px"
-          }}
-        >
-          2020년 하반기 정책사항에 동의 합니다
-        </span>
-      }
-    />
-    <p style={{ textAlign: "right" }}>
-      <Link
-        style={{
-          marginRight: "24px",
-          textDecoration: "underline"
-        }}
-      >
-        약관확인
-      </Link>
-    </p> */}
-        </div>
-        {/* 
+
+            </div>
+            {/* 
         <Button
           variant="outlined"
           onClick={async () => {
@@ -671,8 +758,24 @@ function StationDetail(props) {
         >
           삭제하기
   </Button> */}
-      </div>
-    </section></>)
+          </div>
+        </section></>)
+      return storeBody
+    }
+    //오류
+
+    return (<div style={{ width: "100%", height: "100px", backgroundColor: "red" }}></div>)
+
+  }
+
+
+
+  const salesMethod = (apiData && apiData.data.salesMethod)
+
+
+
+
+
   return (
     <>
       <Slide
@@ -699,7 +802,10 @@ function StationDetail(props) {
           </header>
 
           <main>
-            {role === "buyer" ? buyerBody : (role === "salesManager" ? salesBody : storeBody)}
+            {/* {role === "buyer" ? buyerBody : null}
+            {role === "salesManager" ? salesBody : null}
+            {role === "store" ? storeBody : null} */}
+            {apiData && infoBody(role, apiData)}
 
           </main>
           <footer></footer>

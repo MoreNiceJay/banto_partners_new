@@ -51,8 +51,11 @@ function numberWithCommas(x) {
 
 function LoginPage(props) {
   const classes = useStyles(props);
-  const query = queryString.parse(props.location.search);
-
+  const query = qs.parse(props.location.search, {
+    ignoreQueryPrefix: true // /about?details=true 같은 쿼리 주소의 '?'를 생략해주는 옵션입니다.
+  });
+  const role = query.role;
+  console.log(role, "롤")
   const [data, setsData] = React.useState({
     data: [],
     pageNumber: 1,
@@ -76,7 +79,275 @@ function LoginPage(props) {
   function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
   }
-  console.log("어스", auth.user);
+  const infoBody = (role, stationObj) => {
+
+    if (role === "buyer") {
+
+      const buyerTable = (<TableContainer component={Paper}>
+        <Table className={classes.table} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell align="left">신청날짜</TableCell>
+              <TableCell align="center">스테이션#</TableCell>
+              <TableCell align="right">상태&nbsp;</TableCell>
+
+            </TableRow>
+          </TableHead>
+          <TableBody>
+
+            {/* Todo api data 어플리케이션 아이디 넣기 넣기 */}
+            {apiData.data &&
+              // apiData.data.userId &&
+              apiData.data.map((i, index) => (
+                <TableRow
+                  key={index}
+                  style={{ height: "90px" }}
+                  onClick={() => {
+                    props.history.push(`/table/applicationdetail?applicationId=${i.id}&role=${query.role}`)
+                  }}
+                >
+                  <TableCell
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      verticalAlign: "center"
+                    }}
+                    component="th"
+                    scope="row"
+                  >
+                    <p>{common.getMonthDayTimeMinute(i.data.createdBy)}</p>
+                  </TableCell>
+
+                  <TableCell
+                    style={{ height: "60px", verticalAlign: "center" }}
+                    align="left"
+
+                  >
+                    <p
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "16px",
+                        textAlign: "center"
+                      }}
+                    >
+                      {i.storeName}
+                    </p>
+                    <p
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "16px",
+                        textAlign: "center"
+
+                      }}
+                    >
+                      {i.data.amount}대
+                    </p>
+                  </TableCell>
+                  <TableCell
+                    style={{ height: "60px", verticalAlign: "center" }}
+                    align="right"
+                  >
+                    <p
+                      style={{
+
+                        fontStyle: "normal",
+                        fontWeight: "800",
+                        fontSize: "18px",
+                        color: i.data.status === "WAITING" ? "black" : "#71C848",
+
+                      }}
+                    >
+                      {i.data.status === "WAITING" ? "입금 확인중" : "승인완료"}
+
+                    </p>
+
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>)
+
+      return buyerTable
+
+    } else if (role === "salesManager") {
+      console.log("들어오니?????????????????")
+      const salesTable = (<TableContainer component={Paper}>
+        <Table className={classes.table} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell align="left">신청날짜</TableCell>
+              <TableCell align="center">스테이션#</TableCell>
+              <TableCell align="right">상태&nbsp;</TableCell>
+
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {apiData && console.log(apiData)}
+            {apiData.data &&
+              // apiData.data.userId &&
+              apiData.data.map((i, index) => (
+                <TableRow
+                  key={index}
+                  style={{ height: "90px" }}
+                  onClick={() => {
+                    props.history.push(`/table/applicationdetail?applicationId=${i.id}&role=${query.role}`)
+                  }}
+                >
+                  <TableCell
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      verticalAlign: "center"
+                    }}
+                    component="th"
+                    scope="row"
+                  >
+                    <p>{common.getMonthDayTimeMinute(i.data.createdBy)}</p>
+                  </TableCell>
+
+                  <TableCell
+                    style={{ height: "60px", verticalAlign: "center" }}
+                    align="left"
+
+                  >
+                    <p
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "16px",
+                        textAlign: "center"
+                      }}
+                    >
+                      {i.franchise.storeName}
+                    </p>
+                    <p
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "16px",
+                        textAlign: "center"
+
+                      }}
+                    >
+                      ({i.data.stationId})
+                    </p>
+                  </TableCell>
+                  <TableCell
+                    style={{ height: "60px", verticalAlign: "center" }}
+                    align="right"
+                  >
+
+                    <p
+                      style={{
+
+                        fontStyle: "normal",
+                        fontWeight: "800",
+                        fontSize: "18px",
+                        color: i.data.status === "WAITING" ? "black" : "#71C848",
+
+
+                      }}
+                    >
+                      {i.data.status === "WAITING" ? "승인 대기중" : "승인완료"}
+                    </p>
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>)
+
+
+
+      return salesTable
+
+    } else if (role === "storeOwner") {
+      const storeTable = (<TableContainer component={Paper}>
+        <Table className={classes.table} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell align="left">신청날짜</TableCell>
+              <TableCell align="center">스테이션#</TableCell>
+              <TableCell align="right">상태&nbsp;</TableCell>
+
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {apiData.data &&
+              // apiData.data.userId &&
+              apiData.data.map((i, index) => (
+                <TableRow
+                  key={index}
+                  style={{ height: "90px" }}
+                  onClick={() => {
+                    props.history.push(`/table/applicationdetail?applicationId=${i.id}&role=${query.role}`)
+                  }}
+                >
+                  <TableCell
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      verticalAlign: "center"
+                    }}
+                    component="th"
+                    scope="row"
+                  >
+                    <p>{common.getMonthDayTimeMinute(i.data.createdBy)}</p>
+                  </TableCell>
+
+                  <TableCell
+                    style={{ height: "60px", verticalAlign: "center" }}
+                    align="left"
+
+                  >
+                    <p
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "16px",
+                        textAlign: "center"
+                      }}
+                    >
+                      {i.franchise.storeName}
+                    </p>
+                    <p
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "16px",
+                        textAlign: "center"
+
+                      }}
+                    >
+                      ({i.data.stationId === "" ? "반토스테이션" : i.data.stationId})
+                    </p>
+                  </TableCell>
+                  <TableCell
+                    style={{ height: "60px", verticalAlign: "center" }}
+                    align="right"
+                  >
+
+                    <p
+                      style={{
+
+                        fontStyle: "normal",
+                        fontWeight: "800",
+                        fontSize: "18px",
+                        color: i.data.status === "WAITING" ? "black" : "#71C848",
+
+
+                      }}
+                    >
+                      {i.data.status === "WAITING" ? "승인 대기중" : "승인완료"}
+                    </p>
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>)
+      return storeTable
+    }
+
+    //오류
+  }
 
   React.useEffect(() => {
     if (!query.role) {
@@ -90,7 +361,7 @@ function LoginPage(props) {
           : constant.exampleUserId,
         query.role
       );
-      console.log(result.id)
+      console.log("리저트", result)
       if (result.code !== 200) {
         alert(result.msg);
         return;
@@ -120,278 +391,10 @@ function LoginPage(props) {
     }
   })((props) => <Checkbox color="default" {...props} />);
 
-  // const fetchData = () => {
-  //   Axios(
-  //     `https://jsonplaceholder.typicode.com/posts/${apiData.pageNumber}`
-  //   ).then((a) => {
-  //     setData({
-  //       data: [...apiData.data, a.data],
-  //       pageNumber: apiData.pageNumber + 1
-  //     });
-  //   });
-  //   // console.log(apiData);
-  // };
-  // React.useEffect(() => {
-  //   Axios(`https://jsonplaceholder.typicode.com/posts`).then((a) => {
-  //     let dataAdded = a.data.concat(apiData);
-  //     setData({
-  //       data: [...apiData.data, ...dataAdded],
-  //       pageNumber: apiData.pageNumber + 1
-  //     });
-  //   });
-  // }, []);
   const backLink = query.role === "buyer" ? "investormenu" : (query.role === "salesManager" ? "salesmenu" : "storemenu")
   const roleName = query.role === "buyer" ? "구매자" : (query.role === "salesManager" ? "세일즈" : "가맹점")
 
-  const buyerTable = (<TableContainer component={Paper}>
-    <Table className={classes.table} aria-label="simple table">
-      <TableHead>
-        <TableRow>
-          <TableCell align="left">신청날짜</TableCell>
-          <TableCell align="center">스테이션#</TableCell>
-          <TableCell align="right">상태&nbsp;</TableCell>
 
-        </TableRow>
-      </TableHead>
-      <TableBody>
-
-        {/* Todo api data 어플리케이션 아이디 넣기 넣기 */}
-        {apiData.data &&
-          // apiData.data.userId &&
-          apiData.data.map((i, index) => (
-            <TableRow
-              key={index}
-              style={{ height: "90px" }}
-              onClick={() => {
-                props.history.push(`/table/applicationdetail?applicationId=${i.id}&role=${query.role}`)
-              }}
-            >
-              <TableCell
-                style={{
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  verticalAlign: "center"
-                }}
-                component="th"
-                scope="row"
-              >
-                <p>{common.getMonthDayTimeMinute(i.data.createdBy)}</p>
-              </TableCell>
-
-              <TableCell
-                style={{ height: "60px", verticalAlign: "center" }}
-                align="left"
-
-              >
-                <p
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                    textAlign: "center"
-                  }}
-                >
-                  {i.storeName}
-                </p>
-                <p
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                    textAlign: "center"
-
-                  }}
-                >
-                  {i.data.amount}대
-              </p>
-              </TableCell>
-              <TableCell
-                style={{ height: "60px", verticalAlign: "center" }}
-                align="right"
-              >
-                <p
-                  style={{
-
-                    fontStyle: "normal",
-                    fontWeight: "800",
-                    fontSize: "18px",
-                    color: i.data.status === "WAITING" ? "black" : "#71C848",
-
-                  }}
-                >
-                  {i.data.status === "WAITING" ? "입금 확인중" : "승인완료"}
-
-                </p>
-
-              </TableCell>
-            </TableRow>
-          ))}
-      </TableBody>
-    </Table>
-  </TableContainer>)
-
-  const salesTable = (<TableContainer component={Paper}>
-    <Table className={classes.table} aria-label="simple table">
-      <TableHead>
-        <TableRow>
-          <TableCell align="left">신청날짜</TableCell>
-          <TableCell align="center">스테이션#</TableCell>
-          <TableCell align="right">상태&nbsp;</TableCell>
-
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {apiData.data &&
-          // apiData.data.userId &&
-          apiData.data.map((i, index) => (
-            <TableRow
-              key={index}
-              style={{ height: "90px" }}
-              onClick={() => {
-                props.history.push(`/table/applicationdetail?applicationId=${i.id}&role=${query.role}`)
-              }}
-            >
-              <TableCell
-                style={{
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  verticalAlign: "center"
-                }}
-                component="th"
-                scope="row"
-              >
-                <p>{common.getMonthDayTimeMinute(i.data.createdBy)}</p>
-              </TableCell>
-
-              <TableCell
-                style={{ height: "60px", verticalAlign: "center" }}
-                align="left"
-
-              >
-                <p
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                    textAlign: "center"
-                  }}
-                >
-                  {i.data.storeName}
-                </p>
-                <p
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                    textAlign: "center"
-
-                  }}
-                >
-                  ({i.data.stationId})
-              </p>
-              </TableCell>
-              <TableCell
-                style={{ height: "60px", verticalAlign: "center" }}
-                align="right"
-              >
-
-                <p
-                  style={{
-
-                    fontStyle: "normal",
-                    fontWeight: "800",
-                    fontSize: "18px",
-                    color: i.data.status === "WAITING" ? "black" : "#71C848",
-
-
-                  }}
-                >
-                  {i.data.status === "WAITING" ? "승인 대기중" : "승인완료"}
-                </p>
-              </TableCell>
-            </TableRow>
-          ))}
-      </TableBody>
-    </Table>
-  </TableContainer>)
-
-  const storeTable = (<TableContainer component={Paper}>
-    <Table className={classes.table} aria-label="simple table">
-      <TableHead>
-        <TableRow>
-          <TableCell align="left">신청날짜</TableCell>
-          <TableCell align="center">스테이션#</TableCell>
-          <TableCell align="right">상태&nbsp;</TableCell>
-
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {apiData.data &&
-          // apiData.data.userId &&
-          apiData.data.map((i, index) => (
-            <TableRow
-              key={index}
-              style={{ height: "90px" }}
-              onClick={() => {
-                props.history.push(`/table/applicationdetail?applicationId=${i.id}&role=${query.role}`)
-              }}
-            >
-              <TableCell
-                style={{
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                  verticalAlign: "center"
-                }}
-                component="th"
-                scope="row"
-              >
-                <p>2020.01.23</p>
-              </TableCell>
-
-              <TableCell
-                style={{ height: "60px", verticalAlign: "center" }}
-                align="left"
-
-              >
-                <p
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                    textAlign: "center"
-                  }}
-                >
-                  {i.data.storeName}
-                </p>
-                <p
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                    textAlign: "center"
-
-                  }}
-                >
-                  ({i.data.stationId})
-              </p>
-              </TableCell>
-              <TableCell
-                style={{ height: "60px", verticalAlign: "top" }}
-                align="right"
-              >
-                <p
-                  style={{
-
-                    fontStyle: "normal",
-                    fontWeight: "800",
-                    fontSize: "18px",
-                    marginTop: "8px",
-                    color: "#00838F",
-
-                  }}
-                >
-                  {i.data.status === "WAITING" ? "승인 대기중" : "승인완료"}
-                </p>
-              </TableCell>
-            </TableRow>
-          ))}
-      </TableBody>
-    </Table>
-  </TableContainer>)
 
 
 
@@ -429,7 +432,10 @@ function LoginPage(props) {
           hasMore={false}
           loader={<h5 style={{ fontSize: "20px", zIndex: "2" }}>Loading...</h5>}
         >
-          {query.role === "buyer" ? buyerTable : (query.role === "salesManager" ? salesTable : storeTable)}
+          {/* {query.role === "buyer" ? buyerTable : (query.role === "salesManager" ? salesTable : storeTable)} */}
+          {console.log("롤", role, apiData)}
+          {apiData && infoBody(role, apiData)}
+
         </InfiniteScroll>
       </div>
       <div></div>

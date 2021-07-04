@@ -207,29 +207,29 @@ function LoginPage(props) {
     setBInvestor(event.target.value);
 
     // if (buyerStatus === "banto") {
-    //   context.setStore_buyerStatus("ownSales");
+    //   context.setFranchise_buyerStatus("ownSales");
     //   //todo 서버에서 가져오기 스테이션 아이디로 가져오기
-    //   context.setStore_buyer("");
+    //   context.setFranchise_buyer("");
     //   //todo 서버에서 가져오기
-    //   context.setStore_buyerPortion(0);
+    //   context.setFranchise_buyerPortion(0);
     //   //todo 서버에서 있는지 없는지 확인하기
-    //   context.setStore_stationId("");
+    //   context.setFranchise_stationId("");
     // } else if (buyerStatus === "ownSales") {
-    //   context.setStore_buyerStatus("ownSales");
+    //   context.setFranchise_buyerStatus("ownSales");
     //   //todo 서버에서 가져오기 스테이션 아이디로 가져오기
-    //   context.setStore_buyer(auth.user.email);
+    //   context.setFranchise_buyer(auth.user.email);
     //   //todo 서버에서 가져오기
-    //   context.setStore_buyerPortion(0);
+    //   context.setFranchise_buyerPortion(0);
     //   //todo 서버에서 있는지 없는지 확인하기
-    //   context.setStore_stationId("");
+    //   context.setFranchise_stationId("");
     // } else if (buyerStatus === "mine") {
-    //   context.setStore_buyerStatus("ownSales");
+    //   context.setFranchise_buyerStatus("ownSales");
     //   //todo 서버에서 가져오기 스테이션 아이디로 가져오기
-    //   context.setStore_buyer(auth.user.email);
+    //   context.setFranchise_buyer(auth.user.email);
     //   //todo 서버에서 가져오기
-    //   context.setStore_buyerPortion(0);
+    //   context.setFranchise_buyerPortion(0);
     //   //todo 서버에서 있는지 없는지 확인하기
-    //   context.setStore_stationId("");
+    //   context.setFranchise_stationId("");
     // }
   };
 
@@ -426,7 +426,7 @@ function LoginPage(props) {
             </>
           )}
           <header>
-            <NavBar title="추가정보 입력" backLink="/store/apply/contact" />
+            <NavBar title="" backLink="/store/apply/contact" />
           </header>
 
           <main>
@@ -527,41 +527,52 @@ function LoginPage(props) {
                       const salesPortion = choosedStation.data.preSalesManagers.find(
                         (e) => e.id === id
                       ).portion;
-                      context.setStore_stationMethod("ownSales");
-                      context.setStore_stationDoc(choosedStation.id);
-                      // context.setStore_stationId(choosedStation.data.stationId);
-                      // context.setStore_buyer(choosedStation.data.buyer);
-                      // context.setStore_buyerPortion(
-                      //   choosedStation.data.buyerPortion
-                      // );
+                      context.setContract_stationMethod("ownSales");
+                      context.setContract_stationId(choosedStation.data.stationId)
+                      context.setContract_stationDoc(choosedStation.id)
+                      context.setContract_buyer(choosedStation.data.buyer)
+                      context.setContract_buyerPortion(choosedStation.data.buyerPortion)
 
 
-                      context.setStore_contractYear(1)
-                      context.setStore_storeOwner(id);
-                      context.setStore_storePortion(salesPortion);
+
+                      context.setFranchise_storeOwner(id);
+                      context.setContract_storeOwner(id);
+                      context.setContract_storePortion(salesPortion);
+                      context.setFranchise_stationDocs([{ [choosedStation.data.stationId]: choosedStation.id, }]);
+
+
                     } else if (bInvestor === "banto") {
                       //todo 바꿔야할꺼
-                      context.setStore_stationMethod("banto");
-                      // context.setStore_stationId("");
-                      context.setStore_stationDoc("");
+                      context.setContract_stationMethod("banto");
 
-                      context.setStore_storePortion(defaultStorePortion);
-                      context.setStore_storeOwner(id);
-                      context.setStore_contractYear(1)
+                      context.setContract_stationId("");
+                      context.setFranchise_stationDocs("");
+                      context.setContract_stationDoc("")
+
+                      context.setContract_buyer("")
+                      context.setContract_buyerPortion(0)
+
+                      context.setFranchise_storeOwner(id);
+                      context.setContract_storeOwner(id);
+                      context.setContract_storePortion(defaultStorePortion);
+
 
                     } else if (bInvestor === "mine") {
                       const choosedStation = JSON.parse(ownStation);
-                      context.setStore_stationMethod("mine");
-                      context.setStore_storeOwner(id);
-                      context.setStore_stationDoc(choosedStation.id);
-                      // context.setStore_stationId(choosedStation.data.stationId);
-                      // context.setStore_buyer(choosedStation.data.buyer);
-                      // context.setStore_buyerPortion(
-                      //   choosedStation.data.buyerPortion
-                      // );
-                      context.setStore_contractYear(1)
+                      context.setContract_stationMethod("mine");
+                      context.setContract_stationId(choosedStation.data.stationId)
+                      context.setContract_stationDoc(choosedStation.id)
+                      context.setContract_buyer(choosedStation.data.buyer)
+                      context.setContract_buyerPortion(choosedStation.data.buyerPortion)
+
+                      context.setFranchise_storeOwner(id);
+                      context.setContract_storeOwner(id);
+                      context.setFranchise_stationDocs([{ [choosedStation.data.stationId]: choosedStation.id, }]);
+
 
                     }
+                    context.setContract_contractYear(1)
+
                     props.history.push("/store/apply/final");
                   }}
                 // style={{

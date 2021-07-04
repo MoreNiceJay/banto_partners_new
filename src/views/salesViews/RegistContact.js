@@ -7,11 +7,14 @@ import Button from "@material-ui/core/Button";
 import { useGlobal } from "../../globalContext";
 import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
+import Slide from "@material-ui/core/Slide";
+import InputTitle from "../../components/InputTitle.js";
+import EmptySpace from "../../components/EmptySpace";
 
 import ProgressBreadcum from "../../components/ProgressBreadcum"
 import SubTitle from "../../components/SubTitle";
 import DescriptionText from "../../components/DescriptionText";
-import  SquareButton  from "../../components/SquareButton.js";
+import SquareButton from "../../components/SquareButton.js";
 
 const useStyles = makeStyles((theme) => ({
   contact: { padding: "55px 0 0 25px" },
@@ -21,18 +24,18 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "rows",
     alignItems: "baseline"
   },
-  contactPersonTitle: { fontSize: "24px", fontWeight: "700", marginBottom:"8px" },
+  contactPersonTitle: { fontSize: "24px", fontWeight: "700", marginBottom: "8px" },
   contactPersonDescription: {
     textAlign: "left",
     fontStyle: "normal",
     fontWeight: "400",
     fontSize: "14px",
     marginTop: "16px",
-    marginLeft:"12px",
-    marginRight:"24px",
-    color:"black",
+    marginLeft: "12px",
+    marginRight: "24px",
+    color: "black",
     lineHeight: "150%",
-    marginBottom:"8px"
+    marginBottom: "8px"
   },
   contactPersonTextField: { marginTop: "10px", width: "calc(100% - 25px)" },
   nextButton: {
@@ -46,7 +49,9 @@ const useStyles = makeStyles((theme) => ({
     right: "0px",
     display: "block",
     margin: "0 auto"
-  }
+  },
+  addressTextField: { width: "calc(100% - 48px)", marginTop: "10px", marginBottom: "8px" }
+
 }));
 
 function RegistContact(props) {
@@ -61,8 +66,8 @@ function RegistContact(props) {
       window.alert("가맹점주님의 연락처는 필수 입니다");
       return;
     }
-    context.setSales_storeOwnerPhoneNumber(storeOwnerContact);
-    context.setSales_storePhoneNumber(storeOwnerContact);
+    context.setFranchise_storeOwnerPhoneNumber(storeOwnerContact);
+    context.setFranchise_storePhoneNumber(storeOwnerContact);
 
     props.history.push("/sales/regist/add-investor");
   }
@@ -75,89 +80,96 @@ function RegistContact(props) {
   }
 
   React.useEffect(() => {
-    // console.log(context.salesInfo.storeOwnerPhoneNumber);
-    setStoreOwnerContact(context.salesInfo.storeOwnerPhoneNumber);
-    setStoreContact(context.salesInfo.storePhoneNumber);
+    // console.log(context.getFranchiseObj.storeOwnerPhoneNumber);
+    setStoreOwnerContact(context.getFranchiseObj.storeOwnerPhoneNumber);
+    setStoreContact(context.getFranchiseObj.storePhoneNumber);
   }, []);
   return (
     <>
-      {!auth.userExtraInfo && (
-        <>
-          <Alert
-            type="info"
-            title="체험하기"
-            description="현재 체험히기를 이용중입니다"
-            actionDescription="로그인"
-            link="/login/login"
-            onClick={() => {
-              props.history.push("/login/login");
-            }}
-          ></Alert>
-        </>
-      )}
-      <header>
-        <NavBar title="" backLink="/sales/regist/address" />
-        {/* <HeaderInfo
+      <Slide
+        direction="left"
+        in={true}
+        timeout={{ enter: 0.15, exit: 5 }}
+        mountOnEnter
+        unmountOnExit
+      >
+        <div>
+
+          {!auth.userExtraInfo && (
+            <>
+              <Alert
+                type="info"
+                title="체험하기"
+                description="현재 체험히기를 이용중입니다"
+                actionDescription="로그인"
+                link="/login/login"
+                onClick={() => {
+                  props.history.push("/login/login");
+                }}
+              ></Alert>
+            </>
+          )}
+          <header>
+            <NavBar title="" backLink="/sales/regist/address" />
+            {/* <HeaderInfo
           title={"등록" + "\u00A0" + "\u00A0" + "\u00A0" + "2/3"}
           description="가맹점을 등록합니다"
         /> */}
-         <ProgressBreadcum title="2/4"/>
-      <SubTitle title="가맹점 정보 등록" />
-      <DescriptionText title={"가맹점주님의 연락처는 스테이션 설치 확인시 필요합니다"}/>
-      </header>
-      <main>
-        <section>
-          <div className={classes.contact}>
-            <div className={classes.contactPerson}>
-              <div className={classes.contactTexts}>
-                <span className={classes.contactPersonTitle}>
-                  가맹점주님 연락처
-                </span>
-                <span className={classes.contactPersonDescription}>
-                  예) 0104567890
-                </span>
+            <ProgressBreadcum title="2/4" />
+            <SubTitle title="가맹점 정보 등록" />
+            <DescriptionText title={"가맹점주님의 연락처는 스테이션 설치 확인시 필요합니다"} />
+          </header>
+          <main>
+            <section>
+              <EmptySpace />
+              <EmptySpace />
+
+
+              <InputTitle text="가맹점주님 연락처" placeholder={"예)0104567890"} />
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "10px", }}>
+
+                <TextField
+
+                  className={classes.addressTextField}
+                  id="outlined-basic"
+                  inputProps={{ inputMode: "numeric", maxLength: 11 }}
+                  placeholder="필수"
+                  variant="outlined"
+                  value={storeOwnerContact}
+                  // autoFocus
+                  onChange={onChangeStoreOwnerPhoneNumber}
+                />
               </div>
-              <TextField
-              
-                className={classes.contactPersonTextField}
-                id="outlined-basic"
-                inputProps={{ inputMode: "numeric", maxLength: 11 }}
-                placeholder="필수"
-                variant="outlined"
-                value={storeOwnerContact}
-                // autoFocus
-                onChange={onChangeStoreOwnerPhoneNumber}
-              />
-            </div>
-            <div
-              className={classes.contactPerson}
-              style={{ marginTop: "40px" }}
-            >
-              <div className={classes.contactTexts}>
-                <span className={classes.contactPersonTitle}>매장 연락처</span>
-                <span className={classes.contactPersonDescription}>
-                  예) 0104567890
-                </span>
+              <EmptySpace />
+
+              <InputTitle text="매장 연락처" />
+
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "10px", }}>
+
+
+                <TextField
+                  className={classes.addressTextField}
+                  id="outlined-basic"
+                  inputProps={{ inputMode: "numeric", maxLength: 11 }}
+                  placeholder="매장 연락처"
+
+                  variant="outlined"
+                  value={storeContact}
+                  onChange={onChangeStorePhoneNumber}
+                />
               </div>
-              <TextField
-                className={classes.contactPersonTextField}
-                id="outlined-basic"
-                inputProps={{ inputMode: "numeric", maxLength: 11 }}
-                variant="outlined"
-                value={storeContact}
-                onChange={onChangeStorePhoneNumber}
-              />
-            </div>
-          </div>
-          <SquareButton
-          
-            onClick={mySubmitHandler}
-            text="다음"
-          >
-          </SquareButton>
-        </section>
-      </main>
-      <footer></footer>
+
+              <SquareButton
+
+                onClick={mySubmitHandler}
+                text="다음"
+              >
+              </SquareButton>
+            </section>
+          </main>
+          <footer></footer>
+        </div>
+      </Slide>
     </>
   );
 }

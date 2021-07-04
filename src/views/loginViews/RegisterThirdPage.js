@@ -300,20 +300,20 @@ function LoginPage(props) {
                     }
                     context.setRegister_id(common.shuffle(8));
                     if (
-                      !!!context.getRegisterInfo.id ||
-                      !!!context.getRegisterInfo.email ||
-                      !!!context.getRegisterInfo.phoneNumber
+                      !!!context.getRegisterObj.id ||
+                      !!!context.getRegisterObj.email ||
+                      !!!context.getRegisterObj.phoneNumber
                     ) {
                       alert("다시 입력해주세요");
                       return;
                     }
                     try {
                       await auth.singUpWithEmail(
-                        context.getRegisterInfo.email,
+                        context.getRegisterObj.email,
                         confirmPassword
                       );
                       const result = await auth.setExtraProfiles(
-                        context.getRegisterInfo
+                        context.getRegisterObj
                       );
 
                       if (result.code !== 200) {

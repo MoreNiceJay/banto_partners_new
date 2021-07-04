@@ -61,7 +61,7 @@ export const MultipleForms = (props) => {
     },
     {
       title: "전화번호",
-      contentText: "context.getStoreInfo.storeOwnerPhoneNumber",
+      contentText: "context.getFranchiseObj.storeOwnerPhoneNumber",
       link: "/store/apply/contact",
       bUsing: true,
       disabled: true

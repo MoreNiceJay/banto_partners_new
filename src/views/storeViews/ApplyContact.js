@@ -114,6 +114,10 @@ function RegistContact(props) {
   const [open, setOpen] = React.useState(false);
 
   function mySubmitHandler() {
+    if (context.getFranchiseObj.storeOwnerPhoneNumber < 11) {
+      window.alert("가맹점주님의 연락처는 필수 입니다");
+      return;
+    }
     setOpen(true);
 
     // props.history.push("/store/apply/portion");
@@ -158,7 +162,7 @@ function RegistContact(props) {
           size="large"
           className={classes.modalNextTimeButton}
           onClick={() => {
-            context.setStore_bBuying(false);
+            context.setFranchise_bBuying(false);
             props.history.push("/store/apply/portion");
           }}
         >
@@ -170,7 +174,7 @@ function RegistContact(props) {
           color="primary"
           className={classes.modalBuyButton}
           onClick={() => {
-            // context.setStore_bBuying(false);
+            // context.setFranchise_bBuying(false);
             props.history.push("/store/apply/addinvestor");
           }}
         >
@@ -226,7 +230,7 @@ function RegistContact(props) {
                   variant="outlined"
                   placeholder="필수"
                   type="text"
-                  value={context.getStoreInfo.storeOwnerPhoneNumber}
+                  value={context.getFranchiseObj.storeOwnerPhoneNumber}
 
                   // autoFocus
                   error={!!error1}
@@ -237,7 +241,7 @@ function RegistContact(props) {
                       setError1(null);
                     }
 
-                    context.setStore_storeOwnerPhoneNumber(e.target.value);
+                    context.setFranchise_storeOwnerPhoneNumber(e.target.value);
                   }}
                   helperText={error1}
                 />
@@ -249,9 +253,9 @@ function RegistContact(props) {
                   className={classes.addressTextField}
                   id="outlined-basic"
                   variant="outlined"
-                  placeholder="Store Contact"
+                  placeholder="매장 연락처"
                   type="text"
-                  value={context.getStoreInfo.storePhoneNumber}
+                  value={context.getFranchiseObj.storePhoneNumber}
                   // autoFocus
                   error={!!error2}
                   onChange={(e) => {
@@ -261,7 +265,7 @@ function RegistContact(props) {
                       setError2(null);
                     }
 
-                    context.setStore_storePhoneNumber(e.target.value);
+                    context.setFranchise_storePhoneNumber(e.target.value);
                   }}
                   helperText={error2}
                 />

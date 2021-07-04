@@ -25,7 +25,7 @@ function InvestorMenu(props) {
       titleRegular: "",
       link: "/table/application?role=buyer"
     },
-   
+
 
     {
       titleBold: "내 반토 스테이션",
@@ -37,7 +37,7 @@ function InvestorMenu(props) {
       titleRegular: "",
       link: "/table/earning?role=buyer"
     }
-   
+
   ];
 
   return (
@@ -45,7 +45,7 @@ function InvestorMenu(props) {
       <Slide
         direction="left"
         in={true}
-        timeout={{ enter: "0.15s", exit: "5s" }}
+        timeout={{ enter: 0.15, exit: 5 }}
         mountOnEnter
         unmountOnExit
       >

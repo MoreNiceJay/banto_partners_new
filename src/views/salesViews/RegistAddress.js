@@ -11,10 +11,12 @@ import { useGlobal } from "../../globalContext";
 import Alert from "../../components/Alert";
 import { useAuth } from "../../AuthContext";
 import Modal from "@material-ui/core/Modal";
+import Slide from "@material-ui/core/Slide";
 
 import ProgressBreadcum from "../../components/ProgressBreadcum"
 import SubTitle from "../../components/SubTitle";
 import EmptySpace from "../../components/EmptySpace";
+import InputTitle from "../../components/InputTitle.js";
 
 import DescriptionText from "../../components/DescriptionText";
 import SquareButton from "../../components/SquareButton.js";
@@ -32,7 +34,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     alignItems: "center"
   },
-  addressTextField: { width: "calc(100% - 24px)", marginTop: "10px", marginBottom: "8px" }
+  contactPersonTextField: { marginTop: "10px", width: "calc(100% - 25px)" },
+
+  addressTextField: { width: "calc(100% - 48px)", marginTop: "10px", marginBottom: "8px" }
 }));
 function RegistAddress(props) {
   const context = useGlobal();
@@ -65,10 +69,9 @@ function RegistAddress(props) {
   };
   React.useEffect(() => {
     // console.log(context.salesInfo.storeOwnerPhoneNumber);
-    setStoreName(context.salesInfo.storeName);
-    setMainAddress(context.salesInfo.mainAddress);
-    setRestAddress(context.salesInfo.restAddress);
-    // setStoreContact(context.salesInfo.storePhoneNumber);
+    setStoreName(context.getFranchiseObj.storeName);
+    setMainAddress(context.getFranchiseObj.mainAddress);
+    setRestAddress(context.getFranchiseObj.restAddress);
   }, []);
   function getModalStyle() {
     return {
@@ -107,97 +110,128 @@ function RegistAddress(props) {
   );
 
   return (
-    <>
-      {!auth.userExtraInfo && (
-        <>
-          <Alert
-            type="info"
-            title="체험하기"
-            description="현재 체험히기를 이용중입니다"
-            actionDescription="로그인"
-            link="/login/login"
-            onClick={() => {
-              props.history.push("/login/login");
-            }}
-          ></Alert>
-        </>
-      )}
-      <header>
-        <NavBar title="" backLink="/salesmenu" />
-        {/* <HeaderInfo
+    <><Slide
+      direction="left"
+      in={true}
+      timeout={{ enter: 0.15, exit: 5 }}
+      mountOnEnter
+      unmountOnExit
+    >
+      <div>
+
+        {!auth.userExtraInfo && (
+          <>
+            <Alert
+              type="info"
+              title="체험하기"
+              description="현재 체험히기를 이용중입니다"
+              actionDescription="로그인"
+              link="/login/login"
+              onClick={() => {
+                props.history.push("/login/login");
+              }}
+            ></Alert>
+          </>
+        )}
+        <header>
+          <NavBar title="" backLink="/salesmenu" />
+          {/* <HeaderInfo
           title={"등록" + "\u00A0" + "\u00A0" + "\u00A0" + "1/3"}
           description="가맹점을 등록합니다"
         /> */}
-      </header>
-      <main>
-        <ProgressBreadcum title="1/4" />
-        <SubTitle title="가맹점 정보 등록" />
-        <DescriptionText title={"설치할 매장명과 매장주소를 입력합니다"} />
-        <section>
-          <EmptySpace />
-          <EmptySpace />
-          <TextField
-            title="매장명"
-            description="예) 스타벅스 구로점"
-            // label="필수"
-            placeholder={"필수"}
-            value={storeName}
-            onChange={onChangeStoreName}
-          />
-          <div className={classes.addressContainer}>
-            <span className={classes.contactPersonTitle}>매장 주소</span>
+        </header>
+        <main>
+          <ProgressBreadcum title="1/4" />
+          <SubTitle title="가맹점 정보 등록" />
+          <DescriptionText title={"설치할 매장명과 매장주소를 입력합니다"} />
+          <section>
+            <EmptySpace />
+            <EmptySpace />
+            <InputTitle text="매장명" placeholder="예)반토카페 일산점" />
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
 
-            <MTextField
-              className={classes.addressTextField}
-              disabled
-              id="outlined-basic"
-              inputProps={{ inputMode: "numeric" }}
-              variant="outlined"
-              value={mainAddress}
-              placeholder={"필수"}
+              <MTextField
+                className={classes.addressTextField}
+                style={{ marginTop: "10px" }}
+                placeholder="필수"
+                id="outlined-basic"
+                variant="outlined"
+                // label="필수"
+                placeholder={"필수"}
+                value={storeName}
+                onChange={onChangeStoreName}
+              />
+            </div>
+            <EmptySpace />
+            <EmptySpace />
+            <InputTitle text="매장 주소" />
+            {/* <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}> */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "10px" }}>
 
-              onClick={handleOpen}
-              style={{ marginBottom: "8px" }}
+
+              <MTextField
+                className={classes.addressTextField}
+                style={{}}
+
+                disabled
+                id="outlined-basic"
+                inputProps={{ inputMode: "numeric" }}
+                variant="outlined"
+                value={mainAddress}
+                placeholder={"주소"}
+
+                onClick={handleOpen}
+                style={{ marginBottom: "8px" }}
+              />
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+
+              <MTextField
+                className={classes.addressTextField}
+                id="outlined-basic2"
+                style={{ marginTop: "10px" }}
+
+                variant="outlined"
+                // label="*필수 나머지 주소"
+                placeholder={"상세 주소"}
+
+                value={restAddress}
+                onChange={onChangeRestAddress}
+              />
+            </div>
+
+            <SquareButton
+              onClick={() => {
+                console.log(storeName, mainAddress, restAddress);
+                if (!storeName || !mainAddress || !restAddress) {
+                  alert("정보를 기입해주세요");
+                  return;
+                }
+
+                context.setFranchise_storeName(storeName);
+                context.setFranchise_storeMainAddress(mainAddress);
+                context.setFranchise_storeRestAddress(restAddress);
+                props.history.push("/sales/regist/contact");
+              }}
+              text="다음"
             />
-            <MTextField
-              className={classes.addressTextField}
-              id="outlined-basic2"
-              variant="outlined"
-              // label="*필수 나머지 주소"
-              placeholder={"필수 나머지 주소"}
 
-              value={restAddress}
-              onChange={onChangeRestAddress}
-            />
-          </div>
+          </section>
+        </main>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        >
+          {body}
+        </Modal>
+        <footer></footer>
 
-          <SquareButton
-            onClick={() => {
-              console.log(storeName, mainAddress, restAddress);
-              if (!storeName || !mainAddress || !restAddress) {
-                alert("정보를 기입해주세요");
-                return;
-              }
+      </div>
+    </Slide>
 
-              context.setSales_storeName(storeName);
-              context.setSales_storeMainAddress(mainAddress);
-              context.setSales_storeRestAddress(restAddress);
-              props.history.push("/sales/regist/contact");
-            }}
-            text="다음"
-          />
-
-        </section>
-      </main>
-      <footer></footer>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-        {body}
-      </Modal>
     </>
   );
 }

@@ -10,6 +10,7 @@ import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
 import RestoreIcon from "@material-ui/icons/Restore";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
+import Slide from "@material-ui/core/Slide";
 
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Badge from "@material-ui/core/Badge";
@@ -25,18 +26,18 @@ function SalesMenu(props) {
       titleRegular: "",
       link: "/sales/regist/address"
     }
-,
-{
-  titleBold: "신청서 상태",
-  titleRegular: "",
-  link: "/table/application?role=salesManager"
-},
+    ,
+    {
+      titleBold: "신청서 상태",
+      titleRegular: "",
+      link: "/table/application?role=salesManager"
+    },
     {
       titleBold: "내 반토 스테이션",
       titleRegular: "",
       link: "/table/station?role=salesManager"
     },
-   
+
     ,
     {
       titleBold: "내 수익",
@@ -46,31 +47,42 @@ function SalesMenu(props) {
   ];
   return (
     <>
-      {!auth.userExtraInfo && (
-        <>
-          <Alert
-            type="info"
-            title="체험하기"
-            description="현재 체험히기를 이용중입니다"
-            actionDescription="로그인"
-            link="/login/login"
-            onClick={() => {
-              props.history.push("/login/login");
-            }}
-          ></Alert>
-        </>
-      )}
-      <header>
-        <NavBar title="" backLink="battery-service-roll" />
-        <HeaderInfo
-          title="영업"
-          description="가맹점을 찾아 등록하면 매달 자동으로 수익이 창출 됩니다"
-        />
-      </header>
-      <main>
-        <MenuList menuList={roleMenu} />
-      </main>
-      <footer></footer>
+      <Slide
+        direction="left"
+        in={true}
+        timeout={{ enter: 0.15, exit: 5 }}
+        mountOnEnter
+        unmountOnExit
+      >
+        <div>
+
+          {!auth.userExtraInfo && (
+            <>
+              <Alert
+                type="info"
+                title="체험하기"
+                description="현재 체험히기를 이용중입니다"
+                actionDescription="로그인"
+                link="/login/login"
+                onClick={() => {
+                  props.history.push("/login/login");
+                }}
+              ></Alert>
+            </>
+          )}
+          <header>
+            <NavBar title="" backLink="battery-service-roll" />
+            <HeaderInfo
+              title="영업"
+              description="가맹점을 찾아 등록하면 매달 자동으로 수익이 창출 됩니다"
+            />
+          </header>
+          <main>
+            <MenuList menuList={roleMenu} />
+          </main>
+          <footer></footer>
+        </div>
+      </Slide>
     </>
   );
 }

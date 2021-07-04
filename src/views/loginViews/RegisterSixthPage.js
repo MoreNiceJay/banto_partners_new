@@ -227,7 +227,7 @@ function LoginPage(props) {
                   className={classes.textField}
                   placeholder="Account Number"
                   // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                  value={context.getRegisterInfo.accountNumber}
+                  value={context.getRegisterObj.accountNumber}
                   onChange={(e) => {
                     context.setRegister_accountNumber(e.target.value);
                   }}
@@ -250,12 +250,12 @@ function LoginPage(props) {
                       marginTop: "10px"
                     }
                   }}
-                  // FormHelperTextProps={{
-                  //   style: {
-                  //     marginTop: "12px",
-                  //     fontSize: "14px"
-                  //   }
-                  // }}
+                // FormHelperTextProps={{
+                //   style: {
+                //     marginTop: "12px",
+                //     fontSize: "14px"
+                //   }
+                // }}
                 />
               </div>
               <div className={classes.amount} style={{ marginTop: "60px" }}>
@@ -277,7 +277,7 @@ function LoginPage(props) {
                   className={classes.textField}
                   placeholder="Account Holder"
                   // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                  value={context.getRegisterInfo.accountHolder}
+                  value={context.getRegisterObj.accountHolder}
                   onChange={(e) => {
                     context.setRegister_accountHolder(e.target.value);
                   }}
@@ -300,12 +300,12 @@ function LoginPage(props) {
                       marginTop: "10px"
                     }
                   }}
-                  // FormHelperTextProps={{
-                  //   style: {
-                  //     marginTop: "12px",
-                  //     fontSize: "14px"
-                  //   }
-                  // }}
+                // FormHelperTextProps={{
+                //   style: {
+                //     marginTop: "12px",
+                //     fontSize: "14px"
+                //   }
+                // }}
                 />
               </div>
 
@@ -319,14 +319,14 @@ function LoginPage(props) {
                   variant="outlined"
                   onClick={() => {
                     if (
-                      !context.getRegisterInfo.bank &&
-                      !context.getRegisterInfo.accountNumber &&
-                      !context.getRegisterInfo.accountHolder
+                      !context.getRegisterObj.bank &&
+                      !context.getRegisterObj.accountNumber &&
+                      !context.getRegisterObj.accountHolder
                     ) {
                       alert("빈칸없이 입력해 주세요");
                       return;
                     }
-                    if (context.getRegisterInfo.accountNumber.length < 6) {
+                    if (context.getRegisterObj.accountNumber.length < 6) {
                       alert("올바른 계좌번호를 입력해 주세요");
                       return;
                     }

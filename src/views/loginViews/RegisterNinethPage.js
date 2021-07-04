@@ -44,13 +44,13 @@ function LoginPage(props) {
   });
   const context = useGlobal();
   const auth = useAuth();
-  const name = context.getRegisterInfo.name;
-  const birthdate = context.getRegisterInfo.birthdate;
-  const bank = context.getRegisterInfo.bank;
-  const accountNumber = context.getRegisterInfo.accountNumber;
-  const accountHolder = context.getRegisterInfo.accountHolder;
-  const bBusinessLicense = context.getRegisterInfo.bBusinessLicense;
-  const businessLicenseImg = context.getRegisterInfo.businessLicenseImg;
+  const name = context.getRegisterObj.name;
+  const birthdate = context.getRegisterObj.birthdate;
+  const bank = context.getRegisterObj.bank;
+  const accountNumber = context.getRegisterObj.accountNumber;
+  const accountHolder = context.getRegisterObj.accountHolder;
+  const bBusinessLicense = context.getRegisterObj.bBusinessLicense;
+  const businessLicenseImg = context.getRegisterObj.businessLicenseImg;
 
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked });
@@ -69,47 +69,47 @@ function LoginPage(props) {
   const data = [
     {
       title: "성명",
-      contentText: context.getRegisterInfo.name,
+      contentText: context.getRegisterObj.name,
       link: "/login/register/fifth",
       bUsing: true
     },
     {
       title: "생년월일",
-      contentText: context.getRegisterInfo.birthdate,
+      contentText: context.getRegisterObj.birthdate,
       link: "/login/register/fifth",
       bUsing: true
     },
     {
       title: "은행",
-      contentText: context.getRegisterInfo.bank,
+      contentText: context.getRegisterObj.bank,
       link: "/login/register/sixth",
       bUsing: true
     },
     {
       title: "계좌번호",
-      contentText: context.getRegisterInfo.accountNumber,
+      contentText: context.getRegisterObj.accountNumber,
 
       link: "/login/register/sixth",
       bUsing: true
     },
     {
       title: "계좌주",
-      contentText: context.getRegisterInfo.accountHolder,
+      contentText: context.getRegisterObj.accountHolder,
       link: "/login/register/sixth",
       bUsing: true
     },
     {
       title: "사업자 유무",
-      contentText: context.getRegisterInfo.bBusinessLicense ? "Yes" : "No",
+      contentText: context.getRegisterObj.bBusinessLicense ? "Yes" : "No",
       link: "/login/register/seventh",
-      bUsing: context.getRegisterInfo.bSales ? true : false
+      bUsing: context.getRegisterObj.bSales ? true : false
     },
     {
       title: "사업등록증",
-      contentText: context.getRegisterInfo.businessLicenseImg,
+      contentText: context.getRegisterObj.businessLicenseImg,
 
       link: "/login/register/seventh",
-      bUsing: context.getRegisterInfo.bInvestor ? true : false
+      bUsing: context.getRegisterObj.bInvestor ? true : false
     }
   ];
 

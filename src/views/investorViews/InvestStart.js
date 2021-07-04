@@ -61,7 +61,7 @@ function InvestStart(props) {
       <Slide
         direction="left"
         in={true}
-        timeout={{ enter: "0.15s", exit: "5s" }}
+        timeout={{ enter: 0.15, exit: 5 }}
         mountOnEnter
         unmountOnExit
       >
@@ -89,7 +89,6 @@ function InvestStart(props) {
               <div className={classes.amount}>
                 <p
                   style={{
-                    fontFamily: "Montserrat",
                     fontStyle: "normal",
                     fontWeight: "500",
                     fontSize: "14px",
@@ -98,7 +97,7 @@ function InvestStart(props) {
                     margin: "16px 0 0 24px"
                   }}
                 >
-                  1/2
+                  1/3
                 </p>
                 <p className={classes.amountDescriptionP}>투자 수량</p>
                 <TextField
@@ -108,9 +107,9 @@ function InvestStart(props) {
                   placeholder="0"
                   helperText="투자하신 기기 수량만큼 수익(70%)이 창출됩니다"
                   value={
-                    context.getInvestInfo.investAmount === 0
+                    context.getStationObj.amount === 0
                       ? ""
-                      : context.getInvestInfo.investAmount
+                      : context.getStationObj.amount
                   }
                   style={{
                     margin: "0 24px",
@@ -150,8 +149,8 @@ function InvestStart(props) {
                     } else if (value === 0) {
                       setButtonDisabled(true);
                     }
-                    context.setInvest_amount(value);
-                    context.setInvest_totalPrice(value * 329000);
+                    context.setStation_amount(value);
+                    context.setStation_totalPrice(value * 329000);
                   }}
                 />
               </div>
@@ -207,8 +206,8 @@ function InvestStart(props) {
                       return;
                     }
 
-                    context.setInvest_totalPrice(totalPrice);
-                    console.log(context.getInvestInfo);
+                    context.setStation_totalPrice(totalPrice);
+                    console.log(context.getStationObj);
 
                     props.history.push("/investor/depositor");
                   }}

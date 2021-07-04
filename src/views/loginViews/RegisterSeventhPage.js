@@ -60,7 +60,7 @@ function LoginPage(props) {
   };
 
   React.useEffect(() => {
-    if (context.getRegisterInfo.bBusinessLicense) {
+    if (context.getRegisterObj.bBusinessLicense) {
       setValue("true");
     } else {
       setValue("false");

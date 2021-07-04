@@ -78,7 +78,7 @@ function RegistFinal(props) {
   const context = useGlobal();
   const auth = useAuth();
   const [open, setOpen] = React.useState(false);
-
+  const [buttonDisabled, setButtonDisabled] = React.useState(false)
   const [buyer, setBuyer] = React.useState({ email: "naver", portion: 0 });
   const [state, setState] = React.useState({
     checkedA: false,
@@ -90,7 +90,7 @@ function RegistFinal(props) {
     (async () => {
       //TODO 여기에서 스테이션 주인 정보 받아오기 stationId로
       //TODO setBuyer
-      console.log("컨텍스트", context.getStoreInfo);
+      console.log("컨텍스트", context.getContractObj, context.getFranchiseObj);
     })();
   }, []);
   function mySubmitHandler() { }
@@ -103,44 +103,49 @@ function RegistFinal(props) {
   const data = [
     {
       title: "매장명",
-      data: context.getStoreInfo.storeName,
+      data: context.getFranchiseObj.storeName,
       link: "/sales/regist/address"
     },
     {
       title: "매장 주소",
       data: [
-        context.getStoreInfo.storeMainAddress,
-        context.getStoreInfo.storeRestAddress
+        context.getFranchiseObj.storeMainAddress,
+        context.getFranchiseObj.storeRestAddress
       ].join(" "),
       link: "/sales/regist/address"
     },
     {
       title: "점주님 연락처",
-      data: context.getStoreInfo.storeOwnerPhoneNumber,
+      data: context.getFranchiseObj.storeOwnerPhoneNumber,
       link: "/sales/regist/contact"
     },
 
     {
       title: "매장 연락처",
-      data: context.getStoreInfo.storePhoneNumber,
+      data: context.getFranchiseObj.storePhoneNumber,
       link: "/sales/regist/contact"
     },
 
     {
       title: "계약 기간",
-      data: context.getStoreInfo.contractYear + "년",
+      data: context.getContractObj.contractYear + "년",
       link: "/sales/regist/contact"
     },
     {
+      title: "스테이션 조달 방법",
+      data: context.getContractObj.stationMethod,
+      link: "/sales/regist/portion"
+    },
+    {
       title: "가맹점 수익",
-      data: context.getStoreInfo.storePortion + "%",
+      data: context.getContractObj.storePortion + "%",
       link: "/sales/regist/portion"
     }
 
 
     // {
     //   title: "영업인 (수익률)",
-    //   data: `${auth.user.email}(${context.getStoreInfo.salesPortion}%)`,
+    //   data: `${auth.user.email}(${context.getFranchiseObj.salesPortion}%)`,
     //   link: "/sales/regist/portion"
     // },
   ];
@@ -291,6 +296,7 @@ function RegistFinal(props) {
 
             <Button
               variant="outlined"
+              disabled={buttonDisabled}
               onClick={async () => {
                 if (!auth.userExtraInfo) {
                   if (
@@ -311,22 +317,22 @@ function RegistFinal(props) {
 
 
 
-                  if (!!!context.getStoreInfo.storeName || !!!context.getStoreInfo.storeMainAddress || !!!context.getStoreInfo.storeOwnerPhoneNumber ||
-                    !!!context.getStoreInfo.contractYear) {
+                  if (!!!context.getFranchiseObj.storeName || !!!context.getFranchiseObj.storeMainAddress || !!!context.getFranchiseObj.storeOwnerPhoneNumber ||
+                    !!!context.getContractObj.contractYear) {
                     alert("빠진 정보가 있는지 확인 후 신청 완료해 주세요")
                     return
                   }
+                  setButtonDisabled(true)
 
-                  const result = await auth.updateApplication(
-                    constant.role.store,
-                    context.getStoreInfo
+                  const result = await common.createStoreApplication(context.getContractObj,
+                    context.getFranchiseObj
                   );
 
-                  console.log(result);
                   if (result.code === 200) {
                     alert("가맹점 신청이 완료되었습니다.");
-                    props.history.push("/main");
+                    window.location.href = "/main"
                   }
+
                 } catch (e) {
                   alert(e.message);
                 }

@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/styles";
 const useStyles = makeStyles((theme) => ({
   headerInfo: { padding: "25px 0 0 32px" },
   headerTitle: { fontSize: "36px", fontWeight: "700" },
-  headerDescription: { paddingTop: "16px", fontSize: "16px", color: "#000A12" }
+  headerDescription: { paddingTop: "16px", fontSize: "16px", color: "#000A12", marginRight: "25px", lineHeight: "130%" }
 }));
 export function HeaderInfo(props) {
   const classes = useStyles(props);

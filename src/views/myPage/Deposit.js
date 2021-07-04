@@ -59,38 +59,38 @@ function LoginPage(props) {
   const data = [
     {
       title: "은행",
-      contentText: context.getStoreInfo.storeName,
+      contentText: context.getFranchiseObj.storeName,
       link: "/store/apply/address",
       bUsing: true
     },
     {
       title: "계좌번호",
-      contentText: context.getStoreInfo.storeOwnerPhoneNumber,
+      contentText: context.getFranchiseObj.storeOwnerPhoneNumber,
       link: "/store/apply/contact",
       bUsing: true
     },
     {
       title: "계좌주",
-      contentText: context.getStoreInfo.storePhoneNumber,
+      contentText: context.getFranchiseObj.storePhoneNumber,
       link: "/store/apply/contact",
       bUsing: true
     },
     {
       title: "사업자",
       contentText:
-        context.getStoreInfo.storeMainAddress +
+        context.getFranchiseObj.storeMainAddress +
         " " +
-        context.getStoreInfo.storeRestAddress,
+        context.getFranchiseObj.storeRestAddress,
       link: "/store/apply/address",
       bUsing: true
     },
     {
       title: "사업자번호",
       contentText:
-        `수익률: ${context.getStoreInfo.salesPortion}% ` +
-        `연락처: ${context.getStoreInfo.salesContact}`,
+        `수익률: ${context.getFranchiseObj.salesPortion}% ` +
+        `연락처: ${context.getFranchiseObj.salesContact}`,
       link: "/store/apply/portion",
-      bUsing: context.getStoreInfo.bSales ? true : false
+      bUsing: context.getFranchiseObj.bSales ? true : false
     }
   ];
 

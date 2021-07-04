@@ -158,7 +158,7 @@ function InvestFinal(props) {
       <Slide
         direction="left"
         in={true}
-        timeout={{ enter: "0.15s", exit: "5s" }}
+        timeout={{ enter: 0.15, exit: 5 }}
         mountOnEnter
         unmountOnExit
       >
@@ -211,7 +211,7 @@ function InvestFinal(props) {
                       textAlign: "left"
                     }}
                   >
-                    {context.getInvestInfo.bank}
+                    {context.getStationObj.bank}
                   </p>
                   <p
                     style={{
@@ -237,7 +237,7 @@ function InvestFinal(props) {
                       textAlign: "left"
                     }}
                   >
-                    {context.getInvestInfo.depositor}
+                    {context.getStationObj.depositor}
                   </p>
                   <p
                     style={{
@@ -263,7 +263,7 @@ function InvestFinal(props) {
                       textAlign: "left"
                     }}
                   >
-                    {context.getInvestInfo.bankAccount}
+                    {context.getStationObj.bankAccount}
                   </p>
                   <p
                     style={{
@@ -289,9 +289,9 @@ function InvestFinal(props) {
                       textAlign: "left"
                     }}
                   >
-                    {numberWithCommas(context.getInvestInfo.totalPrice) +
+                    {numberWithCommas(context.getStationObj.totalPrice) +
                       " 원 / "}{" "}
-                    {`${context.getInvestInfo.amount}대`}
+                    {`${context.getStationObj.amount}대`}
                   </p>
 
                   <p style={{
@@ -312,9 +312,9 @@ function InvestFinal(props) {
                     marginTop: "16px",
                     textAlign: "left"
                   }}>
-                    {context.getInvestInfo.salesMethod === constant.salesMethod.banto ? "반토 영업망" : (context.getInvestInfo.salesMethod === constant.salesMethod.ownSales ? "자체 영업망" : ("추후 선택"))}
+                    {context.getStationObj.salesMethod === constant.salesMethod.banto ? "반토 영업망" : (context.getStationObj.salesMethod === constant.salesMethod.ownSales ? "자체 영업망" : ("추후 선택"))}
                   </p>
-                  {context.getInvestInfo.salesMethod === constant.salesMethod.ownSales ?
+                  {context.getStationObj.salesMethod === constant.salesMethod.ownSales ?
                     (<> <p className={classes.bankInfoDescription} style={{
                       color: "#5DDEF4",
                       fontWeight: "400",
@@ -336,8 +336,8 @@ function InvestFinal(props) {
                           marginTop: "16px",
                           textAlign: "left"
                         }}>
-                        {context.getInvestInfo.preSalesManagers.map((value) => {
-                          return <p style={{ lineHeight: "120%" }}>{`${value.id} ${value.portion}`} </p>
+                        {context.getStationObj.preSalesManagers.map((value) => {
+                          return <p style={{ lineHeight: "120%" }}>{`${value.id}, ${value.portion}%`} </p>
                         })}
                       </p></>) : ""}
 
@@ -369,21 +369,21 @@ function InvestFinal(props) {
                       </li>
                       <li>
                         <p className={classes.bankInfoDescription}>입금할 금액</p>
-                        <p className={classes.bankInfoInfo}>{numberWithCommas(context.getInvestInfo.totalPrice) +
+                        <p className={classes.bankInfoInfo}>{numberWithCommas(context.getStationObj.totalPrice) +
                           " 원 "}</p>
                       </li>
                       {/* <li>
                         <p className={classes.bankInfoDescription}>영업 방법</p>
                         <p className={classes.bankInfoInfo}>
-                          {context.getInvestInfo.salesMethod === constant.salesMethod.banto ? "반토 영업망" :(context.getInvestInfo.salesMethod === constant.salesMethod.ownSales ? "자체 영업망" :("추후 선택"))}
+                          {context.getStationObj.salesMethod === constant.salesMethod.banto ? "반토 영업망" :(context.getStationObj.salesMethod === constant.salesMethod.ownSales ? "자체 영업망" :("추후 선택"))}
                         </p>
                       </li>
-                      {context.getInvestInfo.salesMethod === constant.salesMethod.ownSales ? (<li>
+                      {context.getStationObj.salesMethod === constant.salesMethod.ownSales ? (<li>
                         <p className={classes.bankInfoDescription}>
                           영업자 
                         </p>
                         <p className={classes.bankInfoInfo}>
-                          {context.getInvestInfo.preSalesIds.map((value)=>{
+                          {context.getStationObj.preSalesIds.map((value)=>{
                             return <p>{value} </p>
                           })}
                         </p>
@@ -475,18 +475,18 @@ function InvestFinal(props) {
                       return;
                     }
 
-                    await auth.updateApplication(
-                      constant.role.buyer,
-                      context.getInvestInfo
+                    await common.createBuyerApplication(
+                      context.getStationObj
                     );
+                    context.setStation_initialize()
 
                     console.log("유저아이디", auth.user.email)
                     const result = await Axios.post(
                       constant.urls.domain + "/notifications/sendMsgBuyer",
                       {
                         email: auth.user.email,
-                        amount: context.getInvestInfo.amount,
-                        price: context.getInvestInfo.totalPrice,
+                        amount: context.getStationObj.amount,
+                        price: context.getStationObj.totalPrice,
 
                       }
                     );

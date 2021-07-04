@@ -177,7 +177,7 @@ function LoginPage(props) {
   let percentage = _.range(0, 26);
 
   React.useEffect(() => {
-    // if (context.getStoreInfo.setStore_salesManager !== "") {
+    // if (context.getFranchiseObj.setStore_salesManager !== "") {
     //   setBSales("true");
     // } else {
     //   setBSales("false");
@@ -274,7 +274,7 @@ function LoginPage(props) {
                     <InputTitle text="영업자의 id" />
                     <PTextField
                       placeholder="Phone Number"
-                      value={context.getStoreInfo.salesContact}
+                      value={context.getFranchiseObj.salesContact}
                       onChange={(e) => {
                         context.setStore_salesManager(e.target.value);
                       }}
@@ -290,9 +290,9 @@ function LoginPage(props) {
                       placeholder="%"
                       // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
                       value={
-                        context.getStoreInfo.salesPortion === 0
+                        context.getFranchiseObj.salesPortion === 0
                           ? ""
-                          : context.getStoreInfo.salesPortion
+                          : context.getFranchiseObj.salesPortion
                       }
                       onChange={(e) => {
                         const value = Number(e.target.value);
@@ -312,7 +312,7 @@ function LoginPage(props) {
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    if (context.getInvestInfo.depositor === "") {
+                    if (context.getStationObj.depositor === "") {
                       // context.setInvest_depositor("유저");
                     }
                     props.history.push("/store/apply/addinvestor");

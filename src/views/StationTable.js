@@ -79,7 +79,7 @@ function LoginPage(props) {
   function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
   }
-  console.log("어스", auth.user);
+
 
   React.useEffect(() => {
     const fetchStationDataAsync = async () => {
@@ -94,6 +94,7 @@ function LoginPage(props) {
         alert(result.msg);
         return;
       }
+      console.log("라좉쿠", result)
       if (!result.data) {
         alert("No applications");
         return;
@@ -118,26 +119,7 @@ function LoginPage(props) {
     }
   })((props) => <Checkbox color="default" {...props} />);
 
-  // const fetchData = () => {
-  //   Axios(
-  //     `https://jsonplaceholder.typicode.com/posts/${apiData.pageNumber}`
-  //   ).then((a) => {
-  //     setData({
-  //       data: [...apiData.data, a.data],
-  //       pageNumber: apiData.pageNumber + 1
-  //     });
-  //   });
-  //   // console.log(apiData);
-  // };
-  // React.useEffect(() => {
-  //   Axios(`https://jsonplaceholder.typicode.com/posts`).then((a) => {
-  //     let dataAdded = a.data.concat(apiData);
-  //     setData({
-  //       data: [...apiData.data, ...dataAdded],
-  //       pageNumber: apiData.pageNumber + 1
-  //     });
-  //   });
-  // }, []);
+
 
   console.log(query.role)
   const backLink = query.role === "buyer" ? "investormenu" : (query.role === "salesManager" ? "salesmenu" : "storemenu")
@@ -195,7 +177,8 @@ function LoginPage(props) {
                       key={index}
                       style={{ height: "90px" }}
                       onClick={() => {
-                        props.history.push(`/table/stationdetail?stationId=${i.stationId}&role=${query.role}`)
+                        console.log("스테이션 아이디", apiData)
+                        props.history.push(`/table/stationdetail?stationId=${i.data.stationDoc}&role=${query.role}`)
                       }}
                     >
                       <TableCell
@@ -209,7 +192,7 @@ function LoginPage(props) {
 
                           }}
                         >
-                          {i.storeName ? i.storeName : (i.salesMethod === "yet" ? "세일즈 설정필요" : "[세일즈 진행중]")}
+                          {i.data.storeName ? i.data.storeName : (i.data.salesMethod === "yet" ? "세일즈 설정필요" : "[세일즈 진행중]")}
                         </p>
                         <p
                           style={{
@@ -218,7 +201,7 @@ function LoginPage(props) {
 
                           }}
                         >
-                          ({i.stationId})
+                          ({i.data.stationId})
                         </p>
                       </TableCell>
                       <TableCell
@@ -231,10 +214,10 @@ function LoginPage(props) {
                             fontWeight: "800",
                             fontSize: "26px",
                             marginTop: "8px",
-                            color: (i.isOn ? "green" : "black")
+                            color: (i.data.isOn ? "green" : "black")
                           }}
                         >
-                          {i.isOn ? "On" : "Off"}
+                          {i.data.isOn ? "On" : "Off"}
                         </p>
                         <p
                           style={{
@@ -244,8 +227,7 @@ function LoginPage(props) {
                             marginTop: "8px"
                           }}
                         >
-                          {console.log("라스트 업데이트", i)}
-                          ({common.timeForToday(i.lastUpdated)})
+                          ({common.timeForToday(i.data.lastUpdated)})
                         </p>
                       </TableCell>
                     </TableRow>

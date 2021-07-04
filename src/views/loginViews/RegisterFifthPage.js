@@ -77,7 +77,7 @@ function LoginPage(props) {
                   className={classes.textField}
                   placeholder="Name"
                   // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                  value={context.getRegisterInfo.name}
+                  value={context.getRegisterObj.name}
                   onChange={(e) => {
                     context.setRegister_name(e.target.value);
                   }}
@@ -100,12 +100,12 @@ function LoginPage(props) {
                       marginTop: "10px"
                     }
                   }}
-                  // FormHelperTextProps={{
-                  //   style: {
-                  //     marginTop: "12px",
-                  //     fontSize: "14px"
-                  //   }
-                  // }}
+                // FormHelperTextProps={{
+                //   style: {
+                //     marginTop: "12px",
+                //     fontSize: "14px"
+                //   }
+                // }}
                 />
               </div>
 
@@ -128,7 +128,7 @@ function LoginPage(props) {
                   className={classes.textField}
                   placeholder="ex) 790215"
                   // helperText="투자하신 기기 수량만큼 수익이 창출됩니다"
-                  value={context.getRegisterInfo.birthdate}
+                  value={context.getRegisterObj.birthdate}
                   onChange={(e) => {
                     context.setRegister_birthdate(e.target.value);
                   }}
@@ -150,12 +150,12 @@ function LoginPage(props) {
                       marginTop: "10px"
                     }
                   }}
-                  // FormHelperTextProps={{
-                  //   style: {
-                  //     marginTop: "12px",
-                  //     fontSize: "14px"
-                  //   }
-                  // }}
+                // FormHelperTextProps={{
+                //   style: {
+                //     marginTop: "12px",
+                //     fontSize: "14px"
+                //   }
+                // }}
                 />
               </div>
               <div
@@ -168,16 +168,16 @@ function LoginPage(props) {
                   variant="outlined"
                   onClick={() => {
                     if (
-                      !context.getRegisterInfo.name ||
-                      !context.getRegisterInfo.birthdate
+                      !context.getRegisterObj.name ||
+                      !context.getRegisterObj.birthdate
                     ) {
                       alert("비어있는 내용이 있습니다");
                       return;
                     }
-                    if (context.getRegisterInfo.birthdate.length !== 6) {
+                    if (context.getRegisterObj.birthdate.length !== 6) {
                       alert(
                         "생년월일을 정확히 입력해 주세요",
-                        context.getRegisterInfo.birthdate.count
+                        context.getRegisterObj.birthdate.count
                       );
                       return;
                     }

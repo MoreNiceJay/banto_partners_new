@@ -4,6 +4,7 @@ import moment from "moment";
 import { ThemeConsumer } from "styled-components";
 import { reject } from "lodash";
 import * as constant from "./Const";
+
 var db = firebase.firestore();
 
 const GlobalContext = React.createContext();
@@ -17,12 +18,7 @@ export function GlobalProvider({ children }) {
   });
   let db = firebase.firestore();
 
-  async function setUser(a) {
-    await setUserInfo((prevState) => {
-      return { ...prevState, phoneNumber: a };
-    });
-  }
-  const [register, setRegister] = React.useState({
+  const registerInitial = {
     phoneNumber: "",
     email: "",
     name: "",
@@ -38,135 +34,105 @@ export function GlobalProvider({ children }) {
     businessNumber: "",
     identification: "",
     businessLicenseImg: ""
-  });
-  const [invest, setInvest] = React.useState({
+  }
+  const stationInitial = {
 
-
-
-    status: "WAITING",
+    status: "WAITING",  //
     stationId: "",
-    salesMethod: "",
+    salesMethod: "",   //
     salesPortion: 0,
-
-    //없어도 됌
-    salesManager: "",
-
-    preSalesIds: [],
+    preSalesIds: [],   //
     preSalesManagers: [],
     buyer: "",
     buyerPortion: 0,
+    contractDoc: "",
 
-    franchiseDoc: "",
-
-    //없어도 됌
-    storeOwner: "",
-    storePortion: "",
-    storeBonusPortion: "",
-
-    bReserved: false,
-
-    createdBy: "",
+    createdBy: "",  //
     approvedBy: "",
-    sendBy: "",
-    reservedBy: "",
-
-    amount: 0,
-    totalPrice: 0,
+    reservedBy: "",   //
+    bReserved: false,
+    amount: 0,      // 
+    totalPrice: 0,    //
     depositor: "",
     bank: "",
     bankAccount: "",
-
     bIsOn: false,
     lastUpdated: "",
 
+
+  }
+
+
+  const franchiseInitial = {
+
+    contractDocs: [],
+
+    storeName: "",
+    storeMainAddress: "",
+    storeRestAddress: "",
+    storeOwnerPhoneNumber: "",
+    storePhoneNumber: "",
+    storeOwner: "",
+
+    storePhoto: [],
+    naverStoreUrl: "",
+    lat: 0,
+    longi: 0,
+
+    createdBy: "",
+
+
+  }
+  const contractInitial = {
+    contractType: "",
+    stationDoc: "",
+    franchiseDoc: "", //
+    stationId: "",
+    createdBy: "",
+    approvedBy: "",
+    sendBy: "",
+    contractedBy: "", //
+    contractYear: 0,
+
+    status: "WAITING",
+
+
+    rejectedReason: "",
+
+    storeOwner: "",
+    storePortion: 0,
+    storeBonusPortion: 0,
+    storeOwnerSignature: "",//
+
+    stationMethod: "",
+
+
+    salesManager: "", //
+    salesPortion: 0,  //
+
+
+    buyer: "",
+    buyerPortion: 0,
+
+
+    bStoreOwnerRegistered: false,
 
     bNeedToSend: false,
     bNeedToRetrieve: false,
     retrievingAskedBy: "",
 
     postCode: "",
-  });
-
-  const [store, setStore] = React.useState({
-
-
-    //어레이로 돌려야할듯
-    stationDoc: "",
-
-    stationId: [],
-    stationMethod: "",
-
-    apply: "store",
-    status: "WAITING",
-    rejectedReason: "",
-    storeName: "",
-    storeMainAddress: "",
-    storeRestAddress: "",
-    storeOwnerPhoneNumber: "",
-    storePhoneNumber: "",
-
-    storeOwner: "",
-    storePortion: 0,
-    storeBonusPortion: 0,
-
-    salesManager: "",
-    salesPortion: 0,
-
-    // 없어도 될듯
-    buyer: "",
-    buyerPortion: 0,
-
-    storePhoto: [],
-    naverStoreUrl: "",
-    lat: 0,
-    longi: 0,
-
-    createdBy: "",
-    approvedBy: "",
-    contractYear: 0
-  });
-
-  const [salesRegisterationInfo, setSalesRegisterationInfo] = React.useState({
 
 
 
-    //어레이로 돌려야할듯
-    stationDoc: "",
+  }
 
-    stationId: [],
-    stationMethod: "",
+  const [register, setRegister] = React.useState(registerInitial);
+  const [station, setStation] = React.useState(stationInitial);
 
-    apply: "sales",
-    status: "WAITING",
-    rejectedReason: "",
-    storeName: "",
-    storeMainAddress: "",
-    storeRestAddress: "",
-    storeOwnerPhoneNumber: "",
-    storePhoneNumber: "",
+  const [franchise, setFranchiseContract] = React.useState(franchiseInitial);
 
-    storeOwnerSignature: "",
-
-    storeOwner: "",
-    storePortion: 0,
-    storeBonusPortion: 0,
-
-    salesManager: "",
-    salesPortion: 0,
-
-    // 없어도 될듯
-    buyer: "",
-    buyerPortion: 0,
-
-    storePhoto: [],
-    naverStoreUrl: "",
-    lat: 0,
-    longi: 0,
-
-    createdBy: "",
-    approvedBy: "",
-    contractYear: 0
-  });
+  const [contract, setContract] = React.useState(contractInitial);
 
   async function isAvailable(stationId) {
     return new Promise((resolve, reject) => {
@@ -192,12 +158,13 @@ export function GlobalProvider({ children }) {
     try {
       const dataArray = [];
       let applicaitonDB;
+
       if (role === "buyer") {
         applicaitonDB = constant.dbCollection.buyerApplication;
       } else if (role === "salesManager") {
-        applicaitonDB = constant.dbCollection.salesApplication;
+        applicaitonDB = constant.dbCollection.contract;
       } else if (role === "storeOwner") {
-        applicaitonDB = constant.dbCollection.storeApplication;
+        applicaitonDB = constant.dbCollection.contract;
       } else {
         alert("다시 시도해 주세요");
         return;
@@ -209,18 +176,35 @@ export function GlobalProvider({ children }) {
       const querySnapshot = await applicationRef.get();
       // 여기서 투두닷
       // 여기서 투두닷
-      querySnapshot.forEach((doc) => {
+
+
+
+      querySnapshot.forEach(async (doc) => {
         dataArray.push({ id: doc.id, data: doc.data() });
       });
 
-      console.log("데이터어레이", dataArray[0])
-      console.log("데이터어레이", dataArray[0].data)
+
+      await Promise.all(dataArray.map(async (value, index) => {
+        let hasFranchiseDoc = typeof value.data.franchiseDoc !== "undefined"
+        console.log("닥", hasFranchiseDoc, value.data.franchiseDoc)
+        if (hasFranchiseDoc) {
+          const franchiseData = await db
+            .collection(constant.dbCollection.franchise)
+            .doc(value.data.franchiseDoc).get()
+          console.log("프차", franchiseData.data())
+          dataArray[index].franchise = franchiseData.data()
+
+        }
+      }))
+
 
       return {
         code: 200,
         data: dataArray
       };
     } catch (error) {
+      console.log(error)
+
       return {
         code: 400,
         msg: "시스템에러 고객센터에 문의해주세요"
@@ -271,6 +255,9 @@ export function GlobalProvider({ children }) {
   }
 
   // register
+  async function setRegister_initialize(a) {
+    await setRegister(registerInitial);
+  }
   async function setRegister_phoneNumber(a) {
     await setRegister((prevState) => {
       return { ...prevState, phoneNumber: a };
@@ -303,7 +290,6 @@ export function GlobalProvider({ children }) {
 
   async function setRegister_id(a) {
     await setRegister((prevState) => {
-      console.log("에이다", a);
       return { ...prevState, id: a };
     });
   }
@@ -332,297 +318,365 @@ export function GlobalProvider({ children }) {
   }
 
 
-  // invest
-  async function setInvest_salesMethod(a) {
-    await setInvest((prevState) => {
+
+
+
+
+  // station
+  async function setStation_initialize(a) {
+    setStation(stationInitial);
+  }
+  async function setStation_status(a) {
+    await setStation((prevState) => {
+      return { ...prevState, status: a };
+    });
+  }
+
+  async function setStation_stationId(a) {
+    await setStation((prevState) => {
+      return { ...prevState, stationId: a };
+    });
+  }
+  async function setStation_contractDoc(a) {
+    await setStation((prevState) => {
+      return { ...prevState, contractDoc: a };
+    });
+  }
+  async function setStation_createdBy(a) {
+    await setStation((prevState) => {
+      return { ...prevState, createdBy: a };
+    });
+  }
+  async function setStation_approvedBy(a) {
+    await setStation((prevState) => {
+      return { ...prevState, approvedBy: a };
+    });
+  }
+
+  async function setStation_reservedBy(a) {
+    await setStation((prevState) => {
+      return { ...prevState, reservedBy: a };
+    });
+  }
+
+  async function setStation_bIsOn(a) {
+    await setStation((prevState) => {
+      return { ...prevState, bIsOn: a };
+    });
+  }
+  async function setStation_lastUpdated(a) {
+    await setStation((prevState) => {
+      return { ...prevState, lastUpdated: a };
+    });
+  }
+
+
+
+  async function setStation_salesMethod(a) {
+    await setStation((prevState) => {
       return { ...prevState, salesMethod: a };
     });
   }
-  async function setInvest_salesPortion(a) {
-    await setInvest((prevState) => {
+  async function setStation_salesPortion(a) {
+    await setStation((prevState) => {
       return { ...prevState, salesPortion: a };
     });
   }
-  async function setInvest_salesManager(a) {
-    await setInvest((prevState) => {
-      return { ...prevState, salesManager: a };
-    });
-  }
-  async function setInvest_preSalesIds(a) {
-    await setInvest((prevState) => {
+
+  async function setStation_preSalesIds(a) {
+    await setStation((prevState) => {
       return { ...prevState, preSalesIds: a };
     });
   }
-  async function setInvest_preSalesManagers(a) {
-    await setInvest((prevState) => {
+  async function setStation_preSalesManagers(a) {
+    await setStation((prevState) => {
       return {
         ...prevState,
         preSalesManagers: a
       };
     });
   }
-  async function setInvest_buyer(a) {
-    await setInvest((prevState) => {
+  async function setStation_buyer(a) {
+    await setStation((prevState) => {
       return { ...prevState, buyer: a };
     });
   }
 
-  async function setInvest_buyerPortion(a) {
-    await setInvest((prevState) => {
+  async function setStation_buyerPortion(a) {
+    await setStation((prevState) => {
       return { ...prevState, buyerPortion: a };
     });
   }
-  async function setInvest_storeOwner(a) {
-    await setInvest((prevState) => {
-      return { ...prevState, storeOwner: a };
-    });
-  }
 
-  async function setInvest_storePortion(a) {
-    await setInvest((prevState) => {
-      return { ...prevState, storePortion: a };
-    });
-  }
 
-  async function setInvest_amount(a) {
-    await setInvest((prevState) => {
+  async function setStation_amount(a) {
+    await setStation((prevState) => {
       return { ...prevState, amount: a };
     });
   }
-  async function setInvest_totalPrice(a) {
-    await setInvest((prevState) => {
+  async function setStation_totalPrice(a) {
+    await setStation((prevState) => {
       return { ...prevState, totalPrice: a };
     });
   }
 
-  async function setInvest_bReserved(a) {
-    await setInvest((prevState) => {
+  async function setStation_bReserved(a) {
+    await setStation((prevState) => {
       return { ...prevState, bReserved: a };
     });
   }
 
-  async function setInvest_depositor(a) {
-    await setInvest((prevState) => {
+  async function setStation_depositor(a) {
+    await setStation((prevState) => {
       return { ...prevState, depositor: a };
     });
   }
 
-  async function setInvest_bank(a) {
-    await setInvest((prevState) => {
+  async function setStation_bank(a) {
+    await setStation((prevState) => {
       return { ...prevState, bank: a };
     });
   }
-  async function setInvest_bankAccount(a) {
-    await setInvest((prevState) => {
+  async function setStation_bankAccount(a) {
+    await setStation((prevState) => {
       return { ...prevState, bankAccount: a };
     });
   }
 
-  // store
-  async function setStore_storeName(a) {
-    await setStore((prevState) => {
-      return { ...prevState, storeName: a };
-    });
-  }
-  async function setStore_storeMainAddress(a) {
-    await setStore((prevState) => {
-      return { ...prevState, storeMainAddress: a };
-    });
-  }
-  async function setStore_storeRestAddress(a) {
-    await setStore((prevState) => {
-      return { ...prevState, storeRestAddress: a };
-    });
-  }
-  async function setStore_storeOwnerPhoneNumber(a) {
-    await setStore((prevState) => {
-      return { ...prevState, storeOwnerPhoneNumber: a };
-    });
-  }
-  async function setStore_storePhoneNumber(a) {
-    await setStore((prevState) => {
-      return { ...prevState, storePhoneNumber: a };
-    });
-  }
-  async function setStore_storeOwner(a) {
-    await setStore((prevState) => {
-      return { ...prevState, storeOwner: a };
-    });
-  }
-  async function setStore_storePortion(a) {
-    await setStore((prevState) => {
-      return { ...prevState, storePortion: a };
-    });
-  }
-  async function setStore_storeBonusPortion(a) {
-    await setStore((prevState) => {
-      return { ...prevState, storeBonusPortion: a };
-    });
-  }
+  // contract
 
-  async function setStore_salesManager(a) {
-    await setStore((prevState) => {
+  async function setContract_initialize(a) {
+    setContract(contractInitial);
+  }
+  async function setContract_salesManager(a) {
+    await setContract((prevState) => {
       return { ...prevState, salesManager: a };
     });
   }
-  async function setStore_salesPortion(a) {
-    await setStore((prevState) => {
+  async function setContract_salesPortion(a) {
+    await setContract((prevState) => {
       return { ...prevState, salesPortion: a };
     });
   }
 
-  async function setStore_buyer(a) {
-    await setStore((prevState) => {
-      return { ...prevState, buyer: a };
-    });
-  }
 
-  async function setStore_buyerPortion(a) {
-    await setStore((prevState) => {
-      return { ...prevState, buyerPortion: a };
-    });
-  }
-  async function setStore_stationId(a) {
-    await setStore((prevState) => {
-      return { ...prevState, stationId: a };
-    });
-  }
-  async function setStore_storePhoto(a) {
-    await setStore((prevState) => {
-      return { ...prevState, stationId: [...prevState.storePhoto, a] };
-    });
-  }
-  async function setStore_naverStoreUrl(a) {
-    await setStore((prevState) => {
-      return { ...prevState, naverStoreUrl: a };
-    });
-  }
-  async function setStore_contractYear(a) {
-    await setStore((prevState) => {
-      return { ...prevState, contractYear: a };
-    });
-  }
-  async function setStore_stationDoc(a) {
-    await setStore((prevState) => {
-      return { ...prevState, stationDoc: a };
-    });
-  }
-  async function setStore_stationMethod(a) {
-    await setStore((prevState) => {
-      return { ...prevState, stationMethod: a };
-    });
-  }
-  async function setStore_contractYear(a) {
-    await setStore((prevState) => {
-      return { ...prevState, contractYear: a };
-    });
-  }
-
-  // sales
-  async function setSales_storeName(a) {
-    await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, storeName: a };
-    });
-  }
-  async function setSales_storeMainAddress(a) {
-    await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, storeMainAddress: a };
-    });
-  }
-  async function setSales_storeRestAddress(a) {
-    await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, storeRestAddress: a };
-    });
-  }
-  async function setSales_storeOwnerPhoneNumber(a) {
-    await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, storeOwnerPhoneNumber: a };
-    });
-  }
-  async function setSales_storePhoneNumber(a) {
-    await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, storePhoneNumber: a };
-    });
-  }
-  async function setSales_storeOwner(a) {
-    await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, storeOwner: a };
-    });
-  }
-  async function setSales_storePortion(a) {
-    await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, storePortion: a };
-    });
-  }
-  async function setSales_storeBonusPortion(a) {
-    await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, storeBonusPortion: a };
-    });
-  }
-
-  async function setSales_salesManager(a) {
-    await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, salesManager: a };
-    });
-  }
-  async function setSales_salesPortion(a) {
-    await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, salesPortion: a };
-    });
-  }
-
-  async function setSales_buyer(a) {
-    await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, buyer: a };
-    });
-  }
-
-  async function setSales_buyerPortion(a) {
-    await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, buyerPortion: a };
-    });
-  }
-
-  async function setSales_storeOwnerSignature(a) {
-    await setSalesRegisterationInfo((prevState) => {
+  async function setContract_storeOwnerSignature(a) {
+    await setContract((prevState) => {
       return { ...prevState, storeOwnerSignature: a };
     });
   }
-  async function setSales_stationId(a) {
-    await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, stationId: a };
+
+  async function setContract_franchiseDoc(a) {
+    await setContract((prevState) => {
+      return { ...prevState, franchiseDoc: a };
     });
   }
-  async function setSales_stationMethod(a) {
-    await setRegister((prevState) => {
-      return { ...prevState, stationMethod: a };
+
+  async function setContract_contractedBy(a) {
+    await setContract((prevState) => {
+      return { ...prevState, contractedBy: a };
     });
   }
-  async function setSales_storePhoto(a) {
-    await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, stationId: [...prevState.storePhoto, a] };
+
+  async function setContract_bStoreOwnerRegistered(a) {
+    await setContract((prevState) => {
+      return { ...prevState, bStoreOwnerRegistered: a };
     });
   }
-  async function setSales_naverStoreUrl(a) {
-    await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, naverStoreUrl: a };
+
+  async function setContract_contractType(a) {
+    await setContract((prevState) => {
+      return { ...prevState, contractType: a };
     });
   }
-  async function setSales_contractYear(a) {
-    await setSalesRegisterationInfo((prevState) => {
-      return { ...prevState, contractYear: a };
-    });
-  }
-  async function setSales_stationDoc(a) {
-    await setSalesRegisterationInfo((prevState) => {
+  async function setContract_stationDoc(a) {
+    await setContract((prevState) => {
       return { ...prevState, stationDoc: a };
     });
   }
-  async function setSales_contractYear(a) {
-    await setSalesRegisterationInfo((prevState) => {
+  async function setContract_stationId(a) {
+    await setContract((prevState) => {
+      return { ...prevState, stationId: a };
+    });
+  }
+
+  async function setContract_createdBy(a) {
+    await setContract((prevState) => {
+      return { ...prevState, createdBy: a };
+    });
+  }
+  async function setContract_approvedBy(a) {
+    await setContract((prevState) => {
+      return { ...prevState, approvedBy: a };
+    });
+  }
+  async function setContract_sendBy(a) {
+    await setContract((prevState) => {
+      return { ...prevState, sendBy: a };
+    });
+  } async function setContract_contractYear(a) {
+    await setContract((prevState) => {
       return { ...prevState, contractYear: a };
     });
   }
+  async function setContract_status(a) {
+    await setContract((prevState) => {
+      return { ...prevState, status: a };
+    });
+  }
+  async function setContract_rejectedReason(a) {
+    await setContract((prevState) => {
+      return { ...prevState, rejectedReason: a };
+    });
+  }
+  async function setContract_storeOwner(a) {
+    await setContract((prevState) => {
+      return { ...prevState, storeOwner: a };
+    });
+  }
+  async function setContract_storePortion(a) {
+    await setContract((prevState) => {
+      return { ...prevState, storePortion: a };
+    });
+  } async function setContract_storeBonusPortion(a) {
+    await setContract((prevState) => {
+      return { ...prevState, storeBonusPortion: a };
+    });
+  }
+  async function setContract_stationMethod(a) {
+    await setContract((prevState) => {
+      return { ...prevState, stationMethod: a };
+    });
+  }
+  async function setContract_salesMethod(a) {
+    await setContract((prevState) => {
+      return { ...prevState, salesMethod: a };
+    });
+  }
+  async function setContract_buyer(a) {
+    await setContract((prevState) => {
+      return { ...prevState, buyer: a };
+    });
+  }
+
+
+  async function setContract_buyerPortion(a) {
+    await setContract((prevState) => {
+      return { ...prevState, buyerPortion: a };
+    });
+  }
+  async function setContract_bNeedToSend(a) {
+    await setContract((prevState) => {
+      return { ...prevState, bNeedToSend: a };
+    });
+  } async function setContract_bNeedToRetrieve(a) {
+    await setContract((prevState) => {
+      return { ...prevState, bNeedToRetrieve: a };
+    });
+  }
+  async function setContract_retrievingAskedBy(a) {
+    await setContract((prevState) => {
+      return { ...prevState, retrievingAskedBy: a };
+    });
+  }
+  async function setContract_postCode(a) {
+    await setContract((prevState) => {
+      return { ...prevState, postCode: a };
+    });
+  }
+
+
+
+
+
+
+
+
+  // franchise
+
+  async function setFranchise_initialize(a) {
+    setFranchiseContract(franchiseInitial);
+    setContract(contractInitial)
+  }
+  async function setFranchise_storeName(a) {
+    await setFranchiseContract((prevState) => {
+      return { ...prevState, storeName: a };
+    });
+  }
+  async function setFranchise_storeMainAddress(a) {
+    await setFranchiseContract((prevState) => {
+      return { ...prevState, storeMainAddress: a };
+    });
+  }
+  async function setFranchise_storeRestAddress(a) {
+    await setFranchiseContract((prevState) => {
+      return { ...prevState, storeRestAddress: a };
+    });
+  }
+  async function setFranchise_storeOwnerPhoneNumber(a) {
+    await setFranchiseContract((prevState) => {
+      return { ...prevState, storeOwnerPhoneNumber: a };
+    });
+  }
+  async function setFranchise_storePhoneNumber(a) {
+    await setFranchiseContract((prevState) => {
+      return { ...prevState, storePhoneNumber: a };
+    });
+  }
+  async function setFranchise_storeOwner(a) {
+    await setFranchiseContract((prevState) => {
+      return { ...prevState, storeOwner: a };
+    });
+  }
+  async function setFranchise_storePortion(a) {
+    await setFranchiseContract((prevState) => {
+      return { ...prevState, storePortion: a };
+    });
+  }
+  async function setFranchise_storeBonusPortion(a) {
+    await setFranchiseContract((prevState) => {
+      return { ...prevState, storeBonusPortion: a };
+    });
+  }
+
+
+
+  async function setFranchise_stationMethod(a) {
+    await setFranchiseContract((prevState) => {
+      return { ...prevState, stationMethod: a };
+    });
+  }
+
+  async function setFranchise_storePhoto(a) {
+    await setFranchiseContract((prevState) => {
+      return { ...prevState, storePhoto: [...prevState.storePhoto, a] };
+    });
+  }
+  async function setFranchise_naverStoreUrl(a) {
+    await setFranchiseContract((prevState) => {
+      return { ...prevState, naverStoreUrl: a };
+    });
+  }
+
+  async function setFranchise_stationDocs(a) {
+    await setFranchiseContract((prevState) => {
+      return { ...prevState, stationDocs: a };
+    });
+  }
+
+  async function setFranchise_contractDocs(a) {
+    await setFranchiseContract((prevState) => {
+      return { ...prevState, contractDocs: a };
+    });
+  }
+
+  async function setFranchise_contractYear(a) {
+    await setFranchiseContract((prevState) => {
+      return { ...prevState, contractYear: a };
+    });
+  }
+
+
 
   return (
     <>
@@ -634,7 +688,8 @@ export function GlobalProvider({ children }) {
           // getUser: userInfo,
           // setUser: setUser,
           // register
-          getRegisterInfo: register,
+          getRegisterObj: register,
+          setRegister_initialize,
           setRegister_email,
           setRegister_phoneNumber,
           setRegister_name,
@@ -645,64 +700,79 @@ export function GlobalProvider({ children }) {
           setRegister_accountHolder,
           setRegister_bBusinessLicense,
           setRegister_businessLicenseImg,
-          // invest
-          getInvestInfo: invest,
-          setInvest_bankAccount,
-          setInvest_bank,
-          setInvest_depositor,
-          setInvest_bReserved,
-          setInvest_totalPrice,
-          setInvest_amount,
-          setInvest_storePortion,
-          setInvest_storeOwner,
-          setInvest_buyerPortion,
-          setInvest_buyer,
-          setInvest_preSalesManagers,
-          setInvest_preSalesIds,
-          setInvest_salesManager,
-          setInvest_salesPortion,
-          setInvest_salesMethod,
-          // sales
-          salesInfo: salesRegisterationInfo,
-          setSales_storeName,
-          setSales_storeMainAddress,
-          setSales_storeRestAddress,
-          setSales_storeOwnerPhoneNumber,
-          setSales_storePhoneNumber,
-          setSales_storeOwner,
-          setSales_storeOwnerSignature,
-          setSales_storePortion,
-          setSales_salesManager,
-          setSales_salesPortion,
-          setSales_storeBonusPortion,
-          setSales_buyer,
-          setSales_buyerPortion,
-          setSales_stationMethod,
-          setSales_stationId,
-          setSales_storePhoto,
-          setSales_naverStoreUrl,
-          setSales_contractYear,
-          setSales_stationDoc,
-          // Store
-          getStoreInfo: store,
-          setStore_storeName,
-          setStore_storeMainAddress,
-          setStore_storeRestAddress,
-          setStore_storeOwnerPhoneNumber,
-          setStore_storePhoneNumber,
-          setStore_storeOwner,
-          setStore_storePortion,
-          setStore_salesManager,
-          setStore_salesPortion,
-          setStore_storeBonusPortion,
-          setStore_buyer,
-          setStore_buyerPortion,
-          setStore_stationId,
-          setStore_stationMethod,
-          setStore_storePhoto,
-          setStore_naverStoreUrl,
-          setStore_contractYear,
-          setStore_stationDoc
+          // station
+          getStationObj: station,
+          setStation_initialize,
+          setStation_status,
+          setStation_stationId,
+          setStation_contractDoc,
+          setStation_createdBy,
+          setStation_approvedBy,
+          setStation_reservedBy,
+          setStation_bIsOn,
+          setStation_lastUpdated,
+          setStation_salesMethod,
+          setStation_salesPortion,
+          setStation_preSalesIds,
+          setStation_preSalesManagers,
+          setStation_buyer,
+          setStation_buyerPortion,
+          setStation_amount,
+          setStation_totalPrice,
+          setStation_bReserved,
+          setStation_depositor,
+          setStation_bank,
+          setStation_bankAccount,
+          // contract
+          getContractObj: contract,
+          setContract_initialize,
+          setContract_salesManager,
+          setContract_salesPortion,
+          setContract_storeOwnerSignature,
+          setContract_franchiseDoc,
+          setContract_contractedBy,
+          setContract_bStoreOwnerRegistered,
+          setContract_contractType,
+          setContract_stationDoc,
+          setContract_stationId,
+          setContract_createdBy,
+          setContract_approvedBy,
+          setContract_sendBy,
+          setContract_contractYear,
+          setContract_status,
+          setContract_rejectedReason,
+          setContract_storeOwner,
+          setContract_storePortion,
+          setContract_storeBonusPortion,
+          setContract_stationMethod,
+          setContract_buyer,
+          setContract_buyerPortion,
+          setContract_bNeedToSend,
+          setContract_bNeedToRetrieve,
+          setContract_retrievingAskedBy,
+          setContract_postCode,
+          // franchise
+          getFranchiseObj: franchise,
+          setFranchise_initialize,
+          setFranchise_storeName,
+          setFranchise_storeMainAddress,
+          setFranchise_storeRestAddress,
+          setFranchise_storeOwnerPhoneNumber,
+          setFranchise_storePhoneNumber,
+          setFranchise_storeOwner,
+          setFranchise_storePortion,
+          setFranchise_storeBonusPortion,
+          setFranchise_storePhoto,
+          setFranchise_naverStoreUrl,
+          setFranchise_contractYear,
+          setFranchise_stationDocs,
+          setFranchise_contractDocs,
+          setFranchise_stationMethod,
+
+          registerInitial,
+          stationInitial,
+          franchiseInitial,
+          contractInitial
         }}
       >
         {/* <ThemeUpdateContext.Provider value={{ userNinfo, getUserNinfo }}> */}

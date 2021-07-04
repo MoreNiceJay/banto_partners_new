@@ -126,7 +126,7 @@ function LoginPage(props) {
                     margin: "16px 0 0 24px"
                   }}
                 >
-                  {context.getRegisterInfo.email}로 인증메일을 보냈습니다.
+                  {context.getRegisterObj.email}로 인증메일을 보냈습니다.
                 </p>
                 <Button
                   onClick={() => {
@@ -183,7 +183,7 @@ function LoginPage(props) {
                       props.history.push("/login/register/fourth");
                     } else {
                       alert(
-                        `아직 ${context.getRegisterInfo.email}인증이 완료되지 않았습니다`
+                        `아직 ${context.getRegisterObj.email}인증이 완료되지 않았습니다`
                       );
                     }
                   }}
