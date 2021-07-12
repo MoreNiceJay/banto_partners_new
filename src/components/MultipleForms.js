@@ -105,10 +105,8 @@ export const MultipleForms = (props) => {
                       disabled={value.disabled}
                       value={value.contentText}
                       onChange={(e) => {
-                        console.log(e);
 
-                        // console.log(value.onchange());
-                        // value.onchange(e);
+                        value.onchange(e);
                       }}
                     />
                     {value.bButton ? (
@@ -118,7 +116,7 @@ export const MultipleForms = (props) => {
                           value.onclick();
                         }}
                       >
-                        수정
+                        {value.buttonText}
                       </Button>
                     ) : (
                       <></>

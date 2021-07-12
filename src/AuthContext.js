@@ -134,6 +134,45 @@ export const AuthProvider = ({ children }) => {
       createdAt: moment().format()
     });
   };
+  const setAccountNumber = async (email, accnumber) => {
+    try {
+      const userDoc = await db.collection("Users").doc(email)
+
+      await userDoc.update({ accountNumber: accnumber })
+    } catch (e) {
+      console.log(e)
+      return { code: 400, msg: "시스템 에러, 다시시도해 주세요" };
+
+    }
+    return { code: 200 };
+
+  }
+
+  const setAccountHolder = async (email, accholder) => {
+    try {
+      const userDoc = await db.collection("Users").doc(email)
+
+      await userDoc.update({ accountHolder: accholder })
+    } catch (e) {
+      return { code: 400, msg: "시스템 에러, 다시시도해 주세요" };
+
+    }
+    return { code: 200 };
+
+  }
+  const setBank = async (email, bank) => {
+    try {
+      const userDoc = await db.collection("Users").doc(email)
+
+      await userDoc.update({ bank: bank })
+    } catch (e) {
+      return { code: 400, msg: "시스템 에러, 다시시도해 주세요" };
+
+    }
+    return { code: 200 };
+
+  }
+
 
   //디비 관련 함수 끝
   const updateExtraProfiles = async (data) => {
@@ -389,6 +428,8 @@ export const AuthProvider = ({ children }) => {
         // 디비 업데이트 함수
         createStoreApplication,
         userStations,
+        setAccountNumber,
+        setAccountHolder, setBank,
         fUser: firebase.auth()
       }}
     >
